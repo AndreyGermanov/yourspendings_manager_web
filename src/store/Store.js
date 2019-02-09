@@ -83,6 +83,15 @@ const Store = class {
     changeProperties(keyValues) {
         this.store.dispatch(actions.changeProperties(keyValues))
     }
+
+    getPropertyNameExpression(name) {
+        return name.split(".").map( namePart => "['"+namePart+"']").reduce((s,s1) => s+s1)
+    }
+
+    getValue(name) {
+        const state = this.getState();
+        return eval("state"+this.getPropertyNameExpression(name))
+    }
 };
 
 export default Store.getInstance()

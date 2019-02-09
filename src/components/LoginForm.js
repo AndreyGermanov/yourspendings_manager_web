@@ -15,7 +15,7 @@ export default class LoginForm extends Component {
                     : ""}
                     <form className="form-horizontal">
                         <FormField name="loginName" type="text" label="Login" value={this.props.loginName}/>
-                        <FormField name="loginPassword" type="text" label="Password" value={this.props.loginPassword}/>
+                        <FormField name="loginPassword" type="password" label="Password" value={this.props.loginPassword}/>
                         <a className="btn btn-primary" onClick={()=>this.props.login()}>Login</a>
                     </form>
                 </div>

@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import AppComponent from '../components/App';
-import Backend from '../backend/Backend'
+import Auth from '../backend/Auth'
 import Store from '../store/Store'
 
 /**
@@ -38,8 +38,10 @@ export default class App {
 
     start() {
         Store.changeProperty("isMainScreenLoading",true);
-        Backend.request("/api/shops",{}, (response) => {
-            Store.changeProperties({isMainScreenLoading:false,isLogin:response.status === 200})
+        Auth.loadProfile(response => {
+            Store.changeProperties(
+                { isMainScreenLoading:false, isLogin:response.status === 200, loginName:"", loginPassword:"" }
+            )
         });
     }
 }

@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import HeaderComponent from '../components/Header';
-import Backend from '../backend/Backend'
+import Auth from '../backend/Auth'
 import App from './App';
 
 /**
@@ -25,7 +25,7 @@ export default class Header {
 
     mapStateToProps(state) {
         return {
-
+            modules: state.modules
         }
     }
 
@@ -35,9 +35,5 @@ export default class Header {
         }
     }
 
-    logout() {
-        Backend.request("/logout",{method:"POST"}, (response) => {
-            (new App()).start()
-        });
-    }
+    logout() { Auth.logout((response) => (new App()).start()); }
 }

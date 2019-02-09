@@ -3,6 +3,7 @@ import LoginFormComponent from '../components/LoginForm';
 import Store from '../store/Store';
 import Backend from '../backend/Backend';
 import t from '../utils/translate'
+import Auth from '../backend/Auth';
 /**
  * Controller for root application component
  */
@@ -42,16 +43,15 @@ export default class LoginForm {
         Store.changeProperty("errors",{});
         if (!this.validate()) return;
         const state = Store.getState();
-        const formData = new FormData();
-        formData.append("username",state.loginName);
-        formData.append("password",state.loginPassword);
-        Backend.request("/login",{method:"POST",body:formData}, (response) => {
+        Auth.login(state.loginName,state.loginPassword, (response) => {
             state["isLogin"] = response.status === 200;
             if (!state.isLogin) {
                 state.errors["general"] = t("Authentication error")
+            } else {
+                Auth.loadProfile();
             }
             Store.changeProperties(state);
-        })
+        });
     }
 
     validate() {
@@ -60,6 +60,15 @@ export default class LoginForm {
         if (!state.loginPassword.trim().length) state.errors["loginPassword"] = t("Password is required");
         Store.changeProperty("errors",state.errors);
         return !Object.getOwnPropertyNames(state.errors).length
+    }
+
+    loadProfile() {
+        Backend.request("/auth/profile",{}, (response) => {
+            if (response.status !== 200) return
+            response.json().then(response => {
+                console.log(response);
+            })
+        });
     }
 
 }

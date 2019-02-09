@@ -2,6 +2,13 @@ import "whatwg-fetch"
 
 class Backend {
 
+    static instance = null;
+
+    static getInstance() {
+        if (!Backend.instance) Backend.instance = new Backend();
+        return Backend.instance;
+    }
+
     request(url,params,callback) {
         params["credentials"] = "include";
         fetch(this.getBaseUrl()+url,params).then(response => {
@@ -24,4 +31,4 @@ class Backend {
     }
 }
 
-export default new Backend()
+export default Backend.getInstance();

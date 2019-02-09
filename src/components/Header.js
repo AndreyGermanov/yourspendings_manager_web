@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import t from "../utils/translate";
-import {Navbar,Nav,NavItem} from 'react-bootstrap'
+import {modules} from '../reducers/RootReducer'
 
 /**
  * Class used to display main menu
@@ -20,12 +20,27 @@ class Header extends Component {
                     </div>
                 </div>
                 <div className="collapse navbar-collapse">
+                    <ul className="nav navbar-nav">
+                        {this.renderModulesList()}
+                    </ul>
                     <ul className="nav navbar-nav navbar-right">
                         <li><a  onClick={()=>this.props.logout()}>{t("Logout")}</a></li>
                     </ul>
                 </div>
             </div>
         )
+    }
+
+    renderModulesList() {
+        if (!this.props.modules) return;
+        return Object.keys(this.props.modules)
+                    .filter(moduleName => modules[moduleName])
+                    .sort((a,b) => modules[a].order - modules[b].order)
+                    .map(moduleName =>
+                        <li key={"module_" + moduleName}>
+                            <a href={"#/" + moduleName}>{modules[moduleName].title}</a>
+                        </li>
+                    )
     }
 }
 
