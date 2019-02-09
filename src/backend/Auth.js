@@ -1,6 +1,6 @@
 import Backend from './Backend'
 import Store from '../store/Store';
-import async from 'async';
+import fromEntries from 'fromentries';
 
 class Auth {
 
@@ -24,33 +24,16 @@ class Auth {
         Backend.request("/auth/profile",{}, (response) => {
             if (response.status === 200) {
                 response.json().then((data) => {
-                    this.getAuthModules(data.modules,modules => {
-                        Store.changeProperties({modules:modules,profile:{roles:data.roles}});
-                    })
-
+                    const modules = data.modules ? data.modules : [];
+                    Store.changeProperties({
+                        modules:fromEntries(modules.map((name) => [name,{ items:[],itemId:null,sortOrder:"" }])),
+                        profile:{roles:data.roles,username:data.username},
+                        loginName: "", loginPassword: ""
+                    });
                 })
             }
             callback(response);
         })
-    }
-
-    getAuthModules(modules,callback=()=>{}) {
-        const result = {};
-        if (!modules || !modules.length) modules = [];
-        async.eachSeries(modules,(module,callback) => {
-            Backend.request("/api/"+module,{}, (response) => {
-                if (response.status === 200) {
-                    response.json().then((data) => {
-                        result[module] = data["page"];
-                        result[module].items = data["_embedded"][module];
-                        result[module].sortOrder = "";
-                        callback();
-                    });
-                } else {
-                    callback();
-                }
-            })
-        }, () => { callback(result) })
     }
 
     logout(callback=()=>{}) { Backend.request("/logout",{method:"POST"},callback) }

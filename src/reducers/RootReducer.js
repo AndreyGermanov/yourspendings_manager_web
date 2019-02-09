@@ -14,6 +14,11 @@ export const modules = {
     users: { order:4, title: t("Users") }
 };
 
+export const roles = {
+    "ROLE_USER": t("User"),
+    "ROLE_ADMIN": t("Administrator")
+};
+
 /**
  * Global application state
  */
@@ -51,4 +56,4 @@ export default function rootReducer(state=initialState,action) {
 const changeProperty = function(name,value,newState) {
     eval("newState"+Store.getPropertyNameExpression(name)+ " = _.cloneDeep(value);");
     return newState
-}
+};
