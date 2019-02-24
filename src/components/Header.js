@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import t from "../utils/translate";
+import t from "../utils/translate/translate";
 import {modules} from '../reducers/RootReducer'
 
 /**

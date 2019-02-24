@@ -1,5 +1,5 @@
 import React,{Component} from 'react'
-import FormField from './ui/FormField'
+import SimpleFormField from '../ui/SimpleFormField'
 
 export default class LoginForm extends Component {
 
@@ -14,8 +14,8 @@ export default class LoginForm extends Component {
                         <div className="alert alert-danger">{this.props.errors.general}</div>
                     : ""}
                     <form className="form-horizontal">
-                        <FormField name="loginName" type="text" label="Login" value={this.props.loginName}/>
-                        <FormField name="loginPassword" type="password" label="Password" value={this.props.loginPassword}/>
+                        <SimpleFormField name="loginName" type="text" label="Login" value={this.props.loginName}/>
+                        <SimpleFormField name="loginPassword" type="password" label="Password" value={this.props.loginPassword}/>
                         <a className="btn btn-primary" onClick={()=>this.props.login()}>Login</a>
                     </form>
                 </div>

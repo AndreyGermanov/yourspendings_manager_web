@@ -10,6 +10,7 @@ class Backend {
     }
 
     request(url,params,callback) {
+        if (typeof(callback) !== 'function') callback = ()=>{};
         params["credentials"] = "include";
         fetch(this.getBaseUrl()+url,params).then(response => {
             callback(response)

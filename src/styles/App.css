@@ -12,3 +12,10 @@ a {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.list-nav {
+  margin-right: 3px !important;
+}
+.padding-nav {
+  padding-right: 3px;
+}

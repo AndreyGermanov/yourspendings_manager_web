@@ -89,7 +89,6 @@ const Store = class {
     }
 
     getValue(name) {
-        const state = this.getState();
         return eval("state"+this.getPropertyNameExpression(name))
     }
 };

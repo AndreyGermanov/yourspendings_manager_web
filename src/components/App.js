@@ -1,26 +1,36 @@
 import React, { Component } from 'react';
 import "bootstrap/dist/css/bootstrap.css"
-import LoginFormContainer from '../containers/LoginForm'
-import HeaderContainer from '../containers/Header';
 import LoadingScreen from './LoadingScreen'
 import "../styles/App.css"
+import {HashRouter} from 'react-router-dom'
+import {Route,Switch} from 'react-router'
+import {List,Item,Auth} from '../containers/Containers';
+import '../styles/App.css';
 
 class App extends Component {
 
-    render() {
-        return this.renderContent();
-    }
 
-    renderContent() {
-        const LoginForm = LoginFormContainer.getComponent();
-        const Header = HeaderContainer.getComponent();
+    render() {
+        const ProductCategories = List.getComponentOf("productCategory");
+        const ProductCategory = Item.getComponentOf("productCategory");
+        const LoginForm = Auth.getComponentOf("login");
         if (this.props.isMainScreenLoading)
-            return <LoadingScreen/>
+            return <LoadingScreen/>;
         else {
             if (!this.props.isLogin) {
                 return <LoginForm/>
             } else {
-                return <Header/>;
+                return (
+                    <HashRouter>
+                        <Switch>
+                            <Route exact path="/productCategories" render={() => <ProductCategories/>}/>
+                            <Route path="/productCategory/:uid"
+                                   render={(state) => {
+                                       return <ProductCategory uid={state.match.params.uid}/>
+                                   }}/>
+                        </Switch>
+                    </HashRouter>
+                )
             }
         }
     }

@@ -1,9 +1,9 @@
 import {connect} from 'react-redux';
-import LoginFormComponent from '../components/LoginForm';
-import Store from '../store/Store';
-import Backend from '../backend/Backend';
-import t from '../utils/translate'
-import Auth from '../backend/Auth';
+import LoginFormComponent from '../../components/auth/LoginForm';
+import Store from '../../store/Store';
+import Backend from '../../backend/Backend';
+import t from '../../utils/translate/translate'
+import Auth from '../../backend/Auth';
 /**
  * Controller for root application component
  */
@@ -64,10 +64,8 @@ export default class LoginForm {
 
     loadProfile() {
         Backend.request("/auth/profile",{}, (response) => {
-            if (response.status !== 200) return
-            response.json().then(response => {
-                console.log(response);
-            })
+            if (response.status !== 200) return;
+            response.json().then(response => {})
         });
     }
 

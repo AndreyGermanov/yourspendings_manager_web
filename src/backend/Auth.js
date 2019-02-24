@@ -22,17 +22,16 @@ class Auth {
 
     loadProfile(callback=()=>{}) {
         Backend.request("/auth/profile",{}, (response) => {
-            if (response.status === 200) {
-                response.json().then((data) => {
-                    const modules = data.modules ? data.modules : [];
-                    Store.changeProperties({
-                        modules:fromEntries(modules.map((name) => [name,{ items:[],itemId:null,sortOrder:"" }])),
-                        profile:{roles:data.roles,username:data.username},
-                        loginName: "", loginPassword: ""
-                    });
-                })
-            }
-            callback(response);
+            if (response.status !== 200) { callback(response); return }
+            response.json().then((data) => {
+                const modules = data.modules ? data.modules : [];
+                Store.changeProperties({
+                    modules:fromEntries(modules.map((name) => [name,{ items:[],item:{},itemId:null,sortOrder:"",searchText:"" }])),
+                    profile:{roles:data.roles,username:data.username},
+                    loginName: "", loginPassword: ""
+                });
+                callback(response);
+            })
         })
     }
 
