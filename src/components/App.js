@@ -14,6 +14,8 @@ class App extends Component {
         const ProductCategories = List.getComponentOf("productCategory");
         const ProductCategory = Item.getComponentOf("productCategory");
         const LoginForm = Auth.getComponentOf("login");
+        const Roles = List.getComponentOf("role");
+        const Role = Item.getComponentOf("role");
         if (this.props.isMainScreenLoading)
             return <LoadingScreen/>;
         else {
@@ -24,10 +26,11 @@ class App extends Component {
                     <HashRouter>
                         <Switch>
                             <Route exact path="/productCategories" render={() => <ProductCategories/>}/>
+                            <Route exact path="/roles" render={() => <Roles/>}/>
                             <Route path="/productCategory/:uid"
-                                   render={(state) => {
-                                       return <ProductCategory uid={state.match.params.uid}/>
-                                   }}/>
+                                   render={(state) => { return <ProductCategory uid={state.match.params.uid}/>}}/>
+                            <Route path="/role/:uid"
+                                   render={(state) => { return <Role uid={state.match.params.uid}/>}}/>
                         </Switch>
                     </HashRouter>
                 )

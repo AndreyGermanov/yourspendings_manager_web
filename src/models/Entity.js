@@ -198,7 +198,7 @@ class Entity {
      * @returns {string} Request method (GET, PUT, POST etc)
      */
     getSaveItemMethod(data) {
-        return data["uid"] ? 'PUT' : 'POST'
+        return data["uid"] ? 'PATCH' : 'POST'
     }
 
     /**

@@ -6,7 +6,7 @@ import {Input,Button} from '../ui/Form';
 /**
  * Component used to manage "Product category" item page
  */
-export default class ProductCategory extends Entity {
+export default class Role extends Entity {
 
     /**
      * Method used to render detail view
@@ -17,7 +17,7 @@ export default class ProductCategory extends Entity {
                 <Input name="name" value={item["name"]} label={labels["name"]}/>
             </div>,
             <div className="form-group" key="f3">
-                <Input name="parent" value={item["parent"]} label={labels["parent"]}/>
+                <Input name="roleId" value={item["roleId"]} label={labels["roleId"]}/>
             </div>,
             <div className="form-group" align="center" key="f5">
                 <Button onPress={() => this.props.saveToBackend()} text={t("Save")}

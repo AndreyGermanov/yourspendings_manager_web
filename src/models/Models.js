@@ -1,8 +1,10 @@
 import EntityModel from './Entity';
 import ProductCategoryModel from './ProductCategory';
+import RoleModel from './Role';
 
 export default class Models {
     static ProductCategory = ProductCategoryModel;
+    static Role = RoleModel;
 
     // Initialized instances pool
     static instances = {};
@@ -15,6 +17,7 @@ export default class Models {
     static getModelClass(modelName) {
         switch (modelName) {
             case "productCategory": return ProductCategoryModel;
+            case "role": return RoleModel;
             default: return EntityModel;
         }
     }

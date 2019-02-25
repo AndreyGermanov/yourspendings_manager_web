@@ -1,4 +1,5 @@
-import ProductCategoryContainer from './ProductCategory';
+import ProductCategoryContainer from './ProductCategory'
+import RoleContainer from './Role';
 
 /**
  * Factory to get instances of List containers and connected components
@@ -10,6 +11,7 @@ export class Lists {
     static createInstanceOf(modelName) {
         switch (modelName) {
             case "productCategory": return new ProductCategoryContainer();
+            case "role": return new RoleContainer();
             default: return null;
         }
     }
@@ -27,6 +29,7 @@ export class Lists {
     static getComponentOf(modelName) {
         switch (modelName) {
             case "productCategory": return ProductCategoryContainer.getComponent();
+            case "role": return RoleContainer.getComponent();
             default: return null;
         }
     }

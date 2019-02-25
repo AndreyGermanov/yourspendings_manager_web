@@ -1,20 +1,17 @@
-import t from "../utils/translate/translate";
 import Entity from './Entity';
+import t from "../utils/translate/translate";
 
 /**
- * Database model of Product Category entity
+ * Database model of User role entity
  */
-export default class ProductCategory extends Entity {
+export default class Role extends Entity {
 
-    /**
-     * Class constructor
-     */
     constructor() {
         super();
-        this.itemName = "productCategory";
-        this.collectionName = "productCategories";
-        this.itemTitle = t("Category");
-        this.collectionTitle = t("Categories");
+        this.itemName = "role";
+        this.collectionName = "roles";
+        this.itemTitle = t("Role");
+        this.collectionTitle = t("Roles");
     }
 
     /**
@@ -24,8 +21,8 @@ export default class ProductCategory extends Entity {
      */
     initItem(item) {
         item = super.initItem(item);
+        if (!item.roleId) item.roleId = "";
         if (!item.name) item.name = "";
-        if (!item.parent) item.parent = "";
         return item;
     }
 
@@ -36,7 +33,7 @@ export default class ProductCategory extends Entity {
     getFieldLabels() {
         return {
             "name":t("Name"),
-            "parent": t("Parent Category")
+            "roleId": t("ID")
         }
     }
 
@@ -49,8 +46,8 @@ export default class ProductCategory extends Entity {
         return "";
     }
 
-    validate_parent(value) {
-        if (value && !this.cleanIntField(value)) return t("Incorrect parent category specified");
+    validate_roleId(value) {
+        if (!this.cleanStringField(value)) return t("Incorrect parent category specified");
         return "";
     }
 
@@ -63,8 +60,8 @@ export default class ProductCategory extends Entity {
         return this.cleanStringField(value);
     }
 
-    cleanField_parent(value) {
-        return this.cleanIntField(value);
+    cleanField_roleId(value) {
+        return this.cleanStringField(value);
     }
 
 }
