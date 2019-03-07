@@ -99,7 +99,7 @@ class EntityListContainer extends EntityContainer {
         let pageNumber = props.pageNumber;
         if (props.listFilter && props.listFilter.length) {
             options["filter_value"] = props.listFilter;
-            options["filter_fields"] = Object.keys(props.listColumns);
+            options["filter_fields"] = Object.keys(props.listColumns).join(",");
         }
         const statePageNumber = _.cloneDeep(state.pageNumber);
         statePageNumber[this.model.itemName] = pageNumber;

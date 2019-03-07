@@ -5,6 +5,7 @@ import FormField from './FormField';
 import 'jquery'
 import Select2 from 'react-select2-wrapper';
 import 'react-select2-wrapper/css/select2.css';
+const jQuery = require("jquery");
 
 /**
  * Component used to display Dropdown field in the form
@@ -13,7 +14,8 @@ class FormSelectField extends FormField {
 
     static propTypes = Object.assign({}, {
         // Array of items to choose from. Each item is an object of format {value:"",label:""}
-        items: PropTypes.array.isRequired
+        items: PropTypes.array.isRequired,
+        multiple: PropTypes.bool
     },FormField.propTypes);
 
     /**
@@ -28,9 +30,10 @@ class FormSelectField extends FormField {
                 {props.label}
             </label> : '',
             <div className={props.containerClass} style={props.containerStyle} key="f2">
-                <Select2 value={props.value} style={props.inputStyle}
-                         className={props.inputClass} data={props.items}
-                         onSelect={(value) => props.onChange(props.name,value)}/>
+                <Select2 ref="select2" value={props.value} style={props.inputStyle}
+                         className={props.inputClass} data={props.items} multiple={props.multiple}
+                         onSelect={() => props.onChange(props.name,jQuery(this.refs.select2.el).val())}
+                         onUnselect={() => props.onChange(props.name,jQuery(this.refs.select2.el).val())}/>
                 <Error fieldName={props.name} ownerProps={props.ownerProps} className={props.errorClass}
                        style={props.errorStyle}/>
             </div>
@@ -44,6 +47,7 @@ class FormSelectField extends FormField {
     getProps() {
         let result = super.getProps();
         result.items = result.items ? result.items: [];
+        result.multiple = result.multiple ? result.multiple : false;
         return result;
     }
 

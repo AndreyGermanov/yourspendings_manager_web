@@ -19,3 +19,8 @@ a {
 .padding-nav {
   padding-right: 3px;
 }
+
+.rootItem {
+  margin-left:20px;
+  margin-right:20px;
+}

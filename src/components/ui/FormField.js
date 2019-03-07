@@ -10,7 +10,7 @@ class FormField extends ScreenComponent {
         // Name of field
         name: PropTypes.string.isRequired,
         // Current field value
-        value: PropTypes.node,
+        value: PropTypes.any,
         // Change field value handler function (name,value) => {}
         onChange: PropTypes.func,
         // Style of input field

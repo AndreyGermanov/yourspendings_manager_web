@@ -100,7 +100,8 @@ export default class EntityItemContainer extends EntityContainer {
         }
         const errors = _.cloneDeep(state.errors);
         item[this.model.itemName][field_name] = value;
-        errors[field_name] = this.model.validateItemField(field_name,value);
+        if (!this.model.fieldsToValidateInline.length ||  this.model.fieldsToValidateInline.indexOf(field_name)!==-1)
+            errors[field_name] = this.model.validateItemField(field_name,value,item[this.model.itemName]);
         Store.store.dispatch(actions.changeProperties({"item":item,"errors":errors}));
     }
 
@@ -185,8 +186,9 @@ export default class EntityItemContainer extends EntityContainer {
         if (!callback) callback = () => null;
         const item = this.getProps().item;
         const stateItem = Store.getState().item;
+
         if (!item["uid"]) {
-            stateItem[this.model.itemName] = result["result"];
+            stateItem[this.model.itemName] = result;
             Store.store.dispatch(actions.changeProperties({uid: result["uid"], item: stateItem}));
         }
         this.displaySuccessText("Операция успешно завершена");

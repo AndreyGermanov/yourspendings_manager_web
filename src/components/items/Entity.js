@@ -31,7 +31,7 @@ class Entity extends Component {
         const Header = HeaderContainer.getComponent();
         return [
             <Header key="f1"/>,
-            <div key="f2">
+            <div key="f2" className="rootItem">
                 {this.renderActionButtons()}
                 <Panel bsStyle="primary">
                     <Panel.Heading>

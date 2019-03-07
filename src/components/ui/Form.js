@@ -1,5 +1,6 @@
 import ScreenComponent from './ScreenComponent';
 import InputField from './FormInputField';
+import CheckboxField from './FormCheckboxField';
 import SelectField from './FormSelectField';
 import DateTimeField from './FormDateTimeField';
 import ButtonComponent from './Button';
@@ -79,3 +80,4 @@ export const Input = InputField;
 export const Select = SelectField;
 export const DateTime = DateTimeField;
 export const Button = ButtonComponent;
+export const Checkbox = CheckboxField;

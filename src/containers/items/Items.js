@@ -1,5 +1,6 @@
 import ProductCategoryContainer from './ProductCategory';
-import RoleContainer from './Role'
+import RoleContainer from './Role';
+import UserContainer from './User';
 
 /**
  * Factory to get instances of Item containers and connected components
@@ -13,6 +14,7 @@ export class Items {
         switch (modelName) {
             case "productCategory": return new ProductCategoryContainer();
             case "role": return new RoleContainer();
+            case "user": return new UserContainer();
             default: return null;
         }
     }
@@ -35,6 +37,7 @@ export class Items {
         switch (modelName) {
             case "productCategory": return ProductCategoryContainer.getComponent();
             case "role": return RoleContainer.getComponent();
+            case "user": return UserContainer.getComponent();
             default: return null;
         }
     }

@@ -1,6 +1,7 @@
 import EntityModel from './Entity';
 import ProductCategoryModel from './ProductCategory';
 import RoleModel from './Role';
+import UserModel from './User';
 
 export default class Models {
     static ProductCategory = ProductCategoryModel;
@@ -18,6 +19,7 @@ export default class Models {
         switch (modelName) {
             case "productCategory": return ProductCategoryModel;
             case "role": return RoleModel;
+            case "user": return UserModel;
             default: return EntityModel;
         }
     }

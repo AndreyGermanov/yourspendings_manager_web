@@ -9,11 +9,10 @@ class Backend {
         return Backend.instance;
     }
 
-    request(url,params,callback) {
-        if (typeof(callback) !== 'function') callback = ()=>{};
-        params["credentials"] = "include";
-        fetch(this.getBaseUrl()+url,params).then(response => {
-            callback(response)
+    request(url,params,callback=()=>{}) {
+        let request = this.prepareRequest(url,params);
+        fetch(request.url,request.options).then(response => {
+            callback(null,response)
         }).catch(error => {
             callback(error)
         });
@@ -29,6 +28,33 @@ class Backend {
         if (!host) host = "localhost";
         if (isNaN(port)) port = 8080;
         return "http://"+host+":"+port;
+    }
+
+    /**
+     * Method used to prepare request to backend from input data
+     * @param url - Input URL
+     * @param params - Request params. Can include 'method', 'headers', 'body'
+     * @returns {{url: *, options: {}}} Array with two items: url - request URL, options - request options
+     */
+    prepareRequest(url,params) {
+        url = this.getBaseUrl()+url;
+        let headers = {};
+        if (params['headers']) { headers = params["headers"]; }
+        let method = params["method"] ? params["method"] : "GET";
+        const fetchOptions = { method: method, headers: headers, credentials: 'include' };
+        if (method === 'POST' || method === 'PATCH') {
+            fetchOptions['body'] = params["body"]
+        } else if (method === 'GET') {
+            let query_params = [];
+            for (const name in params.body) {
+                if (!params.body.hasOwnProperty(name)) continue;
+                if (typeof(params.body[name])!=="function" && typeof(params.body[name])!=="object") {
+                    query_params.push(name + "=" + params.body[name])
+                }
+            }
+            if (query_params.length) url += '/?'+query_params.join('&');
+        }
+        return {url:url,options:fetchOptions}
     }
 }
 

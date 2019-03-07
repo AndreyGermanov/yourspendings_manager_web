@@ -13,6 +13,8 @@ class Entity {
         this.collectionTitle = t("Объекты");
         // Fields of model, which will be validated for errors before save to backend.
         this.fieldsToValidate = [];
+        // Fields of model, which will be validated for errors while edit in the form
+        this.fieldsToValidateInline = [];
     }
 
     /**
@@ -46,10 +48,9 @@ class Entity {
      * @param callback: Method which called after request. Contains "err" and "result" variables. Err can contain
      * error, result contains number of items in collection
      */
-    getCount(options,callback) {
-        if (typeof(callback)!=='function')
-            callback = ()=>null;
-        Backend.request('/'+this.itemName+'/count',options,'GET',null,null, function(error,response) {
+    getCount(options,callback=()=>{}) {
+        let params = { method: 'GET', body: options};
+        Backend.request('/api/'+this.itemName+'/count',params, function(error,response) {
             if (error) {
                 callback(error,0);
                 return;
@@ -75,10 +76,9 @@ class Entity {
      * @param options: Options to filter, limit, skip and sort order
      * @param callback: Function called after operation finishes
      */
-    getList(options,callback) {
-        if (typeof(callback)!=='function')
-            callback = ()=>null;
-        Backend.request('/'+this.itemName,options,'GET',null,null, function(error,response) {
+    getList(options,callback=()=>{}) {
+        let params = { method: 'GET', body: options};
+        Backend.request('/api/'+this.itemName+"/list",params, function(error,response) {
             if (error) {
                 callback(error);
                 return;
@@ -108,7 +108,8 @@ class Entity {
             callback(null,[]);
             return;
         }
-        Backend.request('/'+this.itemName+'/'+itemID,options,'GET',null,null, function(error,response) {
+        let params = { method: 'GET'};
+        Backend.request('/api/'+this.itemName+'/item/'+itemID,params, function(error,response) {
             if (error) {
                 callback(error);
                 return;
@@ -129,27 +130,30 @@ class Entity {
 
     /**
      * Method used to save item to database. It can either add new item (POST) or update existing (PUT)
-     * @param options: Array of field values of item
+     * @param inputData: Array of field values of item
      * @param callback: Callback function which called after execution completed. It can contain either "errors"
      * object with validation errors for each field, or "result" object with all saved fields (including "uid") of item.
      */
-    saveItem(options,callback) {
+    saveItem(inputData,callback) {
         if (typeof(callback)!=='function') callback = ()=>null;
-        let method = this.getSaveItemMethod(options);
-        let url = this.getSaveItemUrl(options);
-        let data = this.getSaveItemData(options);
+        let method = this.getSaveItemMethod(inputData);
+        let url = this.getSaveItemUrl(inputData);
+        let data = this.getSaveItemData(inputData);
         if (!data) {
             callback(null,{'errors':{'general': t("Системная ошибка")}});
             return;
         }
         data = this.cleanDataForBackend(data);
-        Backend.request(url,data,method,null,null, function(error, response) {
-            if (!response || response.status !== 200 || error) {
+        const params = {method:method,body:JSON.stringify(data),headers:{'Content-Type':'application/json'}};
+        Backend.request(url,params, function(error, response) {
+            if (!response || response.status >399 || error) {
                 callback(null,{'errors':{'general': t("Системная ошибка")}});
                 return;
             }
-            response.json().then(function(obj) {
-                callback(null,obj);
+            response.json().then(function(result) {
+                result.uid = result._links.self.href.split("/").pop();
+                delete(result["_links"]);
+                callback(null,result);
             });
         });
     }
@@ -165,7 +169,7 @@ class Entity {
             result["uid"] = item.uid;
         }
         for (let field_name in item) {
-            if (!item.hasOwnProperty(field_name) || field_name === "uid")
+            if (!item.hasOwnProperty(field_name))
                 continue;
             if (typeof(this["cleanField_"+field_name])==="function") {
                 const value = this["cleanField_"+field_name](item[field_name]);
@@ -185,9 +189,9 @@ class Entity {
      * @returns {string} URL for request
      */
     getSaveItemUrl(data) {
-        let url = '/'+this.itemName;
+        let url = '/api/'+this.collectionName
         if (data['uid']) {
-            url += "/"+data['uid'].toString().replace(/#/g,"").replace(/:/g,"_");
+            url += "/"+data['uid'].toString();
         }
         return url
     }
@@ -208,8 +212,6 @@ class Entity {
      */
     getSaveItemData(data) {
         if (!data) return null;
-        if (data['uid'])
-            delete data["uid"];
         return data
     }
 
@@ -226,7 +228,7 @@ class Entity {
                 continue;
             if (this.fieldsToValidate.length && this.fieldsToValidate.indexOf(field_name) === -1)
                 continue;
-            const error = this.validateItemField(field_name,item[field_name]);
+            const error = this.validateItemField(field_name,item[field_name],item);
             if (error) {
                 has_errors = true;
                 errors[field_name] = error;
@@ -239,14 +241,15 @@ class Entity {
      * Method used to validate specified field
      * @param field_name: Name of field to validate
      * @param field_value: Value to validate
+     * @param item: All fields in current record
      * @returns {string}: Either string with error message or empty string if no error
      */
-    validateItemField(field_name,field_value) {
+    validateItemField(field_name,field_value,item=null) {
         if (!field_value || typeof(field_value) === "undefined") {
             field_value = "";
         }
         if (typeof(this["validate_"+field_name])==="function") {
-            return this["validate_"+field_name](field_value);
+            return this["validate_"+field_name](field_value,item);
         }
         return "";
     }
@@ -258,10 +261,11 @@ class Entity {
      */
     deleteItems(idList,callback) {
         const itemList = idList.map(function(item) {
-            return item.replace(/#/g,'').replace(/:/g,'_');
+            return item;
         });
         if (!itemList || !itemList.length) return;
-        Backend.request("/"+this.itemName+"/"+itemList.join(","),{},'DELETE',null,null, function(err,response) {
+        const params = {method:'DELETE'}
+        Backend.request("/api/"+this.itemName+"/item/"+itemList.join(","),params, function(err,response) {
             if (!response || response.status !== 200) {
                 callback(null,{'errors':{'general': t("Системная ошибка")}});
                 return;

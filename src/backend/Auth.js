@@ -15,13 +15,13 @@ class Auth {
         const formData = new FormData();
         formData.append("username",name);
         formData.append("password",password);
-        Backend.request("/login",{method:"POST",body:formData}, (response) => {
+        Backend.request("/login",{method:"POST",body:formData}, (error,response) => {
             callback(response);
         });
     }
 
     loadProfile(callback=()=>{}) {
-        Backend.request("/auth/profile",{}, (response) => {
+        Backend.request("/auth/profile",{}, (error,response) => {
             if (response.status !== 200) { callback(response); return }
             response.json().then((data) => {
                 const modules = data.modules ? data.modules : [];

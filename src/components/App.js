@@ -16,6 +16,8 @@ class App extends Component {
         const LoginForm = Auth.getComponentOf("login");
         const Roles = List.getComponentOf("role");
         const Role = Item.getComponentOf("role");
+        const Users = List.getComponentOf("user");
+        const User = Item.getComponentOf("user");
         if (this.props.isMainScreenLoading)
             return <LoadingScreen/>;
         else {
@@ -27,10 +29,13 @@ class App extends Component {
                         <Switch>
                             <Route exact path="/productCategories" render={() => <ProductCategories/>}/>
                             <Route exact path="/roles" render={() => <Roles/>}/>
+                            <Route exact path="/users" render={() => <Users/>}/>
                             <Route path="/productCategory/:uid"
                                    render={(state) => { return <ProductCategory uid={state.match.params.uid}/>}}/>
                             <Route path="/role/:uid"
                                    render={(state) => { return <Role uid={state.match.params.uid}/>}}/>
+                            <Route path="/user/:uid"
+                                   render={(state) => { return <User uid={state.match.params.uid}/>}}/>
                         </Switch>
                     </HashRouter>
                 )

@@ -29,7 +29,7 @@ class Entity extends Component {
         const Header = HeaderContainer.getComponent();
         return [
             <Header key="f1"/>,
-            <Panel bsStyle="primary" key="f2">
+            <Panel bsStyle="primary" key="f2" className="rootItem">
                 <Panel.Heading>
                     <Panel.Title componentClass="h3">
                         {this.props.listTitle}
@@ -140,7 +140,7 @@ class Entity extends Component {
             if (typeof(item[field]) !== "undefined") {
                 columns.push(
                     <td key={"list_"+item.uid+"_"+field}>
-                        <a href={"#"+this.props.itemName+"/"+item.uid.replace(/#/g,"").replace(/:/g,"_")}>
+                        <a href={"#"+this.props.itemName+"/"+item.uid}>
                             {this.props.renderListField(field,item[field])}
                         </a>
                     </td>
