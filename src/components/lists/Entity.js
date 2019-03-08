@@ -139,9 +139,9 @@ class Entity extends Component {
             if (!this.props.listColumns.hasOwnProperty(field)) continue;
             if (typeof(item[field]) !== "undefined") {
                 columns.push(
-                    <td key={"list_"+item.uid+"_"+field}>
+                    <td key={"list_"+item.uid+"_"+field} style={this.getStyleForField(field,item[field],item)}>
                         <a href={"#"+this.props.itemName+"/"+item.uid}>
-                            {this.props.renderListField(field,item[field])}
+                            {this.props.renderListField(field,item[field],item)}
                         </a>
                     </td>
                 );
@@ -150,6 +150,17 @@ class Entity extends Component {
             }
         }
         return <tr key={"list_"+item.uid}>{columns}</tr>;
+    }
+
+    /**
+     * Method returns style for specified cell in table
+     * @param fieldName - Field name
+     * @param fieldValue - Field value
+     * @param item - Full row of table data
+     * @returns Style object
+     */
+    getStyleForField(fieldName,fieldValue,item) {
+        return {}
     }
 
     /**

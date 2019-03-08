@@ -34,4 +34,12 @@ export default class Models {
             Models.instances[modelName] = new (Models.getModelClass(modelName))();
         return Models.instances[modelName];
     }
+
+    static RelationTypes = {
+        OneToOne: "Models_RelationTypes_OneToOne",
+        OneToMany: "Models_RelationTypes_OneToMany",
+        ManyToOne: "Models_RelationTypes_ManyToOne",
+        ManyToMany: "Models_RelationTypes_ManyToMany"
+    }
+
 }

@@ -16,11 +16,11 @@ class FormCheckboxField extends FormField {
     render() {
         const props = this.getProps();
         return [
-            <input key={"cb_"+props.name+"_1"}
+            <input key={"cb_"+props.name+"_1"} style={{marginRight:5}}
                    onChange={(value) => props.onChange(props.name, value)} type="checkbox"
                    checked={props.value}/>,
             props.label ?
-                <label className="control-label col-sm-2" key={"cb_"+props.name+"_2"}>
+                <label key={"cb_"+props.name+"_2"}>
                     {props.label}
                 </label> : ''
         ]

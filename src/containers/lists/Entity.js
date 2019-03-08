@@ -43,7 +43,7 @@ class EntityListContainer extends EntityContainer {
             isItemChecked: (uid) => this.isItemChecked(uid),
             selectAllItems: (elem) => this.selectAllItems(elem),
             isAllItemsChecked: () => this.isAllItemsChecked(),
-            renderListField: (field_name,value) => this.renderListField(field_name,value),
+            renderListField: (field_name,value,row) => this.renderListField(field_name,value,row),
             changeListPage: (pageNumber) => this.changeListPage(pageNumber),
             changeListSortOrder: (field) => this.changeListSortOrder(field),
             changeListFilter: (name,e) => this.changeListFilter(name,e),
@@ -202,11 +202,12 @@ class EntityListContainer extends EntityContainer {
      * Method used to convert field value to needed form before display it in list view
      * @param field_name: Name of field
      * @param value: Value of field
+     * @param row: Full row of list
      * @returns Converted value
      */
-    renderListField(field_name,value) {
+    renderListField(field_name,value,row) {
         if (typeof(this.model["getStringOfField_"+field_name]) === "function") {
-            return this.model["getStringOfField_"+field_name].bind(this.model)(value);
+            return this.model["getStringOfField_"+field_name].bind(this.model)(value,row);
         } else {
             return value;
         }

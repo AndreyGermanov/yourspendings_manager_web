@@ -25,7 +25,7 @@ export default class ProductCategoryListContainer extends EntityListContainer {
     mapStateToProps(state,ownProps) {
         const result = super.mapStateToProps(state,ownProps);
         return Object.assign(result, {
-            "listColumns": this.getListColumns(["name","parent"]),
+            "listColumns": this.getListColumns(["name"]),
             "sortOrder": (result["sortOrder"] && result["sortOrder"].field) ?
                 result["sortOrder"] : {field:'name',direction:'ASC'}
         })

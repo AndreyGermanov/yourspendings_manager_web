@@ -48,10 +48,9 @@ export default class UserItemContainer extends EntityContainer {
         })
     }
 
-
     /**
-     * Method used to fetch list of companies from backend and populate appropriate property in state
-     * which then used to display list of companies in dropdowns
+     * Method used to fetch list of user roles from backend and populate appropriate property in state
+     * which then used to display list of user roles in dropdowns
      * @param callback
      */
     getRolesList(callback) {

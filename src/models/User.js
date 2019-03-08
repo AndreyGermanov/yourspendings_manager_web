@@ -1,5 +1,6 @@
 import Entity from './Entity';
 import t from "../utils/translate/translate";
+import Models from './Models';
 
 /**
  * Database model of User role entity
@@ -13,6 +14,10 @@ export default class User extends Entity {
         this.itemTitle = t("User");
         this.collectionTitle = t("Users");
         this.fieldsToValidateInline = ["name","roles"];
+        this.transientFields = ["confirmPassword"];
+        this.relationFields = {
+            "roles": { type: Models.RelationTypes.OneToMany, target: "role"}
+        }
     }
 
     /**
@@ -45,28 +50,15 @@ export default class User extends Entity {
     }
 
     /**
-     * Method used to save item to database. It can either add new item (POST) or update existing (PUT)
-     * @param inputData: Array of field values of item
-     * @param callback: Callback function which called after execution completed. It can contain either "errors"
-     * object with validation errors for each field, or "result" object with all saved fields (including "uid") of item.
-     */
-    saveItem(inputData,callback) {
-        super.saveItem(inputData,(err,response) => {
-            if (response.errors) {
-                callback(err,response);
-                return;
-            }
-
-        })
-    }
-
-    /**
      * Method used to clean and prepare item data before sending to backend
      * @returns Object(hashmap) with data,ready to send to backend for this model
      */
     cleanDataForBackend(item) {
-        delete item["confirmPassword"];
-        delete item["roles"];
+        if (!this.cleanField_password(item["password"])) {
+            delete item["password"];
+        } else {
+            item["password"] = "{noop}" + item["password"];
+        };
         return super.cleanDataForBackend(item);
     }
 
@@ -80,15 +72,14 @@ export default class User extends Entity {
     }
 
     validate_password(value,item) {
-        if (this.cleanStringField(value) && value !== item["confirmPassword"]) return t("Passwords must match");
+        var value = this.cleanStringField(value);
+        if ((!item["uid"] || item["uid"] === "new") && !value) return t("Password must be specified");
+        if (value && value !== item["confirmPassword"]) return t("Passwords must match");
         return "";
     }
 
-    validate_confirmPassword(value,item) { return this.validate_password(value,item);}
-
     validate_roles(value) {
-        let roles = this.cleanStringField(value).split(",");
-        if (!roles.length) return t("At least single role should be selected");
+        if (!value.length) return t("At least single role should be selected");
     }
 
     /***************************************************
@@ -109,7 +100,8 @@ export default class User extends Entity {
     }
 
     cleanField_roles(value) {
-        return this.cleanStringField(value);
+        if (typeof(value) !== "object") value = [value];
+        return value.map((item) => item.uid ? item.uid : item)
     }
 
     /******************************************************************************
@@ -122,12 +114,13 @@ export default class User extends Entity {
     }
 
     parseItemField_roles(value) {
-        return value;
+        if (!value) value = [];
+        return value.map((item) => item.uid ? item.uid : item);
     }
 
-    /**
-     * Methods return string representation of fields to display in lists
-     */
+    /**********************************************************************
+     * Methods return string representation of fields to display in lists *
+     **********************************************************************/
 
     getStringOfField_roles(value) {
         return value.map((role) => role.name).join(", ");

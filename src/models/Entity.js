@@ -1,5 +1,8 @@
 import t from "../utils/translate/translate";
 import Backend from '../backend/Backend';
+import Models from './Models';
+import async from 'async';
+import _ from 'lodash';
 
 /**
  * Base class for database models, used in application
@@ -15,6 +18,15 @@ class Entity {
         this.fieldsToValidate = [];
         // Fields of model, which will be validated for errors while edit in the form
         this.fieldsToValidateInline = [];
+        // Fields of model, which should not be persisted to backend
+        this.transientFields = [];
+        // Fields of model, which are relationships. Key is name of field.
+        // Each field description has following format:
+        // {
+        //      type: <Models.RelationTypes enum value>,
+        //      target: <String with name of related model>
+        // }
+        this.relationFields = {};
     }
 
     /**
@@ -89,7 +101,7 @@ class Entity {
             }
             response.json().then(function (list) {
                 callback(null,list);
-            }).catch(function(error) {
+            }).catch((error)=> {
                 callback(error,[]);
             });
         })
@@ -138,24 +150,113 @@ class Entity {
         if (typeof(callback)!=='function') callback = ()=>null;
         let method = this.getSaveItemMethod(inputData);
         let url = this.getSaveItemUrl(inputData);
-        let data = this.getSaveItemData(inputData);
+        let data = this.getSaveItemData(_.cloneDeep(inputData));
         if (!data) {
             callback(null,{'errors':{'general': t("Системная ошибка")}});
             return;
         }
         data = this.cleanDataForBackend(data);
         const params = {method:method,body:JSON.stringify(data),headers:{'Content-Type':'application/json'}};
-        Backend.request(url,params, function(error, response) {
+        Backend.request(url,params, (error, response) => {
             if (!response || response.status >399 || error) {
                 callback(null,{'errors':{'general': t("Системная ошибка")}});
                 return;
             }
-            response.json().then(function(result) {
+            response.json().then((result) => {
                 result.uid = result._links.self.href.split("/").pop();
                 delete(result["_links"]);
-                callback(null,result);
+                inputData.uid = result.uid;
+                this.saveRelations(inputData, (relationFields) => {
+                    if (relationFields && Object.keys(relationFields).length)
+                        Object.keys(relationFields).forEach((fieldName) => result[fieldName] = relationFields[fieldName]);
+                    else callback(null,{'errors':{'general': t("Системная ошибка")}});
+                    callback(null,result);
+                });
             });
         });
+    }
+
+    /**
+     * Method used to save all relationship fields of current item.
+     * @param inputData - Array of fields of item
+     * @param callback: Callback function which called after execution completed.
+     */
+    saveRelations(inputData,callback) {
+        let fieldValues = {};
+        async.eachSeries(Object.keys(this.relationFields),(relationField,callback) => {
+            const relation = this.relationFields[relationField];
+            relation.field = relationField;
+            if (!inputData[relationField]) {callback();return;}
+            let targetModel = Models.getInstanceOf(relation.target);
+            if (!relation.type || !targetModel) {callback();return;}
+            let values = this.getRelationValues(relation,inputData[relationField]);
+            if (!values) { callback(); return;}
+            fieldValues[relationField] = values;
+            this.saveRelation(inputData["uid"],relation,targetModel ,values, (error,response) => {
+                if (response.status > 399 || error) { callback(true);return;}
+                callback(fieldValues);
+            })
+        }, (error) => {
+            callback(error)
+        })
+    }
+
+    /**
+     * Method used to get value of specified relation
+     * @param relation - Relation description (from this.relationFields)
+     * @param inputValue - Raw value which need to transform to correct value
+     * @returns Transformed value of relationship field
+     */
+    getRelationValues(relation,inputValue) {
+        if (!inputValue) return null;
+        if (typeof(this["cleanField_"+relation.field])==="function") {
+            inputValue = this["cleanField_"+relation.field](inputValue);
+        }
+        let values = null;
+        switch (relation.type) {
+            case Models.RelationTypes.OneToMany:
+                if (typeof(inputValue) === "object" && inputValue.length) values = inputValue;
+            case Models.RelationTypes.OneToOne:
+                return inputValue;
+            case Models.RelationTypes.ManyToOne:
+                return inputValue;
+        }
+        return values;
+    }
+
+    /**
+     * Methid used to save specified relation of specified item
+     * @param item_id - ID of current item
+     * @param relation - Relation description (from this.relationFields)
+     * @param relationModel - Data model of relation
+     * @param values - Values of related items
+     * @param callback: Callback function which called after execution completed.
+     */
+    saveRelation(item_id,relation,relationModel,values,callback) {
+        let url = "/api/"+this.collectionName+"/"+item_id+"/"+relation.field;
+        if (relation.type === Models.RelationTypes.OneToMany || relation.type === Models.RelationTypes.ManyToMany) {
+            let relationUrls = values.map((value) => Backend.getBaseUrl() + "/api/" + relationModel.collectionName + "/" + value);
+            let params = {method: 'PUT', headers: {'Content-Type': 'text/uri-list'}, body: relationUrls.join("\n")};
+            Backend.request(url, params, () => {
+                let params = {
+                    method: 'PATCH',
+                    headers: {'Content-Type': 'text/uri-list'},
+                    body: relationUrls.join("\n")
+                };
+                Backend.request(url, params, (error, response) => {
+                    callback(error, response)
+                })
+            })
+        } else {
+            let url = "/api/"+this.collectionName+"/"+item_id;
+            let relationUrl = Backend.getBaseUrl() + "/api/" + relationModel.collectionName + "/" + values;
+            let params = {method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: {}};
+            params.body[relation.field] = relationUrl;
+            params.body = JSON.stringify(params.body);
+            Backend.request(url, params, (error, response) => {
+                callback(error, response)
+            })
+        }
     }
 
 
@@ -165,12 +266,11 @@ class Entity {
      */
     cleanDataForBackend(item) {
         const result = {};
-        if (item.uid && item.uid !== "new") {
-            result["uid"] = item.uid;
-        }
+        if (item.uid && item.uid !== "new") { result["uid"] = item.uid;}
+        this.transientFields.forEach((fieldName) => delete item[fieldName]);
+        Object.keys(this.relationFields).forEach(fieldName => delete item[fieldName]);
         for (let field_name in item) {
-            if (!item.hasOwnProperty(field_name))
-                continue;
+            if (!item.hasOwnProperty(field_name)) continue;
             if (typeof(this["cleanField_"+field_name])==="function") {
                 const value = this["cleanField_"+field_name](item[field_name]);
                 if (value !== null) result[field_name] = value;

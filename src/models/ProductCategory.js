@@ -1,5 +1,6 @@
 import t from "../utils/translate/translate";
 import Entity from './Entity';
+import Models from './Models';
 
 /**
  * Database model of Product Category entity
@@ -15,6 +16,7 @@ export default class ProductCategory extends Entity {
         this.collectionName = "productCategories";
         this.itemTitle = t("Category");
         this.collectionTitle = t("Categories");
+        this.relationFields = {"parent":{type:Models.RelationTypes.ManyToOne,target:"productCategory"}}
     }
 
     /**
@@ -49,8 +51,9 @@ export default class ProductCategory extends Entity {
         return "";
     }
 
-    validate_parent(value) {
+    validate_parent(value,item) {
         if (value && !this.cleanIntField(value)) return t("Incorrect parent category specified");
+        if (item["uid"] === value) return t("Parent could not be the same as current item");
         return "";
     }
 
@@ -67,4 +70,14 @@ export default class ProductCategory extends Entity {
         return this.cleanIntField(value);
     }
 
+    /******************************************************************************
+     * Methods which transforms values of item fields from form fields to values, *
+     * ready to be in application state and in database                           *
+     ******************************************************************************/
+
+    parseItemField_parent(event) {
+
+        let result = parseInt(event);
+        return isNaN(result) ? 0 : result;
+    }
 }

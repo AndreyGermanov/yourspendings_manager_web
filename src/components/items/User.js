@@ -29,7 +29,7 @@ export default class User extends Entity {
                         value={roles} label={labels["roles"]}
                 />
             </div>,
-            <div className="form-group" key="f5">
+            <div className="col-sm-12 col-sm-offset-2" key="f5">
                 <Checkbox name="enabled" value={item["enabled"]} label={labels["enabled"]}/>
             </div>,
             <div className="form-group" align="center" key="f6">

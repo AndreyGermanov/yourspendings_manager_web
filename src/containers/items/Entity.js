@@ -65,6 +65,7 @@ export default class EntityItemContainer extends EntityContainer {
         const item = _.cloneDeep(state.item);
         if (uid === "new") {
             item[this.model.itemName] = this.initItem({});
+            Store.changeProperties({'item':item,'errors':{}})
             Store.store.dispatch(actions.changeProperty('item',item));
             callback();
             return;
@@ -91,6 +92,8 @@ export default class EntityItemContainer extends EntityContainer {
         }
         else if (e && e.target)
             value = e.target.value;
+        else
+            value = e;
         const state = Store.getState();
         const item = _.cloneDeep(state.item);
         if (!item[this.model.itemName])
