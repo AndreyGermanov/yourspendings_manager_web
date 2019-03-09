@@ -19,13 +19,22 @@ class ProductCategoryList extends Entity {
 }
 class RoleList extends Entity {}
 class UserList extends Entity {}
+class ShopList extends Entity {}
+class PurchaseUserList extends Entity {}
+class DiscountList extends Entity {}
 
 export class Lists {
     static ProductCategory = ProductCategoryList;
     static Role = RoleList;
     static User = UserList;
+    static Shop = ShopList;
+    static PurchaseUser = PurchaseUserList;
+    static Discount = DiscountList;
 }
 
 export const ProductCategory = ProductCategoryList;
 export const Role = RoleList;
 export const User = UserList;
+export const Shop = ShopList;
+export const PurchaseUser = PurchaseUserList;
+export const Discount = DiscountList;

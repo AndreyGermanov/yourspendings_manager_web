@@ -27,7 +27,8 @@ class EntityListContainer extends EntityContainer {
             itemsPerPage: state.itemsPerPage[this.model.itemName] ? state.itemsPerPage[this.model.itemName]: 10,
             numberOfItems: state.numberOfItems[this.model.itemName] ? state.numberOfItems[this.model.itemName]: 0,
             listFilter: state.listFilter[this.model.itemName] ? state.listFilter[this.model.itemName]: "",
-            listTitle: this.model.collectionTitle
+            listTitle: this.model.collectionTitle,
+            model: this.model
         })
     }
 

@@ -27,6 +27,8 @@ class Entity {
         //      target: <String with name of related model>
         // }
         this.relationFields = {};
+        // Set of basic permissions for items of this model
+        this.permissions = [Models.Permissions.create,Models.Permissions.update,Models.Permissions.delete];
     }
 
     /**
@@ -169,7 +171,7 @@ class Entity {
                 this.saveRelations(inputData, (relationFields) => {
                     if (relationFields && Object.keys(relationFields).length)
                         Object.keys(relationFields).forEach((fieldName) => result[fieldName] = relationFields[fieldName]);
-                    else callback(null,{'errors':{'general': t("Системная ошибка")}});
+                    else if(typeof(relationFields) !== "object") callback(null,{'errors':{'general': t("Системная ошибка")}});
                     callback(null,result);
                 });
             });
@@ -316,13 +318,27 @@ class Entity {
     }
 
     /**
+     * Method determines if current entity has specified permission (create, update, delete)
+     * @param permission - permission. Value of enum: Models.Permissions
+     * @returns {boolean} - True if entity has this permission or false otherwise
+     */
+    hasPermission(permission) { return this.permissions.indexOf(permission) !== -1}
+
+    /**
      * Function used to validate item before save to database
      * @param item: Item data to validate
      * @returns Array of found errors or null if nothing found
      */
     validate(item) {
-        const errors = {};
         let has_errors = false;
+        const errors = {};
+        if (!this.hasPermission(Models.Permissions.update) ||
+            (!this.hasPermission(Models.Permissions.create) && (!item['uid'] || item['uid'] === 'new'))
+        ) {
+            errors['general'] = t("You do not have permission to edit this item");
+            has_errors = true;
+            return errors;
+        }
         for (const field_name in item) {
             if (!item.hasOwnProperty(field_name) || field_name === 'uid')
                 continue;
@@ -360,6 +376,10 @@ class Entity {
      * @param callback: Callback function which called after execution completed
      */
     deleteItems(idList,callback) {
+        if (!this.hasPermission(Models.Permissions.delete)) {
+            callback(null,{'errors':{'general': t("You do not have permission to delete this item")}});
+            return;
+        }
         const itemList = idList.map(function(item) {
             return item;
         });

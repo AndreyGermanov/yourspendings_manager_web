@@ -5,6 +5,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faStroopwafel } from '@fortawesome/free-solid-svg-icons'
 import HeaderContainer from '../../containers/Header';
 import {Button,Input} from '../ui/Form';
+import Models from '../../models/Models';
 library.add(faStroopwafel);
 
 
@@ -54,14 +55,19 @@ class Entity extends Component {
      * @returns Rendered components with buttons
      */
     renderActionButtons() {
-        this.actionButtons = [
-            <Button className="btn btn-success list-nav"
-                    onPress={() => window.location.href="#/"+this.props.itemName+"/new"}
-                    iconClass="glyphicon glyphicon-plus" text={t("Новый")} key="b1"/>,
+        this.actionButtons = [];
+        if (this.props.model.hasPermission(Models.Permissions.create))
+            this.actionButtons.push(
+                <Button className="btn btn-success list-nav"
+                        onPress={() => window.location.href="#/"+this.props.itemName+"/new"}
+                        iconClass="glyphicon glyphicon-plus" text={t("Новый")} key="b1"/>
+            );
+        this.actionButtons.push(
             <Button className="btn btn-info list-nav" onPress={() => this.props.updateList()}
                     iconClass="glyphicon glyphicon-refresh" text={t("Обновить")} key="b2"/>
-        ];
-        if (this.props.selectedItems && this.props.selectedItems.length>0) {
+        );
+        if (this.props.selectedItems && this.props.selectedItems.length>0 &&
+            this.props.model.hasPermission(Models.Permissions.delete)) {
             this.actionButtons.push(
                 <Button className="btn btn-danger list-nav" onPress={() => this.props.deleteItems()}
                         iconClass="glyphicon glyphicon-remove" text={t("Удалить")} key="b100"/>
@@ -84,14 +90,16 @@ class Entity extends Component {
      * @returns Array of rendered columns
      */
     renderHeaderRow() {
-        const result = [
+        const result = [];
+        if (this.props.model.hasPermission(Models.Permissions.delete))
+        result.push(
             <td key="f1">
                 <div align="center">
                     <input type="checkbox" checked={this.props.isAllItemsChecked()}
                            onChange={this.props.selectAllItems.bind(this)}/>
                 </div>
             </td>
-        ];
+        );
         for (let field in this.props.listColumns) {
             if (!this.props.listColumns.hasOwnProperty(field)) continue;
             let sortOrderWidget = null;
@@ -127,14 +135,16 @@ class Entity extends Component {
      * @returns Rendered row
      */
     renderRow(item) {
-        const columns = [
-            <td key={"list_"+item.uid+"_uid"}>
-                <div align="center">
-                    <input type="checkbox" onChange={this.props.selectItem.bind(this,item.uid)}
-                           checked={this.props.isItemChecked(item.uid)}/>
-                </div>
-            </td>
-        ];
+        const columns = [];
+        if (this.props.model.hasPermission(Models.Permissions.delete))
+            columns.push(
+                <td key={"list_"+item.uid+"_uid"}>
+                    <div align="center">
+                        <input type="checkbox" onChange={this.props.selectItem.bind(this,item.uid)}
+                               checked={this.props.isItemChecked(item.uid)}/>
+                    </div>
+                </td>
+            );
         for (let field in this.props.listColumns) {
             if (!this.props.listColumns.hasOwnProperty(field)) continue;
             if (typeof(item[field]) !== "undefined") {

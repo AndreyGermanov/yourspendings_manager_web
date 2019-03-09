@@ -11,8 +11,9 @@ export const modules = {
     purchases: { order:2, title:t("Purchases") },
     purchaseUsers: {order:3, title:t("Purchase Users")},
     productCategories: {order:4,title:t("Product Categories")},
-    users: { order:5, title: t("Users") },
-    roles: {order:6, title: t("Roles")},
+    discounts: {order:5,title:t("Discounts")},
+    users: { order:6, title: t("Users") },
+    roles: {order:7, title: t("Roles")},
 };
 
 export const roles = {

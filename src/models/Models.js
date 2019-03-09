@@ -2,6 +2,9 @@ import EntityModel from './Entity';
 import ProductCategoryModel from './ProductCategory';
 import RoleModel from './Role';
 import UserModel from './User';
+import ShopModel from './Shop';
+import PurchaseUserModel from './PurchaseUser';
+import DiscountModel from './Discount';
 
 export default class Models {
     static ProductCategory = ProductCategoryModel;
@@ -20,6 +23,9 @@ export default class Models {
             case "productCategory": return ProductCategoryModel;
             case "role": return RoleModel;
             case "user": return UserModel;
+            case "shop": return ShopModel;
+            case "purchaseUser": return PurchaseUserModel;
+            case "discount": return DiscountModel;
             default: return EntityModel;
         }
     }
@@ -40,6 +46,12 @@ export default class Models {
         OneToMany: "Models_RelationTypes_OneToMany",
         ManyToOne: "Models_RelationTypes_ManyToOne",
         ManyToMany: "Models_RelationTypes_ManyToMany"
+    }
+
+    static Permissions = {
+        create: "Models_Permissions_Create",
+        update: "Models_Permissions_Update",
+        delete: "Models_Permissions_Delete",
     }
 
 }

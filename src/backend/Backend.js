@@ -1,4 +1,5 @@
 import "whatwg-fetch"
+import Store from '../store/Store';
 
 class Backend {
 
@@ -12,6 +13,7 @@ class Backend {
     request(url,params,callback=()=>{}) {
         let request = this.prepareRequest(url,params);
         fetch(request.url,request.options).then(response => {
+            if (response.status === 401) Store.changeProperty("isLogin",false);
             callback(null,response)
         }).catch(error => {
             callback(error)

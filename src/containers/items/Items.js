@@ -1,6 +1,9 @@
 import ProductCategoryContainer from './ProductCategory';
 import RoleContainer from './Role';
 import UserContainer from './User';
+import ShopContainer from './Shop';
+import PurchaseUserContainer from './PurchaseUser';
+import DiscountContainer from './Discount';
 
 /**
  * Factory to get instances of Item containers and connected components
@@ -15,6 +18,9 @@ export class Items {
             case "productCategory": return new ProductCategoryContainer();
             case "role": return new RoleContainer();
             case "user": return new UserContainer();
+            case "shop": return new ShopContainer();
+            case "purchaseUser": return new PurchaseUserContainer();
+            case "discount": return new DiscountContainer();
             default: return null;
         }
     }
@@ -38,6 +44,9 @@ export class Items {
             case "productCategory": return ProductCategoryContainer.getComponent();
             case "role": return RoleContainer.getComponent();
             case "user": return UserContainer.getComponent();
+            case "shop": return ShopContainer.getComponent();
+            case "purchaseUser": return PurchaseUserContainer.getComponent();
+            case "discount": return DiscountContainer.getComponent();
             default: return null;
         }
     }
