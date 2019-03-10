@@ -22,7 +22,7 @@ class Auth {
 
     loadProfile(callback=()=>{}) {
         Backend.request("/auth/profile",{}, (error,response) => {
-            if (response.status !== 200) { callback(response); return }
+            if (!response || response.status !== 200) { callback(response); return }
             response.json().then((data) => {
                 const modules = data.modules ? data.modules : [];
                 Store.changeProperties({

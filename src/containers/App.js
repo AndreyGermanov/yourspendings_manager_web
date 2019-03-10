@@ -40,7 +40,7 @@ export default class App {
         Store.changeProperty("isMainScreenLoading",true);
         Auth.loadProfile(response => {
             Store.changeProperties(
-                { isMainScreenLoading:false, isLogin:response.status === 200, loginName:"", loginPassword:"" }
+                { isMainScreenLoading:false, isLogin:response && response.status === 200, loginName:"", loginPassword:"" }
             )
         });
     }

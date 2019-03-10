@@ -5,6 +5,9 @@ import UserModel from './User';
 import ShopModel from './Shop';
 import PurchaseUserModel from './PurchaseUser';
 import DiscountModel from './Discount';
+import PurchaseModel from './Purchase';
+import DimensionUnitModel from './DimensionUnit';
+import PurchaseProductModel from './PurchaseProduct'
 
 export default class Models {
     static ProductCategory = ProductCategoryModel;
@@ -26,6 +29,9 @@ export default class Models {
             case "shop": return ShopModel;
             case "purchaseUser": return PurchaseUserModel;
             case "discount": return DiscountModel;
+            case "purchase": return PurchaseModel;
+            case "dimensionUnit": return DimensionUnitModel;
+            case "purchaseProduct": return PurchaseProductModel;
             default: return EntityModel;
         }
     }

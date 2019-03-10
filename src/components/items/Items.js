@@ -8,6 +8,8 @@ import UserItem from './User';
 import ShopItem from './Shop';
 import PurchaseUserItem from './PurchaseUser';
 import DiscountItem from './Discount';
+import PurchaseItem from './Purchase';
+import DimensionUnitItem from './DimensionUnit';
 
 export class Items {
     static ProductCategory = ProductCategoryItem;
@@ -16,6 +18,8 @@ export class Items {
     static Shop = ShopItem;
     static PurchaseUser = PurchaseUserItem;
     static Discount = DiscountItem;
+    static Purchase = PurchaseItem;
+    static DimensionUnit = DimensionUnitItem;
 }
 
 export const ProductCategory = ProductCategoryItem;
@@ -24,3 +28,5 @@ export const User = UserItem;
 export const Shop = ShopItem;
 export const PurchaseUser = PurchaseUserItem;
 export const Discount = DiscountItem;
+export const Purchase = PurchaseItem;
+export const DimensionUnit = DimensionUnitItem;

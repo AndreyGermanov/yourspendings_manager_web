@@ -22,7 +22,8 @@ export default class EntityItemContainer extends EntityContainer {
             uid: ownProps ?  ownProps.uid : "",
             item: state.item[this.model.itemName] ? state.item[this.model.itemName] : {},
             itemSaveSuccessText: state.itemSaveSuccessText,
-            collectionName: this.model.collectionName
+            collectionName: this.model.collectionName,
+            updateCounter: state.updatesCounter
         })
     }
 
@@ -72,8 +73,7 @@ export default class EntityItemContainer extends EntityContainer {
         }
         Store.store.dispatch(actions.changeProperties({"isUpdating":true,"errors":{}}));
         this.model.getItem(uid,{},(err,result) => {
-            if (err)
-                result = {};
+            if (err) result = {};
             item[self.model.itemName] = result;
             Store.store.dispatch(actions.changeProperties({'item':item,'isUpdating':false}));
             callback()
@@ -207,30 +207,6 @@ export default class EntityItemContainer extends EntityContainer {
         setTimeout(function() {
             Store.store.dispatch(actions.changeProperty("itemSaveSuccessText",""));
         },3000);
-    }
-
-    /**
-     * Method used to fetch list of companies from backend and populate appropriate property in state
-     * which then used to display list of companies in dropdowns
-     * @param callback
-     */
-    getCompaniesList(callback) {
-        if (!callback) callback = () => null;
-        const Company = Models.getInstanceOf("company");
-        Company.getList({}, function(err, response) {
-            let companies_list = [];
-            if (err || typeof(response) !== "object") {
-                Store.store.dispatch(actions.changeProperty('companies_list', companies_list));
-                callback();
-                return;
-            }
-            companies_list = [{value:0,label:""}].concat(
-                response.map(function (item) {
-                    return {id: item['uid'], text: item["name"]};
-                })
-            );
-            callback(companies_list);
-        });
     }
 
     /**

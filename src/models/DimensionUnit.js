@@ -2,16 +2,16 @@ import Entity from './Entity';
 import t from "../utils/translate/translate";
 
 /**
- * Database model of Discount entity
+ * Database model of Dimension Unit entity
  */
-export default class Discount extends Entity {
+export default class DimensionUnit extends Entity {
 
     constructor() {
         super();
-        this.itemName = "discount";
-        this.collectionName = "discounts";
-        this.itemTitle = t("Discount");
-        this.collectionTitle = t("Discounts");
+        this.itemName = "dimensionUnit";
+        this.collectionName = "dimensionUnits";
+        this.itemTitle = t("Dimension Units");
+        this.collectionTitle = t("Dimension Units");
     }
 
     /**
@@ -36,11 +36,12 @@ export default class Discount extends Entity {
     }
 
     /**
-     * Method used to fetch list of discounts from backend and populate appropriate property in state
+     * Method used to fetch list of dimension units from backend and populate appropriate property in state
      * which then used to display list in dropdowns
      * @param callback - Function called when operation finished
      */
-    setListForDropdown(callback) { super.setListForDropdown("discounts_list","uid","name",callback); }
+    setListForDropdown(callback) { super.setListForDropdown("units_list","uid","name",callback); }
+
 
     /**********************************
      * Item fields validation methods *

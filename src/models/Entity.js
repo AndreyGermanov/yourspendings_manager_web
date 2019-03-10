@@ -3,6 +3,7 @@ import Backend from '../backend/Backend';
 import Models from './Models';
 import async from 'async';
 import _ from 'lodash';
+import Store from '../store/Store';
 
 /**
  * Base class for database models, used in application
@@ -63,7 +64,7 @@ class Entity {
      * error, result contains number of items in collection
      */
     getCount(options,callback=()=>{}) {
-        let params = { method: 'GET', body: options};
+        let params = { method: 'POST', body: JSON.stringify(options), headers: {'Content-Type':'application/json'}};
         Backend.request('/api/'+this.itemName+'/count',params, function(error,response) {
             if (error) {
                 callback(error,0);
@@ -91,7 +92,7 @@ class Entity {
      * @param callback: Function called after operation finishes
      */
     getList(options,callback=()=>{}) {
-        let params = { method: 'GET', body: options};
+        let params = { method: 'POST', body: JSON.stringify(options), headers: {'Content-Type':'application/json'}};
         Backend.request('/api/'+this.itemName+"/list",params, function(error,response) {
             if (error) {
                 callback(error);
@@ -393,6 +394,33 @@ class Entity {
             response.json().then(function(jsonObject) {
                 callback(null,jsonObject);
             })
+        });
+    }
+
+    /**
+     * Method used to fetch list of items from backend and populate appropriate property in state
+     * which then used to display list of items of this type in dropdowns
+     * @param listProperty - State property to populate with list items
+     * @param idField - Field of model used as an id for list option values
+     * @param textField - Field of model used as an text for list option values
+     * @param callback - Function called when operation finished
+     */
+    setListForDropdown(listProperty,idField,textField,callback) {
+        if (!callback) callback = () => null;
+        this.getList({}, function(err, response) {
+            let list = [];
+            if (err || typeof(response) !== "object") {
+                Store.changeProperty(listProperty, list);
+                callback();
+                return;
+            }
+            list = [{id:0,text:""}].concat(
+                response.map(function (item) {
+                    return {id: item[idField], text: item[textField]};
+                })
+            );
+            Store.changeProperty(listProperty, list);
+            callback();
         });
     }
 

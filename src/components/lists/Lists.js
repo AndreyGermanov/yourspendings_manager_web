@@ -3,6 +3,7 @@
  */
 
 import Entity from './Entity';
+import Document from './Document';
 
 class ProductCategoryList extends Entity {
     /**
@@ -22,6 +23,8 @@ class UserList extends Entity {}
 class ShopList extends Entity {}
 class PurchaseUserList extends Entity {}
 class DiscountList extends Entity {}
+class PurchaseList extends Document {}
+class DimensionUnitList extends Entity {}
 
 export class Lists {
     static ProductCategory = ProductCategoryList;
@@ -30,6 +33,8 @@ export class Lists {
     static Shop = ShopList;
     static PurchaseUser = PurchaseUserList;
     static Discount = DiscountList;
+    static Purchase = PurchaseList;
+    static DimensionUnit = DimensionUnitList;
 }
 
 export const ProductCategory = ProductCategoryList;
@@ -38,3 +43,5 @@ export const User = UserList;
 export const Shop = ShopList;
 export const PurchaseUser = PurchaseUserList;
 export const Discount = DiscountList;
+export const Purchase = PurchaseList;
+export const DimensionUnit = DimensionUnitList;

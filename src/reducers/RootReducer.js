@@ -12,8 +12,9 @@ export const modules = {
     purchaseUsers: {order:3, title:t("Purchase Users")},
     productCategories: {order:4,title:t("Product Categories")},
     discounts: {order:5,title:t("Discounts")},
-    users: { order:6, title: t("Users") },
-    roles: {order:7, title: t("Roles")},
+    dimensionUnits: {order:6,title:t("Units")},
+    users: { order:7, title: t("Users") },
+    roles: {order:8, title: t("Roles")},
 };
 
 export const roles = {
@@ -21,32 +22,7 @@ export const roles = {
     "ROLE_ADMIN": t("Administrator")
 };
 
-/**
- * Global application state
- */
-export const initialState = {
-    isLogin: false,
-    isMainScreenLoading:false,
-    loginName:"",
-    loginPassword:"",
-    profile: {},
-    modules: {},
-    updateCounter: 0,
-    list: {},
-    item: {},
-    errors: {},
-    itemSaveSuccessText: "",
-    isUpdating: false,
-    sortOrder: {},
-    listFilter: {},
-    pageNumber: {"users":1},
-    selectedItems: {},
-    itemsPerPage: {"users":10},
-    numberOfItems: {"users":16},
-    registerEmailSent: false,
-    resetPasswordEmailSent: false,
-    resetPasswordComplete: false
-};
+
 
 /**
  * Root reducer function
@@ -70,6 +46,7 @@ export default function rootReducer(state,action) {
         isUpdating: false,
         sortOrder: {},
         listFilter: {},
+        updatesCounter:0,
         pageNumber: {"users":1},
         selectedItems: {},
         itemsPerPage: {"users":10},

@@ -11,7 +11,7 @@ class Backend {
     }
 
     request(url,params,callback=()=>{}) {
-        let request = this.prepareRequest(url,params);
+        let request = this.prepareRequest(url,params)
         fetch(request.url,request.options).then(response => {
             if (response.status === 401) Store.changeProperty("isLogin",false);
             callback(null,response)

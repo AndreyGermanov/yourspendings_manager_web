@@ -33,6 +33,7 @@ export default class ProductCategoryItemContainer extends EntityContainer {
             "categories_list": state.categories_list ? state.categories_list : []
         })
     }
+
     /**
      * Method used to refresh item data from backend for detail view. It makes request to backend
      * using specified uid of item and sets item application state variable for this item
@@ -41,33 +42,7 @@ export default class ProductCategoryItemContainer extends EntityContainer {
      */
     updateItem(uid,callback) {
         super.updateItem(uid, () => {
-            this.getCategoriesList((categories_list) => {
-                Store.changeProperty('categories_list', categories_list);
-            })
+            this.model.setListForDropdown(callback);
         })
-    }
-
-    /**
-     * Method used to fetch list of product categories from backend and populate appropriate property in state
-     * which then used to display list of product categories in dropdowns
-     * @param callback
-     */
-    getCategoriesList(callback) {
-        if (!callback) callback = () => null;
-        const ProductCategory = Models.getInstanceOf("productCategory");
-        ProductCategory.getList({}, function(err, response) {
-            let categories_list = [];
-            if (err || typeof(response) !== "object") {
-                Store.changeProperty('categories_list', categories_list);
-                callback();
-                return;
-            }
-            categories_list = [{id:0,text:""}].concat(
-                response.map(function (item) {
-                    return {id: item['uid'], text: item["name"]};
-                })
-            );
-            callback(categories_list);
-        });
     }
 }

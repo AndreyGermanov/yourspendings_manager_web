@@ -1,6 +1,7 @@
 import t from "../utils/translate/translate";
 import Entity from './Entity';
 import Models from './Models';
+import Store from '../store/Store';
 
 /**
  * Database model of Product Category entity
@@ -41,6 +42,13 @@ export default class ProductCategory extends Entity {
             "parent": t("Parent Category")
         }
     }
+
+    /**
+     * Method used to fetch list of product categories from backend and populate appropriate property in state
+     * which then used to display list in dropdowns
+     * @param callback - Function called when operation finished
+     */
+    setListForDropdown(callback) { super.setListForDropdown("categories_list","uid","name",callback); }
 
     /**********************************
      * Item fields validation methods *
