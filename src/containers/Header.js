@@ -23,9 +23,10 @@ export default class Header {
         return Header.component;
     }
 
-    mapStateToProps(state) {
+    mapStateToProps(state,ownProps) {
         return {
-            modules: state.modules
+            modules: state.modules,
+            moduleName: ownProps.moduleName
         }
     }
 

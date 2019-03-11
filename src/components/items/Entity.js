@@ -30,7 +30,7 @@ class Entity extends Component {
         const labels = this.props.getFieldLabels();
         const Header = HeaderContainer.getComponent();
         return [
-            <Header key="f1"/>,
+            <Header key="f1" moduleName={this.props.model.collectionName}/>,
             <div key="f2" className="rootItem">
                 {this.renderActionButtons()}
                 <Panel bsStyle="primary">

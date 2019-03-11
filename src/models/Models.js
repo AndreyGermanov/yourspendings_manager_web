@@ -51,7 +51,8 @@ export default class Models {
         OneToOne: "Models_RelationTypes_OneToOne",
         OneToMany: "Models_RelationTypes_OneToMany",
         ManyToOne: "Models_RelationTypes_ManyToOne",
-        ManyToMany: "Models_RelationTypes_ManyToMany"
+        ManyToMany: "Models_RelationTypes_ManyToMany",
+        HierarchyParent: "Models_RelationTypes_HierarchyParent"
     }
 
     static Permissions = {

@@ -73,7 +73,7 @@ export default class Purchase extends Document {
                     onPress={() => this.props.addProduct()}
                 />
             </div>,
-            <table key="f2" className="table table-bordered">
+            <table key="f2" className="table table-bordered table-condensed">
                 <tbody>
                     {this.renderProductsHeader()}
                     {this.renderProductsTableRows(item)}
@@ -86,15 +86,11 @@ export default class Purchase extends Document {
         const labels = this.props.getProductTableLabels();
         return (
             <tr>
-                <td>{labels["name"]}</td>
-                <td>{labels["category"]}</td>
-                <td>{labels["price"]}</td>
-                <td>{labels["count"]}</td>
-                <td>{labels["unit"]}</td>
-                <td>{t("Summa")}</td>
-                <td>{labels["discount"]}</td>
-                <td>{t("Total")}</td>
-                <td>{t("Actions")}</td>
+                <th style={{width:"50%"}}>{labels["name"]}</th>
+                <th>{labels["price"]}/{labels["count"]}/{labels["discount"]}</th>
+                <th>{labels["unit"]}</th>
+                <th>{t("Summa")}</th>
+                <th>{t("Actions")}</th>
             </tr>
         )
     }
@@ -105,24 +101,37 @@ export default class Purchase extends Document {
 
     renderProductsTableRow(product,index) {
         let props = {errors: this.props.errors["products"] ? this.props.errors["products"]: {}};
+        if (!props.errors[index]) props.errors[index] = {};
         return (
             <tr key={"product_"+index}>
-                <td><Input name="name" value={product.name} ownerProps={props}
+                <td>
+                    <Select inputClass="tableInput" name="category" value={product.category} items={this.props.categories_list}
+                            ownerProps={{errors:props.errors[index]}}
+                            containerClass="tableInputContainer"
+                            onChange={(name,value)=>this.props.changeTableField("purchaseProduct","products",index,name,value)}/>
+                    <Input name="name" value={product.name} containerClass="tableInputContainer" multiline={true}
+                           ownerProps={{errors:props.errors[index]}}
+                           inputClass="tableInput"
                        onChange={(name,text)=>this.props.changeTableField("purchaseProduct","products",index,name,text)}/>
                 </td>
-                <td><Select name="category" value={product.category} items={this.props.categories_list} ownerProps={props}
-                    onChange={(name,value)=>this.props.changeTableField("purchaseProduct","products",index,name,value)}/>
-                </td>
-                <td><Input name="price" value={product.price} ownerProps={props}
+                <td><Input inputClass="tableInput"  name="price" value={product.price} containerClass="tableInputContainer"
+                           ownerProps={{errors:props.errors[index]}}
                    onChange={(name,text)=>this.props.changeTableField("purchaseProduct","products",index,name,text)}/>
-                </td>
-                <td><Input name="count" value={product.count} ownerProps={props}
+                    <Input inputClass="tableInput"  name="count" value={product.count} containerClass="tableInputContainer"
+                           ownerProps={{errors:props.errors[index]}}
+                           onChange={(name,text)=>this.props.changeTableField("purchaseProduct","products",index,name,text)}/>
+                    <Input inputClass="tableInput"  name="discount" value={product.discount}  containerClass="tableInputContainer"
+                           ownerProps={{errors:props.errors[index]}}
                            onChange={(name,text)=>this.props.changeTableField("purchaseProduct","products",index,name,text)}/>
                 </td>
-                <td>{product.unit}</td>
-                <td>{product.price*product.count}</td>
-                <td>{product.discount}</td>
-                <td>{product.price*product.count-product.discount}</td>
+                <td><Select inputClass="tableInput"  name="unit" value={product.unit} items={this.props.units_list}
+                            ownerProps={{errors:props.errors[index]}}
+                            containerClass="tableInputContainer"
+                            onChange={(name,value)=>this.props.changeTableField("purchaseProduct","products",index,name,value)}/></td>
+                <td>
+                    <label>{t("Summa")}:</label>&nbsp;{product.price*product.count}<br/>
+                    <label>{t("Total")}:</label>&nbsp;{product.price*product.count-product.discount}
+                </td>
                 <td>
                     <Button className="btn-xs btn-danger" iconClass="glyphicon glyphicon-remove"
                         onPress={() => this.props.removeProduct(index)}

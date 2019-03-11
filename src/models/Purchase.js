@@ -15,6 +15,11 @@ export default class Purchase extends Document {
         this.itemTitle = t("Purchase");
         this.collectionTitle = t("Purchases");
         this.permissions = [Models.Permissions.update];
+        this.relationFields = {
+            "products":{type:Models.RelationTypes.OneToMany,target:"purchaseProduct",reversed:true},
+            "purchaseDiscounts":{type:Models.RelationTypes.OneToMany,target:"purchaseDiscount",reversed:true},
+        }
+        this.transientFields = ["images","purchaseImageIndex","user","place"];
     }
 
     /**

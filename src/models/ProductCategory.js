@@ -17,7 +17,7 @@ export default class ProductCategory extends Entity {
         this.collectionName = "productCategories";
         this.itemTitle = t("Category");
         this.collectionTitle = t("Categories");
-        this.relationFields = {"parent":{type:Models.RelationTypes.ManyToOne,target:"productCategory"}}
+        this.relationFields = {"parent":{type:Models.RelationTypes.HierarchyParent,target:"productCategory"}}
     }
 
     /**

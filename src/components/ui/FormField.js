@@ -47,16 +47,16 @@ class FormField extends ScreenComponent {
      */
     getProps() {
         let result = super.getProps();
+        result.label = result.label ? result.label : '';
         result.inputStyle = result.inputStyle ? result.inputStyle : {};
         result.containerStyle = result.containerStyle ? result.containerStyle: {};
         result.labelStyle = result.labelStyle ? result.labelStyle: {};
-        result.inputClass = result.inputClass ? 'form-control '+result.inputClass: 'form-control';
-        result.labelClass = result.labelClass ? 'control-label '+result.labelClass: 'control-label col-sm-2';
-        result.containerClass = result.containerClass ? result.containerClass : "col-sm-10";
+        result.inputClass = result.inputClass ? result.inputClass: 'form-control';
+        result.labelClass = result.labelClass ? result.labelClass: 'control-label col-sm-2';
+        result.containerClass = result.containerClass ? result.containerClass : ( result.label ? "col-sm-10" : "col-sm-12" );
         result.errorClass = result.errorClass ? result.errorClass: 'error';
         result.onChange = result.onChange ? result.onChange : result.ownerProps.changeItemField;
         result.value = result.value ? result.value : '';
-        result.label = result.label ? result.label : '';
         return result;
     }
 }

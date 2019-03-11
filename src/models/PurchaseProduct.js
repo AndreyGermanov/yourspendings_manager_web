@@ -88,7 +88,7 @@ export default class PurchaseProduct extends Entity {
     }
 
     validate_purchase(value) {
-        if (!this.cleanIntField(value)) return t("Purchase does not specified");
+        if (!this.cleanStringField(value)) return t("Purchase does not specified");
         return "";
     }
 

@@ -60,6 +60,7 @@ class App extends Component {
                                    render={(state) => { return <Purchase uid={state.match.params.uid}/>}}/>
                             <Route path="/dimensionUnit/:uid"
                                    render={(state) => { return <DimensionUnit uid={state.match.params.uid}/>}}/>
+                            <Route render={() => <Purchases/>}/>
                         </Switch>
                     </HashRouter>
                 )

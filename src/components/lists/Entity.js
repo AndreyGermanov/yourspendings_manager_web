@@ -29,7 +29,7 @@ class Entity extends Component {
     render() {
         const Header = HeaderContainer.getComponent();
         return [
-            <Header key="f1"/>,
+            <Header key="f1" moduleName={this.props.model.collectionName}/>,
             <Panel bsStyle="primary" key="f2" className="rootItem">
                 <Panel.Heading>
                     <Panel.Title componentClass="h3">

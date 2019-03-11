@@ -30,7 +30,8 @@ class Button extends ScreenComponent {
         return (
             <a className={props.className} style={props.style}
                onClick={() => props.onPress()}>
-                {props.iconClass ? <i className={props.iconClass} style={{paddingRight:'5px'}}/> : null }
+                {props.iconClass ? <i className={props.iconClass}
+                  style={{paddingRight:props.text ? '5px' : '0px'}}/> : null }
                 {props.text}
             </a>
         )

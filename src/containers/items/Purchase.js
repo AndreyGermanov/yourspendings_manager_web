@@ -8,7 +8,6 @@ import {connect} from 'react-redux';
 import Store from "../../store/Store";
 import async from 'async';
 import _ from "lodash";
-import actions from "../../actions/Actions";
 
 export default class PurchaseItemContainer extends DocumentContainer {
 
@@ -115,7 +114,7 @@ export default class PurchaseItemContainer extends DocumentContainer {
     addProduct() {
         let item = this.getProps().item;
         let product = Models.getInstanceOf("purchaseProduct");
-        item.products.push(product.initItem({}));
+        item.products.push(product.initItem({purchase:item["uid"]}));
         let stateItem = Store.getState().item;
         stateItem[this.model.itemName] = item;
         Store.changeProperty("item",stateItem);
@@ -139,9 +138,11 @@ export default class PurchaseItemContainer extends DocumentContainer {
         if (item[collectionName][rowIndex][fieldName] === value) return;
         item[collectionName][rowIndex][fieldName] = value;
         const errors = _.cloneDeep(Store.getState().errors);
-        if (!model.fieldsToValidateInline.length ||  model.fieldsToValidateInline.indexOf(fieldName)!==-1) {
+        let error = this.model.validateCollectionField(collectionName,fieldName,value,item);
+        if (error) {
             if (!errors[collectionName]) errors[collectionName]={};
-            errors[collectionName][fieldName] = model.validateItemField(fieldName,value,item[model.itemName]);
+            if (!errors[collectionName][rowIndex]) errors[collectionName][rowIndex]={};
+            errors[collectionName][rowIndex][fieldName] = error;
         }
         const stateItem = Store.getState().item;
         stateItem[this.model.itemName] = item;

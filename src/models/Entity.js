@@ -159,7 +159,7 @@ class Entity {
             return;
         }
         data = this.cleanDataForBackend(data);
-        const params = {method:method,body:JSON.stringify(data),headers:{'Content-Type':'application/json'}};
+        const params = {method:method,body:JSON.stringify(data),headers:{'Content-Type':'application/hal+json'}};
         Backend.request(url,params, (error, response) => {
             if (!response || response.status >399 || error) {
                 callback(null,{'errors':{'general': t("Системная ошибка")}});
@@ -221,8 +221,9 @@ class Entity {
                 if (typeof(inputValue) === "object" && inputValue.length) values = inputValue;
             case Models.RelationTypes.OneToOne:
                 return inputValue;
-            case Models.RelationTypes.ManyToOne:
+            case Models.RelationTypes.HierarchyParent:
                 return inputValue;
+            default: return null;
         }
         return values;
     }
@@ -241,6 +242,7 @@ class Entity {
             let relationUrls = values.map((value) => Backend.getBaseUrl() + "/api/" + relationModel.collectionName + "/" + value);
             let params = {method: 'PUT', headers: {'Content-Type': 'text/uri-list'}, body: relationUrls.join("\n")};
             Backend.request(url, params, () => {
+                if (relation.reversed) {async.eachSeries(values,(value,callback) => relationModel.saveItem(value,callback),()=>callback);return;}
                 let params = {
                     method: 'PATCH',
                     headers: {'Content-Type': 'text/uri-list'},
@@ -268,13 +270,18 @@ class Entity {
      * @returns Object(hashmap) with data,ready to send to backend for this model
      */
     cleanDataForBackend(item) {
+        console.log(item);
         const result = {};
         if (item.uid && item.uid !== "new") { result["uid"] = item.uid;}
         this.transientFields.forEach((fieldName) => delete item[fieldName]);
-        Object.keys(this.relationFields).forEach(fieldName => delete item[fieldName]);
+        Object.keys(this.relationFields).forEach(fieldName => {
+            if (this.relationFields[fieldName].type !== Models.RelationTypes.ManyToOne) { delete item[fieldName];return;}
+        });
         for (let field_name in item) {
             if (!item.hasOwnProperty(field_name)) continue;
-            if (typeof(this["cleanField_"+field_name])==="function") {
+            if (typeof(this.relationFields[field_name]) !== 'undefined') {
+                result[field_name] = item[field_name];
+            } else if (typeof(this["cleanField_"+field_name])==="function") {
                 const value = this["cleanField_"+field_name](item[field_name]);
                 if (value !== null) result[field_name] = value;
             } else if (typeof(item[field_name]) === 'string') {
@@ -331,6 +338,7 @@ class Entity {
      * @returns Array of found errors or null if nothing found
      */
     validate(item) {
+        console.log(item);
         let has_errors = false;
         const errors = {};
         if (!this.hasPermission(Models.Permissions.update) ||
@@ -341,12 +349,13 @@ class Entity {
             return errors;
         }
         for (const field_name in item) {
-            if (!item.hasOwnProperty(field_name) || field_name === 'uid')
-                continue;
+            if (!item.hasOwnProperty(field_name) || field_name === 'uid') continue;
             if (this.fieldsToValidate.length && this.fieldsToValidate.indexOf(field_name) === -1)
                 continue;
             const error = this.validateItemField(field_name,item[field_name],item);
-            if (error) {
+            console.log(this.collectionName);
+            console.log(error);
+            if (error && error.length) {
                 has_errors = true;
                 errors[field_name] = error;
             }
@@ -359,7 +368,7 @@ class Entity {
      * @param field_name: Name of field to validate
      * @param field_value: Value to validate
      * @param item: All fields in current record
-     * @returns {string}: Either string with error message or empty string if no error
+     * @returns Either string with error message or empty string if no error
      */
     validateItemField(field_name,field_value,item=null) {
         if (!field_value || typeof(field_value) === "undefined") {
@@ -367,6 +376,51 @@ class Entity {
         }
         if (typeof(this["validate_"+field_name])==="function") {
             return this["validate_"+field_name](field_value,item);
+        }
+        if (typeof(this.relationFields[field_name]) !== "undefined") {
+            return this.validateCollection(field_name,item);
+        }
+        return "";
+    }
+
+    validateCollections(item) {
+        let errors = {};
+        Object.keys(this.relationFields).forEach(collectionName => {
+            let result = this.validateCollection(collectionName,item);
+            if (result && result.length) errors[collectionName] = result;
+        })
+        return errors;
+    }
+
+    validateCollection(collectionName,item) {
+        let errors = [];
+        item[collectionName].forEach(row => {
+            let error = this.validateCollectionRow(collectionName,row,item);
+            if (Object.keys(error).length) errors.push(error);
+        });
+        return errors;
+    }
+
+    validateCollectionRow(collectionName,row,item) {
+        let error = {};
+        Object.keys(row).forEach(fieldName => {
+            let fieldError = this.validateCollectionField(collectionName,fieldName,row[fieldName],item);
+            if (fieldError) error[fieldName] = fieldError;
+        });
+        return error;
+    }
+
+    /**
+     * Method used to validate field value inside relation field
+     * @param collectionName - Name of collection
+     * @param fieldName - Name of field
+     * @param value - Value to check
+     * @param item - full item data
+     */
+    validateCollectionField(collectionName,fieldName,value,item=null) {
+        let model = Models.getInstanceOf(this.relationFields[collectionName].target);
+        if (!model.fieldsToValidateInline.length ||  model.fieldsToValidateInline.indexOf(fieldName)!==-1) {
+            return model.validateItemField(fieldName, value, item)
         }
         return "";
     }

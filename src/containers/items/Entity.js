@@ -23,7 +23,8 @@ export default class EntityItemContainer extends EntityContainer {
             item: state.item[this.model.itemName] ? state.item[this.model.itemName] : {},
             itemSaveSuccessText: state.itemSaveSuccessText,
             collectionName: this.model.collectionName,
-            updateCounter: state.updatesCounter
+            updateCounter: state.updatesCounter,
+            model: this.model
         })
     }
 

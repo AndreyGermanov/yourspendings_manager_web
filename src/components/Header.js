@@ -34,13 +34,18 @@ class Header extends Component {
     renderModulesList() {
         if (!this.props.modules) return;
         return Object.keys(this.props.modules)
-                    .filter(moduleName => modules[moduleName])
-                    .sort((a,b) => modules[a].order - modules[b].order)
-                    .map(moduleName =>
-                        <li key={"module_" + moduleName}>
-                            <a href={"#/" + moduleName}>{modules[moduleName].title}</a>
-                        </li>
-                    )
+            .filter(moduleName => modules[moduleName])
+            .sort((a,b) => modules[a].order - modules[b].order)
+            .map(moduleName =>
+                <li key={"module_" + moduleName}>
+                    <a href={"#/" + moduleName}>
+                    {
+                        this.props.moduleName === moduleName ? <strong>{modules[moduleName].title}</strong>
+                        : modules[moduleName].title
+                    }
+                    </a>
+                </li>
+            )
     }
 }
 
