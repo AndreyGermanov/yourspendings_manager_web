@@ -159,49 +159,16 @@ class Entity {
             return;
         }
         data = this.cleanDataForBackend(data);
-        const params = {method:method,body:JSON.stringify(data),headers:{'Content-Type':'application/hal+json'}};
+        const params = {method:method,body:JSON.stringify(data),headers:{'Content-Type':'application/json'}};
         Backend.request(url,params, (error, response) => {
             if (!response || response.status >399 || error) {
                 callback(null,{'errors':{'general': t("Системная ошибка")}});
                 return;
             }
             response.json().then((result) => {
-                result.uid = result._links.self.href.split("/").pop();
-                delete(result["_links"]);
-                inputData.uid = result.uid;
-                this.saveRelations(inputData, (relationFields) => {
-                    if (relationFields && Object.keys(relationFields).length)
-                        Object.keys(relationFields).forEach((fieldName) => result[fieldName] = relationFields[fieldName]);
-                    else if(typeof(relationFields) !== "object") callback(null,{'errors':{'general': t("Системная ошибка")}});
-                    callback(null,result);
-                });
+                callback(null,result);
             });
         });
-    }
-
-    /**
-     * Method used to save all relationship fields of current item.
-     * @param inputData - Array of fields of item
-     * @param callback: Callback function which called after execution completed.
-     */
-    saveRelations(inputData,callback) {
-        let fieldValues = {};
-        async.eachSeries(Object.keys(this.relationFields),(relationField,callback) => {
-            const relation = this.relationFields[relationField];
-            relation.field = relationField;
-            if (!inputData[relationField]) {callback();return;}
-            let targetModel = Models.getInstanceOf(relation.target);
-            if (!relation.type || !targetModel) {callback();return;}
-            let values = this.getRelationValues(relation,inputData[relationField]);
-            if (!values) { callback(); return;}
-            fieldValues[relationField] = values;
-            this.saveRelation(inputData["uid"],relation,targetModel ,values, (error,response) => {
-                if (response.status > 399 || error) { callback(true);return;}
-                callback(fieldValues);
-            })
-        }, (error) => {
-            callback(error)
-        })
     }
 
     /**
@@ -215,71 +182,38 @@ class Entity {
         if (typeof(this["cleanField_"+relation.field])==="function") {
             inputValue = this["cleanField_"+relation.field](inputValue);
         }
-        let values = null;
         switch (relation.type) {
             case Models.RelationTypes.OneToMany:
-                if (typeof(inputValue) === "object" && inputValue.length) values = inputValue;
+                if (typeof(inputValue) === "object" && inputValue.length && !relation.inline)
+                    return inputValue;
+                else
+                    return null;
             case Models.RelationTypes.OneToOne:
                 return inputValue;
             case Models.RelationTypes.HierarchyParent:
                 return inputValue;
             default: return null;
         }
-        return values;
     }
-
-    /**
-     * Methid used to save specified relation of specified item
-     * @param item_id - ID of current item
-     * @param relation - Relation description (from this.relationFields)
-     * @param relationModel - Data model of relation
-     * @param values - Values of related items
-     * @param callback: Callback function which called after execution completed.
-     */
-    saveRelation(item_id,relation,relationModel,values,callback) {
-        let url = "/api/"+this.collectionName+"/"+item_id+"/"+relation.field;
-        if (relation.type === Models.RelationTypes.OneToMany || relation.type === Models.RelationTypes.ManyToMany) {
-            let relationUrls = values.map((value) => Backend.getBaseUrl() + "/api/" + relationModel.collectionName + "/" + value);
-            let params = {method: 'PUT', headers: {'Content-Type': 'text/uri-list'}, body: relationUrls.join("\n")};
-            Backend.request(url, params, () => {
-                if (relation.reversed) {async.eachSeries(values,(value,callback) => relationModel.saveItem(value,callback),()=>callback);return;}
-                let params = {
-                    method: 'PATCH',
-                    headers: {'Content-Type': 'text/uri-list'},
-                    body: relationUrls.join("\n")
-                };
-                Backend.request(url, params, (error, response) => {
-                    callback(error, response)
-                })
-            })
-        } else {
-            let url = "/api/"+this.collectionName+"/"+item_id;
-            let relationUrl = Backend.getBaseUrl() + "/api/" + relationModel.collectionName + "/" + values;
-            let params = {method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: {}};
-            params.body[relation.field] = relationUrl;
-            params.body = JSON.stringify(params.body);
-            Backend.request(url, params, (error, response) => {
-                callback(error, response)
-            })
-        }
-    }
-
 
     /**
      * Method used to clean and prepare item data before sending to backend
      * @returns Object(hashmap) with data,ready to send to backend for this model
      */
     cleanDataForBackend(item) {
-        console.log(item);
         const result = {};
         if (item.uid && item.uid !== "new") { result["uid"] = item.uid;}
         this.transientFields.forEach((fieldName) => delete item[fieldName]);
-        Object.keys(this.relationFields).forEach(fieldName => {
-            if (this.relationFields[fieldName].type !== Models.RelationTypes.ManyToOne) { delete item[fieldName];return;}
-        });
         for (let field_name in item) {
-            if (!item.hasOwnProperty(field_name)) continue;
-            if (typeof(this.relationFields[field_name]) !== 'undefined') {
+            const relation = this.relationFields[field_name];
+            if (typeof(relation)!=="undefined" && (
+                relation.type === Models.RelationTypes.OneToMany ||
+                relation.type === Models.RelationTypes.ManyToMany
+            ))
+            {
+                let model = Models.getInstanceOf(this.relationFields[field_name].target);
+                for (let rowIndex in item[field_name])
+                    item[field_name][rowIndex] = model.cleanDataForBackend(item[field_name][rowIndex]);
                 result[field_name] = item[field_name];
             } else if (typeof(this["cleanField_"+field_name])==="function") {
                 const value = this["cleanField_"+field_name](item[field_name]);
@@ -299,10 +233,7 @@ class Entity {
      * @returns {string} URL for request
      */
     getSaveItemUrl(data) {
-        let url = '/api/'+this.collectionName
-        if (data['uid']) {
-            url += "/"+data['uid'].toString();
-        }
+        let url = '/api/'+this.itemName+"/item"
         return url
     }
 
@@ -312,7 +243,7 @@ class Entity {
      * @returns {string} Request method (GET, PUT, POST etc)
      */
     getSaveItemMethod(data) {
-        return data["uid"] ? 'PATCH' : 'POST'
+        return 'POST';
     }
 
     /**
@@ -338,7 +269,6 @@ class Entity {
      * @returns Array of found errors or null if nothing found
      */
     validate(item) {
-        console.log(item);
         let has_errors = false;
         const errors = {};
         if (!this.hasPermission(Models.Permissions.update) ||
@@ -353,8 +283,6 @@ class Entity {
             if (this.fieldsToValidate.length && this.fieldsToValidate.indexOf(field_name) === -1)
                 continue;
             const error = this.validateItemField(field_name,item[field_name],item);
-            console.log(this.collectionName);
-            console.log(error);
             if (error && error.length) {
                 has_errors = true;
                 errors[field_name] = error;
@@ -377,12 +305,20 @@ class Entity {
         if (typeof(this["validate_"+field_name])==="function") {
             return this["validate_"+field_name](field_value,item);
         }
-        if (typeof(this.relationFields[field_name]) !== "undefined") {
+        if (typeof(this.relationFields[field_name]) !== "undefined" && (
+            this.relationFields[field_name].type === Models.RelationTypes.OneToMany ||
+            this.relationFields[field_name].type === Models.RelationTypes.ManyToMany
+        )) {
             return this.validateCollection(field_name,item);
         }
         return "";
     }
 
+    /**
+     * Method used to validate all OneToMany and ManyToMany relationship fields in item
+     * @param item - Item data
+     * @returns Collection of arrays of errors for each collection
+     */
     validateCollections(item) {
         let errors = {};
         Object.keys(this.relationFields).forEach(collectionName => {
@@ -392,15 +328,28 @@ class Entity {
         return errors;
     }
 
+    /**
+     * Method used to validate relation field
+     * @param collectionName - Name of field to validate
+     * @param item - Item data
+     * @returns Array of errors for each line in collection or empty array
+     */
     validateCollection(collectionName,item) {
         let errors = [];
-        item[collectionName].forEach(row => {
+        item[collectionName].forEach((row,index) => {
             let error = this.validateCollectionRow(collectionName,row,item);
-            if (Object.keys(error).length) errors.push(error);
+            if (Object.keys(error).length) errors[index] = error;
         });
         return errors;
     }
 
+    /**
+     * Method used to validate single row in OneToMany relationship field of item
+     * @param collectionName - Name of relation field to validate
+     * @param row - Row number in data collection
+     * @param item - Data of item
+     * @returns - Collection with errors for each field in row
+     */
     validateCollectionRow(collectionName,row,item) {
         let error = {};
         Object.keys(row).forEach(fieldName => {
@@ -416,6 +365,7 @@ class Entity {
      * @param fieldName - Name of field
      * @param value - Value to check
      * @param item - full item data
+     * @returns Error text or empty string if no error
      */
     validateCollectionField(collectionName,fieldName,value,item=null) {
         let model = Models.getInstanceOf(this.relationFields[collectionName].target);

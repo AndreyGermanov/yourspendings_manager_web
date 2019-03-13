@@ -8,6 +8,7 @@ import DiscountModel from './Discount';
 import PurchaseModel from './Purchase';
 import DimensionUnitModel from './DimensionUnit';
 import PurchaseProductModel from './PurchaseProduct'
+import PurchaseDiscountModel from './PurchaseDiscount';
 
 export default class Models {
     static ProductCategory = ProductCategoryModel;
@@ -32,6 +33,7 @@ export default class Models {
             case "purchase": return PurchaseModel;
             case "dimensionUnit": return DimensionUnitModel;
             case "purchaseProduct": return PurchaseProductModel;
+            case "purchaseDiscount": return PurchaseDiscountModel;
             default: return EntityModel;
         }
     }

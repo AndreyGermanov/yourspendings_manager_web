@@ -50,6 +50,9 @@ export default class PurchaseItemContainer extends DocumentContainer {
             getProductTableLabels: () =>  this.getProductTableLabels(),
             addProduct: () => this.addProduct(),
             removeProduct: (index) => this.removeProduct(index),
+            getDiscountTableLabels: () =>  this.getDiscountTableLabels(),
+            addDiscount: () => this.addDiscount(),
+            removeDiscount: (index) => this.removeDiscount(index),
             changeTableField: (modelName,collectionName,rowIndex,fieldName,e) =>
                 this.changeTableField(modelName,collectionName,rowIndex,fieldName,e)
         });
@@ -109,12 +112,42 @@ export default class PurchaseItemContainer extends DocumentContainer {
     }
 
     /**
-     * Method used to add new empty row in products table
+     * Method used to add new empty row in discounts table
      */
     addProduct() {
         let item = this.getProps().item;
         let product = Models.getInstanceOf("purchaseProduct");
         item.products.push(product.initItem({purchase:item["uid"]}));
+        let stateItem = Store.getState().item;
+        stateItem[this.model.itemName] = item;
+        Store.changeProperty("item",stateItem);
+    }
+
+    /**
+     * Method returns labels for header of products table
+     * @returns Object with keys as model field names and values as titles of that fields
+     */
+    getDiscountTableLabels() { return Models.getInstanceOf("purchaseDiscount").getFieldLabels();}
+
+    /**
+     * Method used to remove row from Discounts table
+     * @param index - Index of row to remove
+     */
+    removeDiscount(index) {
+        let item = this.getProps().item;
+        item.purchaseDiscounts.splice(index,1);
+        let stateItem = Store.getState().item;
+        stateItem[this.model.itemName] = item;
+        Store.changeProperty("item",stateItem);
+    }
+
+    /**
+     * Method used to add new empty row in discounts table
+     */
+    addDiscount() {
+        let item = this.getProps().item;
+        let product = Models.getInstanceOf("purchaseDiscount");
+        item.purchaseDiscounts.push(product.initItem({purchase:item["uid"]}));
         let stateItem = Store.getState().item;
         stateItem[this.model.itemName] = item;
         Store.changeProperty("item",stateItem);

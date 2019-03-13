@@ -16,8 +16,8 @@ export default class Purchase extends Document {
         this.collectionTitle = t("Purchases");
         this.permissions = [Models.Permissions.update];
         this.relationFields = {
-            "products":{type:Models.RelationTypes.OneToMany,target:"purchaseProduct",reversed:true},
-            "purchaseDiscounts":{type:Models.RelationTypes.OneToMany,target:"purchaseDiscount",reversed:true},
+            "products":{type:Models.RelationTypes.OneToMany,target:"purchaseProduct",inline:true},
+            "purchaseDiscounts":{type:Models.RelationTypes.OneToMany,target:"purchaseDiscount",inline:true},
         }
         this.transientFields = ["images","purchaseImageIndex","user","place"];
     }
@@ -66,4 +66,8 @@ export default class Purchase extends Document {
         return value && value.name ? value.name : ""
     }
 
+    cleanField_date(value) {
+        return value.split("+").shift();
+    }
+    
 }

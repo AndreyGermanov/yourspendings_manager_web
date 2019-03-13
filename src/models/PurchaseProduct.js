@@ -123,6 +123,6 @@ export default class PurchaseProduct extends Entity {
     }
 
     cleanField_purchase(value) {
-        return this.cleanIntField(value);
+        return this.cleanStringField(value);
     }
 }

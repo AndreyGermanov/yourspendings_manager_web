@@ -161,7 +161,7 @@ export default class EntityItemContainer extends EntityContainer {
             callback();
             return
         }
-        this.processSaveToBackendSuccessResponse(err,result,callback);
+        this.processSaveToBackendSuccessResponse(err,result["result"],callback);
     }
 
     /**
@@ -171,8 +171,8 @@ export default class EntityItemContainer extends EntityContainer {
      * @returns Boolean: True if error response returned or false otherwise
      */
     processSaveToBackendErrorResponse(err,result) {
-        if (err || !result || result["errors"]) {
-            if (!result || !result["errors"])
+        if (err || !result || result["errors"] || !result["result"]) {
+            if (!result || !result["errors"] || !result["result"])
                 result = {'errors':{'general':t("Системная ошибка")}};
             Store.store.dispatch(actions.changeProperty('errors',result['errors']));
             return true
