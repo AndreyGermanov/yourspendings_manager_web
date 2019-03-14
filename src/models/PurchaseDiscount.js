@@ -14,7 +14,7 @@ export default class PurchaseDiscount extends Entity {
         this.itemTitle = t("Purchase Discount");
         this.collectionTitle = t("Purchase Discounts");
         this.relationFields = {
-            "discount": {type:Models.RelationTypes.ManyToOne,target:"dicount"},
+            "discount": {type:Models.RelationTypes.ManyToOne,target:"discount"},
             "purchase": {type:Models.RelationTypes.ManyToOne,target:"purchase"}
         }
     }

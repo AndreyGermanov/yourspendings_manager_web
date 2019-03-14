@@ -3,7 +3,7 @@ import t from "../utils/translate/translate";
 import Models from './Models';
 
 /**
- * Database model of Discount entity
+ * Database model of PurchaseProduct entity
  */
 export default class PurchaseProduct extends Entity {
 

@@ -3,7 +3,7 @@
  */
 
 import Entity from './Entity';
-import Document from './Document';
+import PurchaseList from './Purchase';
 
 class ProductCategoryList extends Entity {
     /**
@@ -23,7 +23,6 @@ class UserList extends Entity {}
 class ShopList extends Entity {}
 class PurchaseUserList extends Entity {}
 class DiscountList extends Entity {}
-class PurchaseList extends Document {}
 class DimensionUnitList extends Entity {}
 
 export class Lists {

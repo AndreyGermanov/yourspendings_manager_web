@@ -25,7 +25,7 @@ export default class Shop extends Entity {
             </div>,
             <div className="form-group" key="f4">
                 <label className="col-sm-2">{labels["user"]}</label>
-                <div className="col-sm-10">{item["user"].name}</div>
+                <div className="col-sm-10">{item["user"].email}</div>
             </div>
         ]
     }

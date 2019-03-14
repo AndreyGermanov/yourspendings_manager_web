@@ -148,9 +148,9 @@ export default class Purchase extends Document {
         let price = 0;
         let count = 0;
         let discount = 0;
-        if (!isNaN(product.price)) price = product.price;
-        if (!isNaN(product.count)) count = product.count;
-        if (!isNaN(product.discount)) discount = product.discount;
+        if (!isNaN(parseFloat(product.price))) price = parseFloat(product.price);
+        if (!isNaN(parseFloat(product.count))) count = parseFloat(product.count);
+        if (!isNaN(parseFloat(product.discount))) discount = parseFloat(product.discount);
         return {summa: price*count, total: price*count - discount}
     }
 
@@ -158,11 +158,14 @@ export default class Purchase extends Document {
         if (!item.products.length) return null;
         let totals = item.products.map(product => {
             let totals = this.calculateProductRow(product);
-            totals["discount"] = !isNaN(product.discount) ? product.discount : 0
+            totals["discount"] = !isNaN(parseFloat(product.discount)) ? parseFloat(product.discount) : 0
             return totals;
         }).reduce((accum,value) => {
             if (!accum) accum = {summa:0,total:0,discount:0};
-            return {summa:accum.summa+value.summa,total:accum.total+value.total,discount:accum.discount+value.discount}
+            return {summa:accum.summa+parseFloat(value.summa),
+                total:accum.total+parseFloat(value.total),
+                discount:accum.discount+parseFloat(value.discount)
+            }
         })
         if (!totals) return null;
         return (

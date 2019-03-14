@@ -2,6 +2,7 @@ import Document from './Document';
 import t from "../utils/translate/translate";
 import moment from 'moment-timezone';
 import Models from './Models';
+import Backend from '../backend/Backend';
 
 /**
  * Database model of Purchase entity
@@ -50,8 +51,14 @@ export default class Purchase extends Document {
             "user": t("User"),
             "images": t("Images"),
             "products": t("Products"),
-            "purchaseDiscounts": t("Purchase Discounts")
+            "purchaseDiscounts": t("Discounts")
         }
+    }
+
+    sync(callback=()=>{}) {
+        Backend.request('/api/'+this.itemName+'/sync/', function(error,response) {
+            callback();
+        });
     }
 
     /**********************************************************************
@@ -69,5 +76,5 @@ export default class Purchase extends Document {
     cleanField_date(value) {
         return value.split("+").shift();
     }
-    
+
 }

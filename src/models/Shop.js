@@ -47,6 +47,6 @@ export default class Shop extends Entity {
      **********************************************************************/
 
     getStringOfField_user(value) {
-        return value && value.name ? value.name : ""
+        return value && value.email ? value.email : ""
     }
 }

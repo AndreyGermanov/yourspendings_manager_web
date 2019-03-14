@@ -3,7 +3,7 @@ import t from "../utils/translate/translate";
 import Models from './Models';
 
 /**
- * Database model of User role entity
+ * Database model of User entity
  */
 export default class User extends Entity {
 

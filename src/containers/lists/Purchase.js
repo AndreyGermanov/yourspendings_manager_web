@@ -31,8 +31,28 @@ export default class PurchaseListContainer extends DocumentListContainer {
         })
     }
 
+    /**
+     * Function defines methods which will be available inside component, which this controller manages
+     * @param dispatch - Store dispatch functions, allows to transfer actions to Redux store
+     * @returns object of methods, which are available in component
+     */
+    mapDispatchToProps(dispatch) {
+        return Object.assign(super.mapDispatchToProps(dispatch), {
+            sync: () => this.sync()
+        });
+    }
+
     static getComponent() {
         const list = new PurchaseListContainer();
         return connect(list.mapStateToProps.bind(list),list.mapDispatchToProps.bind(list))(List.Purchase);
+    }
+
+    /**
+     * "Sync" button onClick handler
+     */
+    sync() {
+        this.model.sync(() => {
+            this.updateList()
+        })
     }
 }
