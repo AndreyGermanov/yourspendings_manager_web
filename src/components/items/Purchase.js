@@ -72,13 +72,19 @@ export default class Purchase extends Document {
                     onPress={() => this.props.addProduct()}
                 />
             </div>,
-            <table key="f2" className="table table-bordered table-condensed">
-                <tbody>
-                    {this.renderProductsHeader()}
-                    {this.renderProductsTableRows(item)}
-                    {this.renderProductsFooter(item)}
-                </tbody>
-            </table>
+            <div id="scrollTable" key="f2">
+                <div className="scrollTableContainer">
+                    <table className="table table-bordered table-condensed">
+                        <thead>
+                            {this.renderProductsHeader()}
+                        </thead>
+                        <tbody>
+                            {this.renderProductsTableRows(item)}
+                        </tbody>
+                    </table>
+                </div>
+            </div>,
+            this.renderProductsFooter(item)
         ]
     }
 
@@ -86,11 +92,11 @@ export default class Purchase extends Document {
         const labels = this.props.getProductTableLabels();
         return (
             <tr>
-                <th style={{width:"50%"}}>{labels["name"]}</th>
-                <th>{labels["price"]}/{labels["count"]}/{labels["discount"]}</th>
-                <th>{labels["unit"]}</th>
-                <th>{t("Summa")}</th>
-                <th>{t("Actions")}</th>
+                <th style={{width:"50%"}}>{labels["name"]}<div>{labels["name"]}</div></th>
+                <th>{labels["price"]}/{labels["count"]}/{labels["discount"]}<div>{labels["price"]}/{labels["count"]}/{labels["discount"]}</div></th>
+                <th>{labels["unit"]}<div>{labels["unit"]}</div></th>
+                <th>{t("Summa")}<div>{t("Summa")}</div></th>
+                <th>{t("Actions")}<div>{t("Actions")}</div></th>
             </tr>
         )
     }
@@ -132,8 +138,9 @@ export default class Purchase extends Document {
                             containerClass="tableInputContainer"
                             onChange={(name,value)=>this.props.changeTableField("purchaseProduct","products",index,name,value)}/></td>
                 <td>
-                    <label>{t("Summa")}:</label>&nbsp;{totals.summa.toFixed(2)}<br/>
-                    <label>{t("Total")}:</label>&nbsp;{totals.total.toFixed(2)}
+                    <label>{t("Summa")}: </label>&nbsp;{totals.summa.toFixed(2)}<br/>
+                    <label>{t("Total")}: </label>&nbsp;{totals.total.toFixed(2)}<br/>
+                    <label>{t("Discount %")}: </label>&nbsp;{totals.discountPr.toFixed(2)}
                 </td>
                 <td>
                     <Button className="btn-xs btn-danger" iconClass="glyphicon glyphicon-remove"
@@ -151,7 +158,7 @@ export default class Purchase extends Document {
         if (!isNaN(parseFloat(product.price))) price = parseFloat(product.price);
         if (!isNaN(parseFloat(product.count))) count = parseFloat(product.count);
         if (!isNaN(parseFloat(product.discount))) discount = parseFloat(product.discount);
-        return {summa: price*count, total: price*count - discount}
+        return {summa: price*count, total: price*count - discount, discountPr: price*count> 0 ? discount/(price*count)*100 : 0}
     }
 
     renderProductsFooter(item) {
@@ -166,16 +173,23 @@ export default class Purchase extends Document {
                 total:accum.total+parseFloat(value.total),
                 discount:accum.discount+parseFloat(value.discount)
             }
-        })
+        });
         if (!totals) return null;
+        let cashback = this.calculateCashback(item);
+        let discountPr = totals.summa>0 ? totals.discount/totals.summa*100 : 0.0;
+        let cashbackPr = totals.total>0 ? cashback/totals.total*100 : 0.0;
+        let totalCashback = totals.total-cashback;
+        let totalDiscount = totals.summa-totalCashback;
+        let totalDiscountPr = totals.summa>0 ? (totals.summa-totalCashback)/totals.summa*100 : 0.0;
         return (
-            <tr>
-                <td colSpan={5}>
-                    <label>{t("Summa")}</label>:{totals.summa.toFixed(2)}&nbsp;
-                    <label>{t("Total")}</label>:{totals.total.toFixed(2)}&nbsp;
-                    <label>{t("Discount")}</label>:{totals.discount.toFixed(2)}
-                </td>
-            </tr>
+            <div key="footer">
+                <label>{t("Summa")}</label>: {totals.summa.toFixed(2)},&nbsp;
+                <label>{t("Discount")}</label>: {discountPr.toFixed(2)}% / {totals.discount.toFixed(2)},&nbsp;
+                <label>{t("Total with discount")}</label>: {totals.total.toFixed(2)},&nbsp;
+                <label>{t("Cashback")}</label>: {cashbackPr.toFixed(2)}% / {cashback.toFixed(2)},&nbsp;
+                <label>{t("Total")}</label>: {totalCashback.toFixed(2)},&nbsp;
+                <label>{t("Total Discount")}</label>: {totalDiscountPr.toFixed(2)}% / {totalDiscount.toFixed(2)}
+            </div>
         )
     }
 
@@ -238,13 +252,7 @@ export default class Purchase extends Document {
     }
 
     renderDiscountsFooter(item) {
-        if (!item.purchaseDiscounts.length) return null;
-        let totals = item.purchaseDiscounts.map(discount => discount.amount).reduce((accum,value) => {
-            if (!accum) accum = 0;
-            return !isNaN(parseFloat(value)) ? parseFloat(accum) + parseFloat(value) : parseFloat(accum)
-        });
-        totals = parseFloat(totals);
-        if (isNaN(totals)) return null;
+        let totals = this.calculateCashback(item)
         return (
             <tr>
                 <td colSpan={5}>
@@ -252,6 +260,17 @@ export default class Purchase extends Document {
                 </td>
             </tr>
         )
+    }
+
+    calculateCashback(item) {
+        if (!item.purchaseDiscounts.length) return 0;
+        let totals = item.purchaseDiscounts.map(discount => discount.amount).reduce((accum,value) => {
+            if (!accum) accum = 0;
+            return !isNaN(parseFloat(value)) ? parseFloat(accum) + parseFloat(value) : parseFloat(accum)
+        });
+        totals = parseFloat(totals);
+        if (isNaN(totals)) totals = 0;
+        return totals
     }
 
 }

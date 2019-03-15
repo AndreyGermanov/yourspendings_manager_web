@@ -56,7 +56,7 @@ export default class Purchase extends Document {
     }
 
     sync(callback=()=>{}) {
-        Backend.request('/api/'+this.itemName+'/sync/', function(error,response) {
+        Backend.request('/api/'+this.itemName+'/sync/', {method:'GET'}, function(error,response) {
             callback();
         });
     }

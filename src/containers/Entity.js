@@ -40,8 +40,8 @@ class EntityContainer {
      * Method returns array of properties, the same array that available in this component
      * @returns Object of properties
      */
-    getProps() {
-        const state = Store.getState();
+    getProps(inputState) {
+        const state = inputState ? inputState : Store.getState();
         return this.mapStateToProps(state,null);
     }
 

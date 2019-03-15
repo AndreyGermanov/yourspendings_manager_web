@@ -35,3 +35,52 @@ a {
 }
 
 .purchaseImage {width:200px;height:300px}
+
+/* CUSTOM TABLE */
+#scrollTable {
+  position: relative;
+  overflow: hidden;
+  padding-bottom:10px;
+}
+
+#scrollTable th {
+  white-space: nowrap;
+}
+
+#scrollTable th:first-child div {
+  border-left: none;
+}
+
+#scrollTable thead th div {
+  position: absolute;
+  z-index: 2;
+  background-color: white;
+  border-top: 1px solid black;
+  padding: 1px;
+  margin-left: 0;
+}
+
+#scrollTable tfoot th div {
+  position: absolute;
+  z-index: 2;
+  background-color: white;
+  padding:0px !important;
+  border-bottom: 1px solid black;
+  margin-left: 0;
+  bottom:10px
+}
+
+#scrollTable thead div {
+  top: 0;
+}
+
+#scrollTable tfoot div {
+  bottom: 0;
+}
+
+.scrollTableContainer {
+  max-height: 20em;
+  overflow-y: scroll;
+  outline: 1px solid dimgrey;
+  outline-offset: -1px;
+}

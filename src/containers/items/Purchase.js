@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import Store from "../../store/Store";
 import async from 'async';
 import _ from "lodash";
+const jQuery = require("jquery");
 
 export default class PurchaseItemContainer extends DocumentContainer {
 
@@ -114,7 +115,7 @@ export default class PurchaseItemContainer extends DocumentContainer {
     /**
      * Method used to add new empty row in discounts table
      */
-    addProduct() {
+    addProduct(container) {
         let item = this.getProps().item;
         let product = Models.getInstanceOf("purchaseProduct");
         item.products.push(product.initItem({purchase:item["uid"]}));
@@ -162,22 +163,23 @@ export default class PurchaseItemContainer extends DocumentContainer {
      */
     changeTableField(modelName,collectionName,rowIndex,fieldName,e) {
         let value = null;
+        let state = Store.getState();
+        const errors = state.errors;
+        if (!errors[collectionName]) errors[collectionName] = {};
+        if (!errors[collectionName][rowIndex]) errors[collectionName][rowIndex] = {};
+        errors[collectionName][rowIndex][fieldName] = "";
+        Store.changeProperties({errors:errors});
         let model = Models.getInstanceOf(modelName);
         if (typeof(model["parseItemField_"+fieldName]) === "function") {
             value = model["parseItemField_" + fieldName].bind(this)(e);
         }
         else if (e && e.target) value = e.target.value; else value = e;
-        const item = this.getProps().item;
+        const item = this.getProps(state).item;
         if (item[collectionName][rowIndex][fieldName] === value) return;
         item[collectionName][rowIndex][fieldName] = value;
-        const errors = _.cloneDeep(Store.getState().errors);
         let error = this.model.validateCollectionField(collectionName,fieldName,value,item);
-        if (error) {
-            if (!errors[collectionName]) errors[collectionName]={};
-            if (!errors[collectionName][rowIndex]) errors[collectionName][rowIndex]={};
-            errors[collectionName][rowIndex][fieldName] = error;
-        }
-        const stateItem = Store.getState().item;
+        if (error) errors[collectionName][rowIndex][fieldName] = error;
+        const stateItem = state.item;
         stateItem[this.model.itemName] = item;
         Store.changeProperties({"item":stateItem,"errors":errors});
     }
