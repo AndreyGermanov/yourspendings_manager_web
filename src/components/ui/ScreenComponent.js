@@ -23,7 +23,7 @@ class ScreenComponent extends Component {
      * @returns this.props filled with default values
      */
     getProps() {
-        return _.cloneDeep(this.props);
+        return Object.assign({},this.props);
     }
 
 }
