@@ -15,7 +15,8 @@ class FormSelectField extends FormField {
     static propTypes = Object.assign({}, {
         // Array of items to choose from. Each item is an object of format {value:"",label:""}
         items: PropTypes.array.isRequired,
-        multiple: PropTypes.bool
+        multiple: PropTypes.bool,
+        templateResult:PropTypes.func
     },FormField.propTypes);
 
     /**
@@ -24,14 +25,19 @@ class FormSelectField extends FormField {
      */
     render() {
         const props = this.getProps();
+        let options = {};
+        if (typeof(props.templateResult) === "function") {
+            options["templateResult"] = props.templateResult.bind(this);
+        }
         return [
             props.label ?
             <label className={props.labelClass} style={props.labelStyle} key="f1">
                 {props.label}
             </label> : '',
             <div className={props.containerClass} style={props.containerStyle} key="f2">
-                <Select2 ref="select2" value={props.value} style={props.inputStyle}
+                <Select2 ref="select2" value={props.value} style={props.inputStyle} options={options}
                          className={props.inputClass} data={props.items} multiple={props.multiple}
+                         onClose={() => props.onClose()}
                          onSelect={() => props.onChange(props.name,jQuery(this.refs.select2.el).val())}
                          onUnselect={() => props.onChange(props.name,jQuery(this.refs.select2.el).val())}/>
                 <Error fieldName={props.name} ownerProps={props.ownerProps} className={props.errorClass}
@@ -48,6 +54,7 @@ class FormSelectField extends FormField {
         let result = super.getProps();
         result.items = result.items ? result.items: [];
         result.multiple = result.multiple ? result.multiple : false;
+        result.onClose = result.onClose ? result.onClose: () => {}
         return result;
     }
 

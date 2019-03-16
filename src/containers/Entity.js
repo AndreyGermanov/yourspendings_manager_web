@@ -32,6 +32,7 @@ class EntityContainer {
      */
     mapDispatchToProps(dispatch) {
         return {
+            getProps: (inputState) => this.getProps(inputState),
             getFieldLabels: () => this.getFieldLabels()
         }
     }

@@ -1,7 +1,6 @@
 import t from "../utils/translate/translate";
 import Entity from './Entity';
 import Models from './Models';
-import Store from '../store/Store';
 
 /**
  * Database model of Product Category entity
@@ -60,8 +59,8 @@ export default class ProductCategory extends Entity {
     }
 
     validate_parent(value,item) {
-        if (value && !this.cleanIntField(value)) return t("Incorrect parent category specified");
-        if (item["uid"] === value) return t("Parent could not be the same as current item");
+        if (value && !this.cleanField_parent(value)) return t("Incorrect parent category specified");
+        if (item["uid"] === this.cleanField_parent(value)) return t("Parent could not be the same as current item");
         return "";
     }
 
@@ -75,7 +74,7 @@ export default class ProductCategory extends Entity {
     }
 
     cleanField_parent(value) {
-        return this.cleanIntField(value);
+        if (value.uid) return this.cleanIntField(value.uid); else return this.cleanIntField(value)
     }
 
     /******************************************************************************
@@ -84,7 +83,6 @@ export default class ProductCategory extends Entity {
      ******************************************************************************/
 
     parseItemField_parent(event) {
-
         let result = parseInt(event);
         return isNaN(result) ? 0 : result;
     }

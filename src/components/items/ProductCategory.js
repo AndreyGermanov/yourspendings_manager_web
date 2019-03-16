@@ -12,13 +12,14 @@ export default class ProductCategory extends Entity {
      * Method used to render detail view
      */
     renderForm(item,labels) {
-        const parent = typeof(item.parent) === "object" ? item.parent["uid"] : item.parent;
+        const parent = item.parent["uid"] ? item.parent["uid"] : item.parent;
         return [
             <div className="form-group" key="f1">
                 <Input name="name" value={item["name"]} label={labels["name"]}/>
             </div>,
             <div className="form-group" key="f3">
                 <Select name="parent" items={this.props.categories_list}
+                        templateResult={this.props.drawProductCategoryDropdownItem}
                         value={parent} label={labels["parent"]}
                 />
             </div>,

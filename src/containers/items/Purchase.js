@@ -7,8 +7,7 @@ import {Item} from '../../components/Components';
 import {connect} from 'react-redux';
 import Store from "../../store/Store";
 import async from 'async';
-import _ from "lodash";
-const jQuery = require("jquery");
+const $ = require('jquery');
 
 export default class PurchaseItemContainer extends DocumentContainer {
 
@@ -34,11 +33,12 @@ export default class PurchaseItemContainer extends DocumentContainer {
      */
     mapStateToProps(state,ownProps) {
         return Object.assign(super.mapStateToProps(state,ownProps),{
-            "categories_list": state.categories_list ? state.categories_list : [],
-            "discounts_list": state.discounts_list ? state.discounts_list : [],
-            "units_list": state.units_list ? state.units_list : []
+            categories_list: state.categories_list ? state.categories_list : [],
+            discounts_list: state.discounts_list ? state.discounts_list : [],
+            units_list: state.units_list ? state.units_list : []
         })
     }
+
     /**
      * Function defines methods which will be available inside component, which this controller manages
      * @param dispatch - Store dispatch functions, allows to transfer actions to Redux store
@@ -55,7 +55,8 @@ export default class PurchaseItemContainer extends DocumentContainer {
             addDiscount: () => this.addDiscount(),
             removeDiscount: (index) => this.removeDiscount(index),
             changeTableField: (modelName,collectionName,rowIndex,fieldName,e) =>
-                this.changeTableField(modelName,collectionName,rowIndex,fieldName,e)
+                this.changeTableField(modelName,collectionName,rowIndex,fieldName,e),
+            drawProductCategoryDropdownItem: this.drawProductCategoryDropdownItem
         });
     }
 
@@ -182,5 +183,17 @@ export default class PurchaseItemContainer extends DocumentContainer {
         const stateItem = state.item;
         stateItem[this.model.itemName] = item;
         Store.changeProperties({"item":stateItem,"errors":errors});
+    }
+
+    /**
+     * Method renders product category dropdown item
+     * @param listItem - Selected dropdown item
+     * @returns HTMLElement
+     */
+    drawProductCategoryDropdownItem(listItem) {
+        if (!listItem.id) return null;
+        let item = this.props.items.filter((it) => it.id === parseInt(listItem.id))[0];
+        if (!item.item) return null;
+        return $("<div style='margin-left:"+(10*parseInt(item.item.level))+"px'>"+item.text+"</div>")
     }
 }

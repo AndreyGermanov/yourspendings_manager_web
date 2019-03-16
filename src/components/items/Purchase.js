@@ -4,11 +4,25 @@ import t from "../../utils/translate/translate";
 import {Button,Input,Select} from '../../components/ui/Form';
 import StorageConfig from '../../config/Storage';
 import moment from 'moment-timezone';
+import Store from "../../store/Store";
+import Models from '../../models/Models';
 
 /**
  * Component used to manage "Purchase" item page
  */
 export default class Purchase extends Document {
+
+    /**
+     * Method runs each time after component updated
+     * @param prevProps - Values of properties before this update
+     */
+    componentDidUpdate(prevProps) {
+        let props = this.props.getProps(Store.store.getState());
+        let products = props.item.products;
+        let prevProducts = prevProps.item.products;
+        if (!products || !prevProducts || products.length<=prevProducts.length) return;
+        this.anchor.scrollIntoView(true);
+    }
 
     /**
      * Method used to render detail view
@@ -41,6 +55,12 @@ export default class Purchase extends Document {
         ]
     }
 
+    /**
+     * Method used to render images block
+     * @param item - Item to get data from
+     * @param labels - Labels for item fields
+     * @returns Rendered Component
+     */
     renderImages(item,labels) {
         if (!item.images.length) return "";
         let link = StorageConfig.imagePath+
@@ -64,6 +84,12 @@ export default class Purchase extends Document {
         ]
     }
 
+    /**
+     * Method used to render products table
+     * @param item - Item to get data from
+     * @param labels - Labels for item fields
+     * @returns Rendered component
+     */
     renderProducts(item,labels) {
         return [
             <div className="row" key="f1">
@@ -82,12 +108,17 @@ export default class Purchase extends Document {
                             {this.renderProductsTableRows(item)}
                         </tbody>
                     </table>
+                    <div ref={(ref) => this.anchor = ref}></div>
                 </div>
             </div>,
             this.renderProductsFooter(item)
         ]
     }
 
+    /**
+     * Method used to render column headers for products table
+     * @returns Rendered component
+     */
     renderProductsHeader() {
         const labels = this.props.getProductTableLabels();
         return (
@@ -101,10 +132,21 @@ export default class Purchase extends Document {
         )
     }
 
+    /**
+     * Method used to render rows with products in products table
+     * @param item - Item to get data from
+     * @returns Rendered component
+     */
     renderProductsTableRows(item) {
         return item.products.map((product,index) => this.renderProductsTableRow(product,index))
     }
 
+    /**
+     * Method used to render single row in products table
+     * @param product - Product model with fields
+     * @param index - Index of row in table
+     * @returns Rendered component
+     */
     renderProductsTableRow(product,index) {
         let props = {errors: this.props.errors["products"] ? this.props.errors["products"]: {}};
         if (!props.errors[index]) props.errors[index] = {};
@@ -115,7 +157,10 @@ export default class Purchase extends Document {
             <tr key={"product_"+index}>
                 <td>
                     <Select inputClass="tableInput" name="category" value={category} items={this.props.categories_list}
+                            templateResult={this.props.drawProductCategoryDropdownItem}
+                            onClose={() => Models.getInstanceOf("productCategory").setListForDropdown()}
                             ownerProps={{errors:props.errors[index]}}
+                            items={this.props.categories_list}
                             containerClass="tableInputContainer"
                             onChange={(name,value)=>this.props.changeTableField("purchaseProduct","products",index,name,value)}/>
                     <Input name="name" value={product.name} containerClass="tableInputContainer" multiline={true}
@@ -151,6 +196,11 @@ export default class Purchase extends Document {
         )
     }
 
+    /**
+     * Method used to calculate totals of product row
+     * @param product - Product model data
+     * @returns Object of following format {{summa: number, total: number, discountPr: number}}
+     */
     calculateProductRow(product) {
         let price = 0;
         let count = 0;
@@ -161,6 +211,11 @@ export default class Purchase extends Document {
         return {summa: price*count, total: price*count - discount, discountPr: price*count> 0 ? discount/(price*count)*100 : 0}
     }
 
+    /**
+     * Method used to render products table footer with totals
+     * @param item - Item to get data from
+     * @returns Rendered component
+     */
     renderProductsFooter(item) {
         if (!item.products.length) return null;
         let totals = item.products.map(product => {
@@ -193,6 +248,12 @@ export default class Purchase extends Document {
         )
     }
 
+    /**
+     * Method used to render discounts table
+     * @param item - Item to get data from
+     * @param labels - Labels for item fields
+     * @returns Rendered component
+     */
     renderDiscounts(item,labels) {
         return [
             <div className="row" key="f1">
@@ -211,6 +272,10 @@ export default class Purchase extends Document {
         ]
     }
 
+    /**
+     * Method used to render column headers for Discount s table
+     * @returns Rendered component
+     */
     renderDiscountsHeader() {
         const labels = this.props.getDiscountTableLabels();
         return (
@@ -222,10 +287,21 @@ export default class Purchase extends Document {
         )
     }
 
+    /**
+     * Method used to render rows inside Discounts table
+     * @param item - Item to get data from
+     * @returns Rendered component
+     */
     renderDiscountsTableRows(item) {
         return item.purchaseDiscounts.map((discount,index) => this.renderDiscountsTableRow(discount,index))
     }
 
+    /**
+     * Method used to render single row in Discounts table
+     * @param discount - Row data from discount row
+     * @param index - Index of row in table
+     * @returns Rendered component
+     */
     renderDiscountsTableRow(discount,index) {
         let props = {errors: this.props.errors["purchaseDiscounts"] ? this.props.errors["purchaseDiscounts"]: {}};
         if (!props.errors[index]) props.errors[index] = {};
@@ -251,6 +327,11 @@ export default class Purchase extends Document {
         )
     }
 
+    /**
+     * Method used to render footer of discounts table
+     * @param item - Item to get data from
+     * @returns Rendered component
+     */
     renderDiscountsFooter(item) {
         let totals = this.calculateCashback(item)
         return (
@@ -262,6 +343,11 @@ export default class Purchase extends Document {
         )
     }
 
+    /**
+     * Method used to calculate total cashback from rows in discounts table
+     * @param item - Item to get data from
+     * @returns {number} Cashback amount
+     */
     calculateCashback(item) {
         if (!item.purchaseDiscounts.length) return 0;
         let totals = item.purchaseDiscounts.map(discount => discount.amount).reduce((accum,value) => {

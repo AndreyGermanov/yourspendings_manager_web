@@ -418,9 +418,9 @@ class Entity {
                 callback();
                 return;
             }
-            list = [{id:0,text:""}].concat(
+            list = [{id:0,text:"",item:{}}].concat(
                 response.map(function (item) {
-                    return {id: item[idField], text: item[textField]};
+                    return {id: item[idField], text: item[textField],item:item};
                 })
             );
             Store.changeProperty(listProperty, list);
