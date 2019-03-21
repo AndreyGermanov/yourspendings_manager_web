@@ -27,6 +27,8 @@ class App extends Component {
         const Purchase = Item.getComponentOf("purchase");
         const DimensionUnits = List.getComponentOf("dimensionUnit");
         const DimensionUnit = Item.getComponentOf("dimensionUnit");
+        const Reports = List.getComponentOf("report");
+        const Report = Item.getComponentOf("report");
         if (this.props.isMainScreenLoading)
             return <LoadingScreen/>;
         else {
@@ -44,6 +46,7 @@ class App extends Component {
                             <Route exact path="/discounts" render={() => <Discounts/>}/>
                             <Route exact path="/purchases" render={() => <Purchases/>}/>
                             <Route exact path="/dimensionUnits" render={() => <DimensionUnits/>}/>
+                            <Route exact path="/reports" render={() => <Reports/>}/>
                             <Route path="/productCategory/:uid"
                                    render={(state) => { return <ProductCategory uid={state.match.params.uid}/>}}/>
                             <Route path="/role/:uid"
@@ -60,6 +63,8 @@ class App extends Component {
                                    render={(state) => { return <Purchase uid={state.match.params.uid}/>}}/>
                             <Route path="/dimensionUnit/:uid"
                                    render={(state) => { return <DimensionUnit uid={state.match.params.uid}/>}}/>
+                            <Route path="/report/:uid"
+                                   render={(state) => { return <Report uid={state.match.params.uid}/>}}/>
                             <Route render={() => <Purchases/>}/>
                         </Switch>
                     </HashRouter>

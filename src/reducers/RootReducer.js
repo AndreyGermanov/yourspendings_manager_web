@@ -9,12 +9,13 @@ import React from 'react';
 export const modules = {
     shops: { order:1, title:t("Shops") },
     purchases: { order:2, title:t("Purchases") },
-    purchaseUsers: {order:3, title:t("Purchase Users")},
-    productCategories: {order:4,title:t("Product Categories")},
-    discounts: {order:5,title:t("Discounts")},
-    dimensionUnits: {order:6,title:t("Units")},
-    users: { order:7, title: t("Users") },
-    roles: {order:8, title: t("Roles")},
+    reports: { order:3, title:t("Reports")},
+    purchaseUsers: {order:4, title:t("Purchase Users")},
+    productCategories: {order:5,title:t("Product Categories")},
+    discounts: {order:6,title:t("Discounts")},
+    dimensionUnits: {order:7,title:t("Units")},
+    users: { order:8, title: t("Users") },
+    roles: {order:9, title: t("Roles")},
 };
 
 export const roles = {

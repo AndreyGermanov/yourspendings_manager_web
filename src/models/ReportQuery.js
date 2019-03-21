@@ -14,7 +14,7 @@ export default class ReportQuery extends Entity {
         this.itemTitle = t("Report query");
         this.collectionTitle = t("Report query");
         this.relationFields = {
-            "report": {type:Models.RelationTypes.ManyToOne,target:"report"},
+            "report": {type:Models.RelationTypes.ManyToOne,target:"report"}
         };
         this.transientFields = ["visible"]
     }
@@ -98,5 +98,14 @@ export default class ReportQuery extends Entity {
 
     cleanField_report(value) {
         return this.cleanStringField(value);
+    }
+
+    /******************************************************************************
+     * Methods which transforms values of item fields from form fields to values, *
+     * ready to be in application state and in database                           *
+     ******************************************************************************/
+
+    parseItemField_enabled(event) {
+        return event && event.target && event.target.checked ? 1 : 0
     }
 }

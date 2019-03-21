@@ -10,6 +10,7 @@ import PurchaseUserItem from './PurchaseUser';
 import DiscountItem from './Discount';
 import PurchaseItem from './Purchase';
 import DimensionUnitItem from './DimensionUnit';
+import ReportItem from './Report';
 
 export class Items {
     static ProductCategory = ProductCategoryItem;
@@ -20,6 +21,7 @@ export class Items {
     static Discount = DiscountItem;
     static Purchase = PurchaseItem;
     static DimensionUnit = DimensionUnitItem;
+    static Report = ReportItem;
 }
 
 export const ProductCategory = ProductCategoryItem;
@@ -30,3 +32,4 @@ export const PurchaseUser = PurchaseUserItem;
 export const Discount = DiscountItem;
 export const Purchase = PurchaseItem;
 export const DimensionUnit = DimensionUnitItem;
+export const Report = ReportItem;

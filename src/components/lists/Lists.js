@@ -24,6 +24,7 @@ class ShopList extends Entity {}
 class PurchaseUserList extends Entity {}
 class DiscountList extends Entity {}
 class DimensionUnitList extends Entity {}
+class ReportList extends Entity {}
 
 export class Lists {
     static ProductCategory = ProductCategoryList;
@@ -34,6 +35,7 @@ export class Lists {
     static Discount = DiscountList;
     static Purchase = PurchaseList;
     static DimensionUnit = DimensionUnitList;
+    static Report = ReportList;
 }
 
 export const ProductCategory = ProductCategoryList;
@@ -44,3 +46,4 @@ export const PurchaseUser = PurchaseUserList;
 export const Discount = DiscountList;
 export const Purchase = PurchaseList;
 export const DimensionUnit = DimensionUnitList;
+export const Report = ReportList;

@@ -6,6 +6,7 @@ import PurchaseUserContainer from './PurchaseUser';
 import DiscountContainer from './Discount';
 import PurchaseContainer from './Purchase';
 import DimensionUnitContainer from './DimensionUnit';
+import ReportContainer from './Report';
 
 /**
  * Factory to get instances of List containers and connected components
@@ -24,6 +25,7 @@ export class Lists {
             case "discount": return new DiscountContainer();
             case "purchase": return new PurchaseContainer();
             case "dimensionUnit": return new DimensionUnitContainer();
+            case "report": return new ReportContainer();
             default: return null;
         }
     }
@@ -48,6 +50,7 @@ export class Lists {
             case "discount": return DiscountContainer.getComponent();
             case "purchase": return PurchaseContainer.getComponent();
             case "dimensionUnit": return DimensionUnitContainer.getComponent();
+            case "report": return ReportContainer.getComponent();
             default: return null;
         }
     }
