@@ -16,7 +16,7 @@ export default class ReportQuery extends Entity {
         this.relationFields = {
             "report": {type:Models.RelationTypes.ManyToOne,target:"report"}
         };
-        this.transientFields = ["visible"]
+        this.transientFields = ["visible","visibleTab"]
     }
 
     /**
@@ -34,6 +34,7 @@ export default class ReportQuery extends Entity {
         if (!item.params) item.params = "";
         if (!item.outputFormat) item.outputFormat = "";
         if (!item.report) item.report = 0;
+        if (!item.visibleTab) item.visibleTab = QueryTab.Query;
         return item;
     }
 
@@ -51,6 +52,7 @@ export default class ReportQuery extends Entity {
             "params": t("Query Parameters"),
             "outputFormat":t("Output Format"),
             "report":t("Report"),
+            "visibleTab":t("Visible Tab")
         }
     }
 
@@ -108,4 +110,10 @@ export default class ReportQuery extends Entity {
     parseItemField_enabled(event) {
         return event && event.target && event.target.checked ? 1 : 0
     }
+}
+
+export const QueryTab = {
+    Query: 'QueryTab_Query',
+    Params: 'QueryTab_Params',
+    Format: 'QueryTab_Format'
 }

@@ -1,6 +1,7 @@
 import Document from './Document';
 import t from "../utils/translate/translate";
 import Models from './Models';
+import Backend from '../backend/Backend';
 
 /**
  * Database model of Report entity
@@ -39,6 +40,18 @@ export default class Report extends Document {
             "name":t("Name"),
             "queries": t("Queries")
         }
+    }
+
+    generateReport(item,callback) {
+        if (typeof(callback) !== "function") callback = () => {};
+        Backend.request("/api/report/generate",{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(item.queries.filter(q => q.enabled))
+        },(error, response) => {
+            if (!response || response.status >399 || error) { callback(true);return; }
+            response.json().then((result) => { callback(null,result);});
+        })
     }
 
     /**********************************

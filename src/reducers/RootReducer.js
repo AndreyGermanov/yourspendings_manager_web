@@ -54,7 +54,8 @@ export default function rootReducer(state,action) {
         numberOfItems: {"users":16},
         registerEmailSent: false,
         resetPasswordEmailSent: false,
-        resetPasswordComplete: false
+        resetPasswordComplete: false,
+        reportData: []
     };
     let newState = require('lodash').cloneDeep(state);
     switch (action.type) {

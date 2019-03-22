@@ -79,7 +79,6 @@ a {
 }
 
 .scrollTableContainer {
-  max-height: 20em;
   overflow-y: scroll;
   outline: 1px solid dimgrey;
   outline-offset: -1px;

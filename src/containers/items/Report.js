@@ -7,7 +7,7 @@ import {Item} from '../../components/Components';
 import {connect} from 'react-redux';
 import Store from "../../store/Store";
 import async from 'async';
-const $ = require('jquery');
+import t from '../../utils/translate/translate';
 
 export default class ReportItemContainer extends DocumentContainer {
 
@@ -33,7 +33,7 @@ export default class ReportItemContainer extends DocumentContainer {
      */
     mapStateToProps(state,ownProps) {
         return Object.assign(super.mapStateToProps(state,ownProps),{
-
+            reportData: state.reportData ? state.reportData: []
         })
     }
 
@@ -50,7 +50,10 @@ export default class ReportItemContainer extends DocumentContainer {
             changeTableField: (modelName,collectionName,rowIndex,fieldName,e) =>
                 this.changeTableField(modelName,collectionName,rowIndex,fieldName,e),
             setQueryVisible: (rowIndex,isVisible) => this.setQueryVisible(rowIndex,isVisible),
-            setQuerySortOrder: (rowIndex,sortOrder) => this.setQuerySortOrder(rowIndex,sortOrder)
+            setQuerySortOrder: (rowIndex,sortOrder) => this.setQuerySortOrder(rowIndex,sortOrder),
+            switchTab: (rowIndex,tab) => this.switchTab(rowIndex,tab),
+            generateReport: () => this.generateReport(),
+            clearReport: () => this.clearReport()
         });
     }
 
@@ -85,7 +88,7 @@ export default class ReportItemContainer extends DocumentContainer {
     }
 
     /**
-     * Method used to add new empty row in discounts table
+     * Method used to add new empty row in queries table
      */
     addQuery(container) {
         let item = this.getProps().item;
@@ -96,16 +99,30 @@ export default class ReportItemContainer extends DocumentContainer {
         Store.changeProperty("item",stateItem);
     }
 
+    /**
+     * Show/hide query details button onClick handler
+     * @param rowIndex - Index of row to show or hide
+     * @param isVisible - If true, then show, if false then hide
+     */
     setQueryVisible(rowIndex,isVisible) {
         this.changeTableField("reportQuery","queries",rowIndex,"visible",isVisible)
     }
 
+    /**
+     * Change sort order of arrow buttons onClick handler in table rows, used to swap two rows
+     * @param rowIndex1 - index of first row to swap
+     * @param rowIndex2 - index of second row to swap
+     */
     setQuerySortOrder(rowIndex1,rowIndex2) {
         let queries = this.getProps().item.queries;
         let sortOrder1 = queries[rowIndex1].order;
         let sortOrder2 = queries[rowIndex2].order;
         this.changeTableField("reportQuery","queries",rowIndex1,"order",sortOrder2);
         this.changeTableField("reportQuery","queries",rowIndex2,"order",sortOrder1);
+    }
+
+    switchTab(rowIndex,tab) {
+        this.changeTableField("reportQuery","queries",rowIndex,"visibleTab",tab);
     }
 
     /**
@@ -136,6 +153,25 @@ export default class ReportItemContainer extends DocumentContainer {
         const stateItem = state.item;
         stateItem[this.model.itemName] = item;
         Store.changeProperties({"item":stateItem,"errors":errors});
+    }
+
+    /**
+     * "Generate" button onClick handler. Used to send report request to server and receive and apply
+     * response with data or with error
+     */
+    generateReport() {
+        if (!this.validateItem()) return;
+        let item = this.getProps().item;
+        this.model.generateReport(item,(error,reportData) => {
+            if (error) {
+                Store.changeProperty("errors",{general:t("Internal error")});return;
+            }
+            Store.changeProperty("reportData",reportData);
+        });
+    }
+
+    clearReport() {
+        Store.changeProperty("reportData",[]);
     }
 
 }
