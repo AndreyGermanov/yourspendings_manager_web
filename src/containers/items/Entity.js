@@ -36,7 +36,7 @@ export default class EntityItemContainer extends EntityContainer {
     mapDispatchToProps(dispatch) {
         return Object.assign(super.mapDispatchToProps(dispatch),{
             initItem: (item) => this.initItem(item),
-            updateItem: (uid) => this.updateItem(uid),
+            updateItem: (uid,callback) => this.updateItem(uid,callback),
             changeItemField: (field_name,e) => this.changeItemField(field_name,e),
             saveToBackend: () => this.saveToBackend(),
             getItemPresentation: (item) => this.getItemPresentation(item)

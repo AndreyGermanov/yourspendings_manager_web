@@ -33,6 +33,7 @@ export default class ReportItemContainer extends DocumentContainer {
      */
     mapStateToProps(state,ownProps) {
         return Object.assign(super.mapStateToProps(state,ownProps),{
+            fullScreen: ownProps ? ownProps.fullScreen : false,
             reportData: state.reportData ? state.reportData: []
         })
     }
@@ -65,7 +66,7 @@ export default class ReportItemContainer extends DocumentContainer {
      */
     updateItem(uid,callback=()=>{}) {
         async.series([
-            (callback) => super.updateItem(uid,callback),
+            (callback) => super.updateItem(uid,callback)
         ], () => callback())
     }
 
@@ -159,7 +160,8 @@ export default class ReportItemContainer extends DocumentContainer {
      * "Generate" button onClick handler. Used to send report request to server and receive and apply
      * response with data or with error
      */
-    generateReport() {
+    generateReport(callback) {
+        if (typeof(callback) != "function") callback = () => {};
         if (!this.validateItem()) return;
         let item = this.getProps().item;
         this.model.generateReport(item,(error,reportData) => {
@@ -167,6 +169,7 @@ export default class ReportItemContainer extends DocumentContainer {
                 Store.changeProperty("errors",{general:t("Internal error")});return;
             }
             Store.changeProperty("reportData",reportData);
+            if (callback) callback();
         });
     }
 

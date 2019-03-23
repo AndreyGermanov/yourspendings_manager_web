@@ -10,6 +10,24 @@ import Models from '../../models/Models';
  */
 export default class Report extends Document {
 
+    render() {
+        if (!this.props.fullScreen) return super.render();
+        if (!this.props.item) return null;
+        const item = this.props.initItem(this.props.item);
+        return this.renderReports(item);
+    }
+
+    /**
+     * Method starts after component rendered and displayed on the screen
+     */
+    componentDidMount() {
+        this.props.updateItem(this.props.uid, () => {
+            if (this.props.fullScreen) {
+                this.props.generateReport()
+            }
+        });
+    }
+
     /**
      * Method used to render detail view
      */
@@ -216,10 +234,14 @@ export default class Report extends Document {
                 <Button className="btn btn-info" iconClass="glyphicon glyphicon-remove" text={t("Clear")}
                         onPress={()=>this.props.clearReport()} style={{paddingRight:5}}/>
                 <div className="col-sm-12 scrollTableContainer" style={{marginTop:10,height:500}}>
-                    {this.props.reportData.map((query,index) => this.renderReport(query,index,item))}
+                    {this.renderReports(item)}
                 </div>
             </div>
         )
+    }
+
+    renderReports(item) {
+        return this.props.reportData.map((query,index) => this.renderReport(query,index,item));
     }
 
     renderReport(query,rowIndex,item) {
@@ -245,14 +267,14 @@ export default class Report extends Document {
     renderReportHeader(query,format) {
         if (!query.length) return null;
         let firstRow = query[0];
-        if (typeof(firstRow) !== "object") firstRow = {0:firstRow};
         return (
             <tr>
-                {Object.keys(firstRow).map(column_index => {
+                {firstRow.map((value,column_index) => {
+                    if (column_index === format.columns.length) return null;
                     let title = column_index;
                     if (format.columns && format.columns[column_index] && format.columns[column_index].title)
                         title = format.columns[column_index].title
-                    return <th>{title}</th>
+                    return <th key={"report_"+firstRow+"_"+column_index}>{title}</th>
                 })}
             </tr>
         )
@@ -262,18 +284,19 @@ export default class Report extends Document {
         if (!query.length) return null;
         let columns = format.columns;
         return query.map((row,rowIndex) => {
-            if (typeof(row) !== "object") row = {0:row};
             return this.renderReportRow(row,columns)
         })
     }
 
     renderReportRow(row,columnsFormat) {
+        let style = {};
+        if (typeof(row[columnsFormat.length].groupLevel) !== "undefined") style.fontWeight = 'bold';
         return (
-            <tr>
+            <tr key={"report_row_"+row}>
                 {
-                    Object.keys(row).map(column_index => {
-                        let value = row[column_index];
-                        return <td>{value}</td>
+                    row.map((value,column_index) => {
+                        if (column_index === columnsFormat.length) return null;
+                        return <td style={style} key={"report_row_"+row+"_"+column_index}>{value}</td>
                     })
                 }
             </tr>

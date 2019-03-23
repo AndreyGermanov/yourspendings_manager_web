@@ -63,8 +63,11 @@ class App extends Component {
                                    render={(state) => { return <Purchase uid={state.match.params.uid}/>}}/>
                             <Route path="/dimensionUnit/:uid"
                                    render={(state) => { return <DimensionUnit uid={state.match.params.uid}/>}}/>
-                            <Route path="/report/:uid"
+                            <Route exact path="/report/:uid"
                                    render={(state) => { return <Report uid={state.match.params.uid}/>}}/>
+                            <Route path="/report/:uid/:fullScreen"
+                                   render={(state) => { return <Report uid={state.match.params.uid}
+                                                                       fullScreen={state.match.params.fullScreen}/>}}/>
                             <Route render={() => <Purchases/>}/>
                         </Switch>
                     </HashRouter>
