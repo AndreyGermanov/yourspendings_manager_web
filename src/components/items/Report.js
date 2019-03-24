@@ -270,7 +270,7 @@ export default class Report extends Document {
         return (
             <tr>
                 {firstRow.map((value,column_index) => {
-                    if (column_index === format.columns.length) return null;
+                    if (column_index >= format.columns.length) return null;
                     let title = column_index;
                     if (format.columns && format.columns[column_index] && format.columns[column_index].title)
                         title = format.columns[column_index].title
@@ -282,20 +282,29 @@ export default class Report extends Document {
 
     renderReportRows(query,format) {
         if (!query.length) return null;
-        let columns = format.columns;
         return query.map((row,rowIndex) => {
-            return this.renderReportRow(row,columns)
+            return this.renderReportRow(row,format)
         })
     }
 
-    renderReportRow(row,columnsFormat) {
+    renderReportRow(row,format) {
+        let columnsFormat = format.columns;
+        let groupsFormat = format.groups;
         let style = {};
-        if (typeof(row[columnsFormat.length].groupLevel) !== "undefined") style.fontWeight = 'bold';
+        if (typeof(row[columnsFormat.length].groupLevel) !== "undefined") {
+            if (typeof(row[columnsFormat.length].groupColumn) === "undefined" ||
+                !groupsFormat[row[columnsFormat.length].groupColumn].style) {
+                style.fontWeight = 'bold';
+                style.backgroundColor = "#CCCCCC";
+            } else {
+                style = groupsFormat[row[columnsFormat.length].groupColumn].style;
+            }
+        }
         return (
             <tr key={"report_row_"+row}>
                 {
                     row.map((value,column_index) => {
-                        if (column_index === columnsFormat.length) return null;
+                        if (column_index >= columnsFormat.length) return null;
                         return <td style={style} key={"report_row_"+row+"_"+column_index}>{value}</td>
                     })
                 }
