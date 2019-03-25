@@ -274,6 +274,7 @@ export default class Report extends Document {
                     let title = column_index;
                     if (format.columns && format.columns[column_index] && format.columns[column_index].title)
                         title = format.columns[column_index].title
+                    if (format.columns[column_index].hidden) return null;
                     return <th key={"report_"+firstRow+"_"+column_index}>{title}</th>
                 })}
             </tr>
@@ -305,6 +306,7 @@ export default class Report extends Document {
                 {
                     row.map((value,column_index) => {
                         if (column_index >= columnsFormat.length) return null;
+                        if (columnsFormat[column_index].hidden) return null;
                         return <td style={style} key={"report_row_"+row+"_"+column_index}>{value}</td>
                     })
                 }
