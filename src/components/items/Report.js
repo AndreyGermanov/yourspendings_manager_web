@@ -293,12 +293,15 @@ export default class Report extends Document {
         let groupsFormat = format.groups;
         let style = {};
         if (typeof(row[columnsFormat.length].groupLevel) !== "undefined") {
-            if (typeof(row[columnsFormat.length].groupColumn) === "undefined" ||
-                !groupsFormat[row[columnsFormat.length].groupColumn].style) {
-                style.fontWeight = 'bold';
-                style.backgroundColor = "#CCCCCC";
-            } else {
+            style = {fontWeight:'bold',backgroundColor:'#CCCCCC'};
+            if (groupsFormat[row[columnsFormat.length].groupColumn].style) {
                 style = groupsFormat[row[columnsFormat.length].groupColumn].style;
+            }
+            let groupFormat = groupsFormat[row[columnsFormat.length].groupColumn]
+
+            if (groupFormat["hierarchy"] && groupFormat["hierarchy"]["styles"] &&
+                groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel).length) {
+                style = groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel)[0].style;
             }
         }
         return (
