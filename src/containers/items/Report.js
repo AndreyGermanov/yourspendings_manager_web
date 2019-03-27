@@ -34,7 +34,8 @@ export default class ReportItemContainer extends DocumentContainer {
     mapStateToProps(state,ownProps) {
         return Object.assign(super.mapStateToProps(state,ownProps),{
             fullScreen: ownProps ? ownProps.fullScreen : false,
-            reportData: state.reportData ? state.reportData: []
+            reportData: state.reportData ? state.reportData: [],
+            openedRows: state.openedRows ? state.openedRows: {}
         })
     }
 
@@ -54,7 +55,8 @@ export default class ReportItemContainer extends DocumentContainer {
             setQuerySortOrder: (rowIndex,sortOrder) => this.setQuerySortOrder(rowIndex,sortOrder),
             switchTab: (rowIndex,tab) => this.switchTab(rowIndex,tab),
             generateReport: () => this.generateReport(),
-            clearReport: () => this.clearReport()
+            clearReport: () => this.clearReport(),
+            switchRow: (rowNumber) => this.switchRow(rowNumber)
         });
     }
 
@@ -175,6 +177,13 @@ export default class ReportItemContainer extends DocumentContainer {
 
     clearReport() {
         Store.changeProperty("reportData",[]);
+    }
+
+    switchRow(rowNumber) {
+        let openedRows = this.getProps().openedRows
+        if (typeof(openedRows[rowNumber]) === "undefined") openedRows[rowNumber] = false;
+        openedRows[rowNumber] = !openedRows[rowNumber];
+        Store.changeProperty("openedRows",openedRows)
     }
 
 }

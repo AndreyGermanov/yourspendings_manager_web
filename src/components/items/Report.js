@@ -284,25 +284,36 @@ export default class Report extends Document {
     renderReportRows(query,format) {
         if (!query.length) return null;
         return query.map((row,rowIndex) => {
-            return this.renderReportRow(row,format)
+            return this.renderReportRow(query,row,rowIndex,format)
         })
     }
 
-    renderReportRow(row,format) {
+    renderReportRow(query,row,rowIndex,format) {
+        if (!this.isRowVisible(query,rowIndex,format)) return null;
         let columnsFormat = format.columns;
         let groupsFormat = format.groups;
         let style = {};
-        if (typeof(row[columnsFormat.length].groupLevel) !== "undefined") {
+        let openedRows = this.props.openedRows;
+        let groupFormat = null;
+        let hierarchyLevel = row[columnsFormat.length].hierarchyLevel ? row[columnsFormat.length].hierarchyLevel : 0;
+        if (groupsFormat && groupsFormat[row[columnsFormat.length].groupColumn])
+            groupFormat = groupsFormat[row[columnsFormat.length].groupColumn];
+        if (row[columnsFormat.length].totalsRow) {
+            if (format.totals && format.totals.style)
+                style = format.totals.style;
+            else
+                style = {fontWeight:'bold',backgroundColor:"#CCCCCC"}
+        } else if (groupFormat) {
             style = {fontWeight:'bold',backgroundColor:'#CCCCCC'};
-            if (groupsFormat[row[columnsFormat.length].groupColumn].style) {
-                style = groupsFormat[row[columnsFormat.length].groupColumn].style;
+            if (groupFormat.style) {
+                style = groupFormat.style;
             }
-            let groupFormat = groupsFormat[row[columnsFormat.length].groupColumn]
 
             if (groupFormat["hierarchy"] && groupFormat["hierarchy"]["styles"] &&
                 groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel).length) {
                 style = groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel)[0].style;
             }
+            style.paddingLeft = hierarchyLevel*10;
         }
         return (
             <tr key={"report_row_"+row}>
@@ -310,10 +321,41 @@ export default class Report extends Document {
                     row.map((value,column_index) => {
                         if (column_index >= columnsFormat.length) return null;
                         if (columnsFormat[column_index].hidden) return null;
-                        return <td style={style} key={"report_row_"+row+"_"+column_index}>{value}</td>
+                        let text = value;
+                        if (groupFormat && groupFormat.collapsed && column_index == groupFormat.fieldIndex)
+                            text = <table style={{width:'100%'}}><tbody><tr style={{verticalAlign:'top'}}><td style={style}>
+                                <Button className="btn-xs btn-info"
+                                      iconClass={"glyphicon "+(openedRows[rowIndex] ? "glyphicon-minus" : "glyphicon-plus")}
+                                      onPress={() =>  this.props.switchRow(rowIndex)}
+                                />
+                            </td><td style={{width:'100%',paddingLeft:10}}>{value}</td></tr></tbody></table>
+                        return <td style={style} key={"report_row_"+row+"_"+column_index}>{text}</td>
                     })
                 }
             </tr>
         )
+    }
+
+    isRowVisible(query,rowIndex,format) {
+        let openRows = this.props.openedRows;
+        let row = query[rowIndex];
+        let metadata = row[row.length-1];
+        let groupsFormat = format.groups;
+        let columnsFormat = format.columns;
+        let groupFormat = {};
+        while (typeof(metadata) !== 'undefined' && typeof(metadata.parent) !== 'undefined') {
+            let parentRow = query[metadata.parent];
+            if (groupsFormat && groupsFormat[parentRow[columnsFormat.length].groupColumn]) {
+                groupFormat = groupsFormat[parentRow[columnsFormat.length].groupColumn]
+            }
+            if (typeof(openRows[metadata.parent]) === "undefined" || !openRows[metadata.parent]) {
+                if (groupFormat.collapsed) return false;
+            }
+            //if (typeof(openRows[metadata.parent]) !== "undefined" && openRows[metadata.parent]) return true;
+            if (groupFormat.collapsed && !openRows[metadata.parent]) return false;
+            metadata = parentRow[parentRow.length-1];
+        }
+        return true;
+
     }
 }
