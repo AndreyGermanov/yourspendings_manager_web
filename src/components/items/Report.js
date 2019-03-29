@@ -231,6 +231,10 @@ export default class Report extends Document {
             <div className="col-sm-12" key={"resultBlock"}>
                 <Button className="btn btn-success" iconClass="glyphicon glyphicon-refresh" text={t("Generate")}
                         onPress={()=>this.props.generateReport()} style={{marginRight:5}}/>
+                { this.props.reportData && this.props.reportData.length ?
+                <Button className="btn btn-primary" iconClass="glyphicon glyphicon-save" text={t("Export CSV")}
+                        onPress={()=>this.props.exportCsv()} style={{marginRight:5}}/>
+                : null }
                 <Button className="btn btn-info" iconClass="glyphicon glyphicon-remove" text={t("Clear")}
                         onPress={()=>this.props.clearReport()} style={{paddingRight:5}}/>
                 <div className="col-sm-12 scrollTableContainer" style={{marginTop:10,height:500}}>

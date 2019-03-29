@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import Store from "../../store/Store";
 import async from 'async';
 import t from '../../utils/translate/translate';
+import exportCsv from '../../utils/csv';
 
 export default class ReportItemContainer extends DocumentContainer {
 
@@ -56,7 +57,8 @@ export default class ReportItemContainer extends DocumentContainer {
             switchTab: (rowIndex,tab) => this.switchTab(rowIndex,tab),
             generateReport: () => this.generateReport(),
             clearReport: () => this.clearReport(),
-            switchRow: (rowNumber) => this.switchRow(rowNumber)
+            switchRow: (rowNumber) => this.switchRow(rowNumber),
+            exportCsv: () => this.exportCsv()
         });
     }
 
@@ -184,6 +186,13 @@ export default class ReportItemContainer extends DocumentContainer {
         if (typeof(openedRows[rowNumber]) === "undefined") openedRows[rowNumber] = false;
         openedRows[rowNumber] = !openedRows[rowNumber];
         Store.changeProperty("openedRows",openedRows)
+    }
+
+    exportCsv() {
+        let data = this.getProps().reportData;
+        if (data && data.length) {
+            exportCsv(this.getProps().item.name+".csv",data[0])
+        }
     }
 
 }
