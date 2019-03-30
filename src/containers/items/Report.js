@@ -110,6 +110,7 @@ export default class ReportItemContainer extends DocumentContainer {
      * @param isVisible - If true, then show, if false then hide
      */
     setQueryVisible(rowIndex,isVisible) {
+        this.clearReport();
         this.changeTableField("reportQuery","queries",rowIndex,"visible",isVisible)
     }
 
@@ -119,6 +120,7 @@ export default class ReportItemContainer extends DocumentContainer {
      * @param rowIndex2 - index of second row to swap
      */
     setQuerySortOrder(rowIndex1,rowIndex2) {
+        this.clearReport();
         let queries = this.getProps().item.queries;
         let sortOrder1 = queries[rowIndex1].order;
         let sortOrder2 = queries[rowIndex2].order;
@@ -168,10 +170,22 @@ export default class ReportItemContainer extends DocumentContainer {
         if (typeof(callback) != "function") callback = () => {};
         if (!this.validateItem()) return;
         let item = this.getProps().item;
-        this.model.generateReport(item,(error,reportData) => {
+        this.model.generateReport(item,(error,reports) => {
             if (error) {
                 Store.changeProperty("errors",{general:t("Internal error")});return;
             }
+            let reportData = [];
+            reports.forEach((rows,index) => {
+                let format = {
+                    title: t('Report')+" # "+index,
+                    columns: []
+                }
+                try {
+                    format = JSON.parse(item.queries.filter(query=>query.enabled)[index].outputFormat)
+                } catch (e) {
+                }
+                reportData.push({format:format,data:rows});
+            })
             Store.changeProperty("reportData",reportData);
             if (callback) callback();
         });
@@ -189,9 +203,11 @@ export default class ReportItemContainer extends DocumentContainer {
     }
 
     exportCsv() {
-        let data = this.getProps().reportData;
-        if (data && data.length) {
-            exportCsv(this.getProps().item.name+".csv",data[0])
+        let reports = this.getProps().reportData;
+        if (reports && reports.length) {
+            reports.forEach((report) => {
+                exportCsv(this.getProps().item.name+"-"+report.format.title+".csv",report.data)
+            })
         }
     }
 

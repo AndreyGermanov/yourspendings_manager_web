@@ -4,6 +4,7 @@ import t from "../../utils/translate/translate";
 import {Button,Input,Checkbox} from '../../components/ui/Form';
 import {QueryTab} from "../../models/ReportQuery";
 import Models from '../../models/Models';
+import _ from 'lodash';
 
 /**
  * Component used to manage "Report" item page
@@ -249,28 +250,21 @@ export default class Report extends Document {
     }
 
     renderReport(query,rowIndex,item) {
-        let format = {
-            title: t('Report')+" # "+rowIndex,
-            columns: []
-        }
-        try {
-            format = JSON.parse(item.queries.filter(query=>query.enabled)[rowIndex].outputFormat)
-        } catch (e) {
-        }
         return [
-            <h3 key={"report_result_title_"+rowIndex}>{format.title}</h3>,
+            <h3 key={"report_result_title_"+rowIndex}>{query.format.title}</h3>,
             <table key={"report_result_table_"+rowIndex} className="table table-bordered table-condensed">
                 <tbody>
-                    {this.renderReportHeader(query,format)}
-                    {this.renderReportRows(query,format)}
+                    {this.renderReportHeader(query)}
+                    {this.renderReportRows(query)}
                 </tbody>
             </table>
         ]
     }
 
-    renderReportHeader(query,format) {
-        if (!query.length) return null;
-        let firstRow = query[0];
+    renderReportHeader(query) {
+        if (!query.data || !query.data.length) return null;
+        let firstRow = query.data[0];
+        let format = query.format;
         return (
             <tr>
                 {firstRow.map((value,column_index) => {
@@ -285,15 +279,16 @@ export default class Report extends Document {
         )
     }
 
-    renderReportRows(query,format) {
-        if (!query.length) return null;
-        return query.map((row,rowIndex) => {
-            return this.renderReportRow(query,row,rowIndex,format)
+    renderReportRows(query) {
+        if (!query.data || !query.data.length) return null;
+        return query.data.map((row,rowIndex) => {
+            return this.renderReportRow(query,row,rowIndex)
         })
     }
 
-    renderReportRow(query,row,rowIndex,format) {
-        if (!this.isRowVisible(query,rowIndex,format)) return null;
+    renderReportRow(query,row,rowIndex) {
+        if (!this.isRowVisible(query,rowIndex)) return null;
+        let format = query.format;
         let columnsFormat = format.columns;
         let groupsFormat = format.groups;
         let style = {};
@@ -310,12 +305,12 @@ export default class Report extends Document {
         } else if (groupFormat) {
             style = {fontWeight:'bold',backgroundColor:'#CCCCCC'};
             if (groupFormat.style) {
-                style = groupFormat.style;
+                style = _.cloneDeep(groupFormat.style);
             }
 
             if (groupFormat["hierarchy"] && groupFormat["hierarchy"]["styles"] &&
                 groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel).length) {
-                style = groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel)[0].style;
+                style = _.cloneDeep(groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel)[0].style);
             }
             style.paddingLeft = hierarchyLevel*10;
         }
@@ -326,7 +321,7 @@ export default class Report extends Document {
                         if (column_index >= columnsFormat.length) return null;
                         if (columnsFormat[column_index].hidden) return null;
                         let text = value;
-                        if (groupFormat && groupFormat.collapsed && column_index == groupFormat.fieldIndex)
+                        if (groupFormat && groupFormat.collapsed && column_index == this.getColumnIndex(groupFormat.fieldIndex,columnsFormat))
                             text = <table style={{width:'100%'}}><tbody><tr style={{verticalAlign:'top'}}><td style={style}>
                                 <Button className="btn-xs btn-info"
                                       iconClass={"glyphicon "+(openedRows[rowIndex] ? "glyphicon-minus" : "glyphicon-plus")}
@@ -340,26 +335,30 @@ export default class Report extends Document {
         )
     }
 
-    isRowVisible(query,rowIndex,format) {
+    getColumnIndex(fieldId,columns) {
+        if (!isNaN(parseInt(fieldId))) return fieldId;
+        let column = columns.filter((item) => item.id == fieldId)[0]
+        if (column && typeof(column) != undefined) return columns.indexOf(column)
+    }
+
+    isRowVisible(query,rowIndex) {
         let openRows = this.props.openedRows;
-        let row = query[rowIndex];
+        let row = query.data[rowIndex];
         let metadata = row[row.length-1];
-        let groupsFormat = format.groups;
-        let columnsFormat = format.columns;
+        let groupsFormat = query.format.groups;
+        let columnsFormat = query.format.columns;
         let groupFormat = {};
         while (typeof(metadata) !== 'undefined' && typeof(metadata.parent) !== 'undefined') {
-            let parentRow = query[metadata.parent];
+            let parentRow = query.data[metadata.parent];
             if (groupsFormat && groupsFormat[parentRow[columnsFormat.length].groupColumn]) {
                 groupFormat = groupsFormat[parentRow[columnsFormat.length].groupColumn]
             }
             if (typeof(openRows[metadata.parent]) === "undefined" || !openRows[metadata.parent]) {
                 if (groupFormat.collapsed) return false;
             }
-            //if (typeof(openRows[metadata.parent]) !== "undefined" && openRows[metadata.parent]) return true;
             if (groupFormat.collapsed && !openRows[metadata.parent]) return false;
             metadata = parentRow[parentRow.length-1];
         }
         return true;
-
     }
 }
