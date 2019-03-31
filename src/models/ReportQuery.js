@@ -34,6 +34,7 @@ export default class ReportQuery extends Entity {
         if (!item.params) item.params = "";
         if (!item.outputFormat) item.outputFormat = "";
         if (!item.report) item.report = 0;
+        if (!item.postScript) item.postScript = "";
         if (!item.visibleTab) item.visibleTab = QueryTab.Query;
         return item;
     }
@@ -51,6 +52,7 @@ export default class ReportQuery extends Entity {
             "query": t("Query"),
             "params": t("Query Parameters"),
             "outputFormat":t("Output Format"),
+            "postScript":t("Post Script"),
             "report":t("Report"),
             "visibleTab":t("Visible Tab")
         }
@@ -102,6 +104,11 @@ export default class ReportQuery extends Entity {
         return this.cleanStringField(value);
     }
 
+    cleanField_postScript(value) {
+        return this.cleanStringField(value)
+    }
+
+
     /******************************************************************************
      * Methods which transforms values of item fields from form fields to values, *
      * ready to be in application state and in database                           *
@@ -115,5 +122,6 @@ export default class ReportQuery extends Entity {
 export const QueryTab = {
     Query: 'QueryTab_Query',
     Params: 'QueryTab_Params',
-    Format: 'QueryTab_Format'
+    Format: 'QueryTab_Format',
+    PostScript: 'QueryTab_PostScript'
 }

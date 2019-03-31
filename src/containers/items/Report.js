@@ -184,8 +184,22 @@ export default class ReportItemContainer extends DocumentContainer {
                     format = JSON.parse(item.queries.filter(query=>query.enabled)[index].outputFormat)
                 } catch (e) {
                 }
-                reportData.push({format:format,data:rows});
-            })
+                let report = {format:format,data:rows};
+                try {
+                    let postScript = item.queries.filter(query=>query.enabled)[index].postScript;
+                    if (postScript && postScript.length) {
+                        let func = eval(postScript);
+                        report = func(report);
+                    }
+                } catch (e) { };
+                reportData.push(report);
+            });
+            if (item.postScript && item.postScript.length) {
+                try {
+                    let func = eval(item.postScript);
+                    reportData = func(reportData);
+                } catch (e) {};
+            }
             Store.changeProperty("reportData",reportData);
             if (callback) callback();
         });

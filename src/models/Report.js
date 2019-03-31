@@ -28,6 +28,7 @@ export default class Report extends Document {
         item = super.initItem(item);
         if (!item.name) item.name = "";
         if (!item.queries) item.queries = [];
+        if (!item.postScript) item.postScript = "";
         return item;
     }
 
@@ -38,6 +39,7 @@ export default class Report extends Document {
     getFieldLabels() {
         return {
             "name":t("Name"),
+            "postScript":t("Post Script"),
             "queries": t("Queries")
         }
     }
@@ -70,5 +72,9 @@ export default class Report extends Document {
 
     cleanField_name(value) {
         return this.cleanStringField(value);
+    }
+
+    cleanField_postScript(value) {
+        return this.cleanStringField(value)
     }
 }

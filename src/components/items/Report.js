@@ -42,7 +42,17 @@ export default class Report extends Document {
                 <Button onPress={() => this.props.saveToBackend()} text={t("Save")}
                         iconClass="glyphicon glyphicon-ok"/>
             </div>,
-            this.renderResultBlock(item)
+            this.renderResultBlock(item),
+            <div className="form-group col-sm-12" key="f5" style={{marginTop:20}}><label>{t("Post Script")}</label></div>,
+            <div className="form-group col-sm-12" key="f6" style={{marginTop:20}}>
+                <Input name="postScript" value={item["postScript"]}
+                       codeMirror={{
+                           mode:'text/javascript',
+                           lineNumbers:true
+                       }}
+                       multiline={true}
+                />
+            </div>
         ]
     }
 
@@ -184,6 +194,8 @@ export default class Report extends Document {
                        onClick={()=>this.props.switchTab(index,QueryTab.Params)}>{t("Parameters")}</a>&nbsp;
                     <a style={{fontWeight: query.visibleTab===QueryTab.Format ? 'bold' : 'normal'}}
                        onClick={()=>this.props.switchTab(index,QueryTab.Format)}>{t("Format")}</a>&nbsp;
+                    <a style={{fontWeight: query.visibleTab===QueryTab.PostScript ? 'bold' : 'normal'}}
+                       onClick={()=>this.props.switchTab(index,QueryTab.PostScript)}>{t("Post Script")}</a>&nbsp;
                     <br/><br/>
                     {query.visibleTab === QueryTab.Query ?
                         <Input name="query" value={query.query} containerClass="tableInputContainer"
@@ -211,6 +223,18 @@ export default class Report extends Document {
                     }
                     {query.visibleTab === QueryTab.Format ?
                         <Input name="outputFormat" value={query.outputFormat} containerClass="tableInputContainer"
+                               ownerProps={{errors:props.errors[index]}}
+                               codeMirror={{
+                                   mode:'text/javascript',
+                                   lineNumbers:true
+                               }}
+                               inputClass="tableInput"
+                               multiline={true}
+                               onChange={(name,text)=>this.props.changeTableField("reportQuery","queries",index,name,text)}/>
+                        : null
+                    }
+                    {query.visibleTab === QueryTab.PostScript ?
+                        <Input name="postScript" value={query.postScript} containerClass="tableInputContainer"
                                ownerProps={{errors:props.errors[index]}}
                                codeMirror={{
                                    mode:'text/javascript',
@@ -337,8 +361,8 @@ export default class Report extends Document {
 
     getColumnIndex(fieldId,columns) {
         if (!isNaN(parseInt(fieldId))) return fieldId;
-        let column = columns.filter((item) => item.id == fieldId)[0]
-        if (column && typeof(column) != undefined) return columns.indexOf(column)
+        let column = columns.filter((item) => item.id == fieldId)[0];
+        if (column && typeof(column) != undefined) return columns.indexOf(column);
     }
 
     isRowVisible(query,rowIndex) {

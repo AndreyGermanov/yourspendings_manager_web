@@ -64,11 +64,16 @@ class FormInputField extends FormField {
     componentDidMount() {
         const props = this.getProps();
         if (this.ref && props.codeMirror) {
-            let editor = CodeMirror.fromTextArea(this.ref,props.codeMirror)
-            editor.on("change",() => {
-               props.onChange(props.name,editor.getValue())
+            this.editor = CodeMirror.fromTextArea(this.ref,props.codeMirror)
+            this.editor.on("change",() => {
+               props.onChange(props.name,this.editor.getValue())
             })
         }
+    }
+
+    componentDidUpdate() {
+        const props = this.getProps();
+        if (this.editor && !this.editor.getValue()) this.editor.setValue(props.value);
     }
 }
 
