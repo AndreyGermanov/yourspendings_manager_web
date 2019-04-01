@@ -59,6 +59,13 @@ class Entity extends Component {
         result.push(<Button key="back_btn" className="btn btn-primary list-nav" text={t("Назад")}
                             onPress={() => window.location.href = '#'+this.props.collectionName}
                             iconClass="glyphicon glyphicon-arrow-left"/>);
+        if (this.props.item.uid)
+            result.push(<Button key="copy_btn" className="btn btn-success list-nav" text={t("Copy")}
+                                onPress={() => {
+                                    window.location.href = "#/"+this.props.model.itemName+"/copy_"+this.props.item.uid
+                                    window.location.reload();
+                                }}
+                                iconClass="glyphicon glyphicon-plus"/>)
         return <div style={{paddingBottom:'10px'}}>{result}</div>;
     }
 

@@ -65,16 +65,21 @@ export default class EntityItemContainer extends EntityContainer {
         if (!callback) callback = () => null;
         const state = Store.getState();
         const item = _.cloneDeep(state.item);
+        let isCopy = false;
         if (uid === "new") {
             item[this.model.itemName] = this.initItem({});
             Store.changeProperties({'item':item,'errors':{}})
             Store.store.dispatch(actions.changeProperty('item',item));
             callback();
             return;
+        } else if (uid.search("copy_") !== -1) {
+            uid = parseInt(uid.split("_").pop());
+            isCopy = true;
         }
         Store.store.dispatch(actions.changeProperties({"isUpdating":true,"errors":{}}));
         this.model.getItem(uid,{},(err,result) => {
             if (err) result = {};
+            if (isCopy) delete result["uid"];
             item[self.model.itemName] = result;
             Store.store.dispatch(actions.changeProperties({'item':item,'isUpdating':false}));
             callback()
