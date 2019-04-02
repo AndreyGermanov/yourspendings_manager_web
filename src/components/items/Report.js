@@ -175,6 +175,9 @@ export default class Report extends Document {
                                                          iconClass="glyphicon glyphicon-arrow-down"
                                                          onPress={() => this.props.setQuerySortOrder(index,index+1)}
                 /> : null }
+                <Button className="btn-xs btn-warning" iconClass="glyphicon glyphicon-duplicate"
+                        onPress={() => this.props.copyQuery(index)}
+                />
                 <Button className="btn-xs btn-danger" iconClass="glyphicon glyphicon-remove"
                         onPress={() => this.props.removeQuery(index)}
                 />
@@ -292,11 +295,12 @@ export default class Report extends Document {
         return (
             <tr>
                 {firstRow.map((value,column_index) => {
-                    if (column_index >= format.columns.length) return null;
+                    if (column_index >= format.columns.length && format.columns.length) return null;
+                    if (column_index === firstRow.length-1) return null;
                     let title = column_index;
                     if (format.columns && format.columns[column_index] && format.columns[column_index].title)
                         title = format.columns[column_index].title
-                    if (format.columns[column_index].hidden) return null;
+                    if (format.columns.length && format.columns[column_index].hidden) return null;
                     return <th key={"report_"+firstRow+"_"+column_index}>{title}</th>
                 })}
             </tr>
@@ -336,23 +340,29 @@ export default class Report extends Document {
                 groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel).length) {
                 style = _.cloneDeep(groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel)[0].style);
             }
-            style.paddingLeft = hierarchyLevel*10;
+            if (groupFormat.collapsed) style.paddingLeft = hierarchyLevel*10;
         }
+        let styles = row[columnsFormat.length].styles;
         return (
-            <tr key={"report_row_"+row}>
+            <tr key={"report_row_"+row+"_"+rowIndex}>
                 {
                     row.map((value,column_index) => {
-                        if (column_index >= columnsFormat.length) return null;
-                        if (columnsFormat[column_index].hidden) return null;
+                        if (column_index >= columnsFormat.length && columnsFormat.length) return null;
+                        if (columnsFormat.length && columnsFormat[column_index].hidden) return null;
+                        if (column_index === row.length-1) return null;
                         let text = value;
+                        let columnStyle = _.cloneDeep(style);
+                        if (styles && styles[column_index]) {
+                            columnStyle = Object.assign(columnStyle,styles[column_index]);
+                        }
                         if (groupFormat && groupFormat.collapsed && column_index == this.getColumnIndex(groupFormat.fieldIndex,columnsFormat))
-                            text = <table style={{width:'100%'}}><tbody><tr style={{verticalAlign:'top'}}><td style={style}>
+                            text = <table style={{width:'100%'}}><tbody><tr style={{verticalAlign:'top'}}><td style={columnStyle}>
                                 <Button className="btn-xs btn-info"
                                       iconClass={"glyphicon "+(openedRows[rowIndex] ? "glyphicon-minus" : "glyphicon-plus")}
                                       onPress={() =>  this.props.switchRow(rowIndex)}
                                 />
                             </td><td style={{width:'100%',paddingLeft:10}}>{value}</td></tr></tbody></table>
-                        return <td style={style} key={"report_row_"+row+"_"+column_index}>{text}</td>
+                        return <td style={columnStyle} key={"report_row_"+rowIndex+"_"+column_index}>{text}</td>
                     })
                 }
             </tr>
@@ -372,16 +382,19 @@ export default class Report extends Document {
         let groupsFormat = query.format.groups;
         let columnsFormat = query.format.columns;
         let groupFormat = {};
-        while (typeof(metadata) !== 'undefined' && typeof(metadata.parent) !== 'undefined') {
+        while (typeof(metadata) !== 'undefined' && metadata && typeof(metadata.parent) !== 'undefined') {
             let parentRow = query.data[metadata.parent];
-            if (groupsFormat && groupsFormat[parentRow[columnsFormat.length].groupColumn]) {
+            if (groupsFormat && parentRow && groupsFormat[parentRow[columnsFormat.length].groupColumn]) {
                 groupFormat = groupsFormat[parentRow[columnsFormat.length].groupColumn]
             }
             if (typeof(openRows[metadata.parent]) === "undefined" || !openRows[metadata.parent]) {
                 if (groupFormat.collapsed) return false;
             }
             if (groupFormat.collapsed && !openRows[metadata.parent]) return false;
-            metadata = parentRow[parentRow.length-1];
+            if (parentRow)
+                metadata = parentRow[parentRow.length-1];
+            else
+                metadata = null;
         }
         return true;
     }

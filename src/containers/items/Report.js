@@ -9,6 +9,7 @@ import Store from "../../store/Store";
 import async from 'async';
 import t from '../../utils/translate/translate';
 import exportCsv from '../../utils/csv';
+import _ from 'lodash';
 
 export default class ReportItemContainer extends DocumentContainer {
 
@@ -49,6 +50,7 @@ export default class ReportItemContainer extends DocumentContainer {
         return Object.assign(super.mapDispatchToProps(dispatch), {
             getQueriesTableLabels: () =>  this.getQueriesTableLabels(),
             addQuery: () => this.addQuery(),
+            copyQuery: (index) => this.copyQuery(index),
             removeQuery: (index) => this.removeQuery(index),
             changeTableField: (modelName,collectionName,rowIndex,fieldName,e) =>
                 this.changeTableField(modelName,collectionName,rowIndex,fieldName,e),
@@ -95,11 +97,22 @@ export default class ReportItemContainer extends DocumentContainer {
     /**
      * Method used to add new empty row in queries table
      */
-    addQuery(container) {
+    addQuery() {
         let item = this.getProps().item;
         let query = Models.getInstanceOf("reportQuery");
         item.queries.push(query.initItem({report:item["uid"],order:item.queries.length}));
         let stateItem = Store.getState().item;
+        stateItem[this.model.itemName] = item;
+        Store.changeProperty("item",stateItem);
+    }
+
+    copyQuery(index) {
+        let item = this.getProps().item;
+        let query = _.cloneDeep(item.queries[index]);
+        console.log(query);
+        query['order'] = item.queries.length;
+        let stateItem = Store.getState().item;
+        item.queries.push(query);
         stateItem[this.model.itemName] = item;
         Store.changeProperty("item",stateItem);
     }
@@ -184,6 +197,7 @@ export default class ReportItemContainer extends DocumentContainer {
                     format = JSON.parse(item.queries.filter(query=>query.enabled)[index].outputFormat)
                 } catch (e) {
                 }
+                if (!format.title) format.title = item.queries.filter(query=>query.enabled)[index].name;
                 let report = {format:format,data:rows};
                 try {
                     let postScript = item.queries.filter(query=>query.enabled)[index].postScript;

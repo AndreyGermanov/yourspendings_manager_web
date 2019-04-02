@@ -188,6 +188,9 @@ export default class Purchase extends Document {
                     <label>{t("Discount %")}: </label>&nbsp;{totals.discountPr.toFixed(2)}
                 </td>
                 <td>
+                    <Button className="btn-xs btn-warning" iconClass="glyphicon glyphicon-duplicate"
+                            onPress={() => this.props.copyProduct(index)}
+                    />
                     <Button className="btn-xs btn-danger" iconClass="glyphicon glyphicon-remove"
                         onPress={() => this.props.removeProduct(index)}
                     />

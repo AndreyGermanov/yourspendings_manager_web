@@ -7,6 +7,7 @@ import {Item} from '../../components/Components';
 import {connect} from 'react-redux';
 import Store from "../../store/Store";
 import async from 'async';
+import _ from 'lodash';
 const $ = require('jquery');
 
 export default class PurchaseItemContainer extends DocumentContainer {
@@ -50,6 +51,7 @@ export default class PurchaseItemContainer extends DocumentContainer {
             decrementPurchaseImage: () => this.decrementPurchaseImage(),
             getProductTableLabels: () =>  this.getProductTableLabels(),
             addProduct: () => this.addProduct(),
+            copyProduct: (index) => this.copyProduct(index),
             removeProduct: (index) => this.removeProduct(index),
             getDiscountTableLabels: () =>  this.getDiscountTableLabels(),
             addDiscount: () => this.addDiscount(),
@@ -114,12 +116,25 @@ export default class PurchaseItemContainer extends DocumentContainer {
     }
 
     /**
-     * Method used to add new empty row in discounts table
+     * Method used to add new empty row in products table
      */
     addProduct(container) {
         let item = this.getProps().item;
         let product = Models.getInstanceOf("purchaseProduct");
         item.products.push(product.initItem({purchase:item["uid"]}));
+        let stateItem = Store.getState().item;
+        stateItem[this.model.itemName] = item;
+        Store.changeProperty("item",stateItem);
+    }
+
+    /**
+     * Method used to add copy of row to products table
+     */
+    copyProduct(index) {
+        let item = this.getProps().item;
+        let product = _.cloneDeep(item.products[index]);
+        console.log(product);
+        item.products.push(product);
         let stateItem = Store.getState().item;
         stateItem[this.model.itemName] = item;
         Store.changeProperty("item",stateItem);
