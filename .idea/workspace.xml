@@ -3,11 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a036bba3-3abb-4cc3-83d7-ee8c42346cc4" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/items/Purchase.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/items/Purchase.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/items/Report.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/items/Report.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/items/Purchase.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/items/Purchase.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/containers/items/Report.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/items/Report.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/csv.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/csv.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/ReportQuery.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/ReportQuery.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -24,8 +22,8 @@
       <file leaf-file-name="Report.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/components/items/Report.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="524">
-              <caret line="342" column="39" selection-start-line="342" selection-start-column="39" selection-end-line="342" selection-end-column="39" />
+            <state relative-caret-position="875">
+              <caret line="360" column="16" lean-forward="true" selection-start-line="360" selection-start-column="16" selection-end-line="360" selection-end-column="16" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -37,7 +35,7 @@
         <entry file="file://$PROJECT_DIR$/src/utils/csv.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="60">
-              <caret line="4" column="36" lean-forward="true" selection-start-line="4" selection-start-column="36" selection-end-line="4" selection-end-column="36" />
+              <caret line="4" column="36" selection-start-line="4" selection-start-column="36" selection-end-line="4" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -54,7 +52,7 @@
       <file leaf-file-name="Report.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/models/Report.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="314">
+            <state relative-caret-position="440">
               <caret line="40" column="29" selection-start-line="40" selection-start-column="29" selection-end-line="40" selection-end-column="29" />
               <folding>
                 <element signature="e#0#34#0" expanded="true" />
@@ -66,8 +64,8 @@
       <file leaf-file-name="ReportQuery.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/models/ReportQuery.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1830">
-              <caret line="124" column="30" selection-start-line="124" selection-start-column="30" selection-end-line="124" selection-end-column="30" />
+            <state relative-caret-position="-835">
+              <caret line="29" selection-start-line="29" selection-end-line="29" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
               </folding>
@@ -78,7 +76,7 @@
       <file leaf-file-name="Entity.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/containers/items/Entity.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1125">
+            <state relative-caret-position="15">
               <caret line="80" column="33" selection-start-line="80" selection-start-column="33" selection-end-line="80" selection-end-column="33" />
             </state>
           </provider>
@@ -87,8 +85,8 @@
       <file leaf-file-name="Report.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/containers/items/Report.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1023">
-              <caret line="220" selection-start-line="220" selection-end-line="220" />
+            <state relative-caret-position="500">
+              <caret line="222" column="56" selection-start-line="222" selection-start-column="56" selection-end-line="222" selection-end-column="56" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#117#160#0" expanded="true" />
@@ -100,7 +98,7 @@
       <file leaf-file-name="Purchase.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/containers/items/Purchase.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
+            <state relative-caret-position="390">
               <caret line="34" column="27" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
               <folding>
                 <element signature="e#117#160#0" expanded="true" />
@@ -219,14 +217,14 @@
         <option value="$PROJECT_DIR$/node_modules/convert-array-to-csv/lib/modules/convert-array-of-arrays-to-csv.js" />
         <option value="$PROJECT_DIR$/src/styles/App.css" />
         <option value="$PROJECT_DIR$/src/models/Report.js" />
-        <option value="$PROJECT_DIR$/src/models/ReportQuery.js" />
         <option value="$PROJECT_DIR$/src/components/ui/FormInputField.js" />
         <option value="$PROJECT_DIR$/src/containers/items/Entity.js" />
         <option value="$PROJECT_DIR$/src/components/items/Entity.js" />
         <option value="$PROJECT_DIR$/src/components/items/Purchase.js" />
         <option value="$PROJECT_DIR$/src/containers/items/Purchase.js" />
-        <option value="$PROJECT_DIR$/src/containers/items/Report.js" />
         <option value="$PROJECT_DIR$/src/utils/csv.js" />
+        <option value="$PROJECT_DIR$/src/models/ReportQuery.js" />
+        <option value="$PROJECT_DIR$/src/containers/items/Report.js" />
         <option value="$PROJECT_DIR$/src/components/items/Report.js" />
       </list>
     </option>
@@ -257,6 +255,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -336,7 +335,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="AndroidView" />
       <pane id="PackagesPane" />
     </panes>
@@ -489,7 +487,8 @@
       <workItem from="1554035870791" duration="6412000" />
       <workItem from="1554129601288" duration="3292000" />
       <workItem from="1554200715421" duration="3055000" />
-      <workItem from="1554207484236" duration="14531000" />
+      <workItem from="1554207484236" duration="14645000" />
+      <workItem from="1554270833956" duration="7369000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1549480665839</created>
@@ -687,11 +686,18 @@
       <option name="project" value="LOCAL" />
       <updated>1554148022846</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Implemented table row copy function for Purchases and Reports. Implement individual cell styling in reports. Fixed csv generation function.">
+      <created>1554237199142</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1554237199143</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="326109000" />
+    <option name="totallyTimeSpent" value="333592000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="45" y="0" width="1878" height="1058" extended-state="6" />
@@ -700,7 +706,7 @@
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16549486" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5002704" side_tool="true" visible="true" weight="0.15698925" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5002704" side_tool="true" visible="true" weight="0.06989247" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49972957" weight="0.32903227" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -708,6 +714,7 @@
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" id="Palette" order="4" />
+      <window_info anchor="right" id="Palette&#9;" order="4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Theme Preview" order="4" />
@@ -715,11 +722,10 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="RNConsole" order="11" />
       <window_info id="Designer" order="4" />
-      <window_info id="Image Layers" order="4" />
       <window_info id="UI Designer" order="4" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
       <window_info anchor="right" id="Database" order="4" />
-      <window_info anchor="right" id="Palette&#9;" order="4" />
+      <window_info id="Image Layers" order="4" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -735,7 +741,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Implement user profile info loading from backend to application state. Implemented dynamic building of main application menu, based on information in user profile. Implemented hierarchial application state and helper methods to extract properties on different hierarchy levels." />
     <MESSAGE value="Increase user profile load speed." />
     <MESSAGE value="Integrated WAB3 framework skeleton and added Products Category entity to it" />
     <MESSAGE value="Added Role model, container and component." />
@@ -760,7 +765,8 @@
     <MESSAGE value="Restructured format of reports data, received from server to include not only rows, but also formatting metadata of report. Refactoring &quot;Export to CSV&quot; function to export multiple CSV files for report groups. Added support for named columns usage in groups and sort order definitions." />
     <MESSAGE value="Implemented feature to execute custom script with generated report data before output it to the screen or to CSV (both for single query and for whole report group). Fixed CodeMirror text area value update issue." />
     <MESSAGE value="Implemented &quot;Copy&quot; function to create new entity based on existing." />
-    <option name="LAST_COMMIT_MESSAGE" value="Implemented &quot;Copy&quot; function to create new entity based on existing." />
+    <MESSAGE value="Implemented table row copy function for Purchases and Reports. Implement individual cell styling in reports. Fixed csv generation function." />
+    <option name="LAST_COMMIT_MESSAGE" value="Implemented table row copy function for Purchases and Reports. Implement individual cell styling in reports. Fixed csv generation function." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1032,27 +1038,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/models/ReportQuery.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1830">
-          <caret line="124" column="30" selection-start-line="124" selection-start-column="30" selection-end-line="124" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/models/Entity.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1710">
           <caret line="119" column="42" selection-start-line="119" selection-start-column="42" selection-end-line="119" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/containers/items/Entity.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1125">
-          <caret line="80" column="33" selection-start-line="80" selection-start-column="33" selection-end-line="80" selection-end-column="33" />
         </state>
       </provider>
     </entry>
@@ -1075,20 +1064,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/containers/items/Purchase.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
+        <state relative-caret-position="390">
           <caret line="34" column="27" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
           <folding>
-            <element signature="e#117#160#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/containers/items/Report.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1023">
-          <caret line="220" selection-start-line="220" selection-end-line="220" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
             <element signature="e#117#160#0" expanded="true" />
           </folding>
         </state>
@@ -1097,13 +1075,13 @@
     <entry file="file://$PROJECT_DIR$/src/utils/csv.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
-          <caret line="4" column="36" lean-forward="true" selection-start-line="4" selection-start-column="36" selection-end-line="4" selection-end-column="36" />
+          <caret line="4" column="36" selection-start-line="4" selection-start-column="36" selection-end-line="4" selection-end-column="36" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/models/Report.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
+        <state relative-caret-position="440">
           <caret line="40" column="29" selection-start-line="40" selection-start-column="29" selection-end-line="40" selection-end-column="29" />
           <folding>
             <element signature="e#0#34#0" expanded="true" />
@@ -1111,10 +1089,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/containers/items/Entity.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="80" column="33" selection-start-line="80" selection-start-column="33" selection-end-line="80" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/ReportQuery.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-835">
+          <caret line="29" selection-start-line="29" selection-end-line="29" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/containers/items/Report.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="222" column="56" selection-start-line="222" selection-start-column="56" selection-end-line="222" selection-end-column="56" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#117#160#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/items/Report.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="524">
-          <caret line="342" column="39" selection-start-line="342" selection-start-column="39" selection-end-line="342" selection-end-column="39" />
+        <state relative-caret-position="875">
+          <caret line="360" column="16" lean-forward="true" selection-start-line="360" selection-start-column="16" selection-end-line="360" selection-end-column="16" />
           <folding>
             <element signature="e#0#33#0" expanded="true" />
           </folding>

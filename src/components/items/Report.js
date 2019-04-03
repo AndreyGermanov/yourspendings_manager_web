@@ -199,6 +199,8 @@ export default class Report extends Document {
                        onClick={()=>this.props.switchTab(index,QueryTab.Format)}>{t("Format")}</a>&nbsp;
                     <a style={{fontWeight: query.visibleTab===QueryTab.PostScript ? 'bold' : 'normal'}}
                        onClick={()=>this.props.switchTab(index,QueryTab.PostScript)}>{t("Post Script")}</a>&nbsp;
+                    <a style={{fontWeight: query.visibleTab===QueryTab.EventHanders ? 'bold' : 'normal'}}
+                       onClick={()=>this.props.switchTab(index,QueryTab.EventHanders)}>{t("Event Handlers")}</a>&nbsp;
                     <br/><br/>
                     {query.visibleTab === QueryTab.Query ?
                         <Input name="query" value={query.query} containerClass="tableInputContainer"
@@ -238,6 +240,18 @@ export default class Report extends Document {
                     }
                     {query.visibleTab === QueryTab.PostScript ?
                         <Input name="postScript" value={query.postScript} containerClass="tableInputContainer"
+                               ownerProps={{errors:props.errors[index]}}
+                               codeMirror={{
+                                   mode:'text/javascript',
+                                   lineNumbers:true
+                               }}
+                               inputClass="tableInput"
+                               multiline={true}
+                               onChange={(name,text)=>this.props.changeTableField("reportQuery","queries",index,name,text)}/>
+                        : null
+                    }
+                    {query.visibleTab === QueryTab.EventHanders ?
+                        <Input name="eventHandlers" value={query.eventHandlers} containerClass="tableInputContainer"
                                ownerProps={{errors:props.errors[index]}}
                                codeMirror={{
                                    mode:'text/javascript',
@@ -295,12 +309,12 @@ export default class Report extends Document {
         return (
             <tr>
                 {firstRow.map((value,column_index) => {
-                    if (column_index >= format.columns.length && format.columns.length) return null;
+                    if (format.columns && column_index >= format.columns.length && format.columns.length) return null;
                     if (column_index === firstRow.length-1) return null;
                     let title = column_index;
                     if (format.columns && format.columns[column_index] && format.columns[column_index].title)
                         title = format.columns[column_index].title
-                    if (format.columns.length && format.columns[column_index].hidden) return null;
+                    if (format.columns && format.columns.length && format.columns[column_index].hidden) return null;
                     return <th key={"report_"+firstRow+"_"+column_index}>{title}</th>
                 })}
             </tr>
@@ -317,7 +331,7 @@ export default class Report extends Document {
     renderReportRow(query,row,rowIndex) {
         if (!this.isRowVisible(query,rowIndex)) return null;
         let format = query.format;
-        let columnsFormat = format.columns;
+        let columnsFormat = format.columns ? format.columns : [];
         let groupsFormat = format.groups;
         let style = {};
         let openedRows = this.props.openedRows;
@@ -343,6 +357,7 @@ export default class Report extends Document {
             if (groupFormat.collapsed) style.paddingLeft = hierarchyLevel*10;
         }
         let styles = row[columnsFormat.length].styles;
+        let onclick = query.eventHandlers && query.eventHandlers['onclick'] ? query.eventHandlers['onclick'] : () => {};
         return (
             <tr key={"report_row_"+row+"_"+rowIndex}>
                 {
@@ -361,8 +376,15 @@ export default class Report extends Document {
                                       iconClass={"glyphicon "+(openedRows[rowIndex] ? "glyphicon-minus" : "glyphicon-plus")}
                                       onPress={() =>  this.props.switchRow(rowIndex)}
                                 />
-                            </td><td style={{width:'100%',paddingLeft:10}}>{value}</td></tr></tbody></table>
-                        return <td style={columnStyle} key={"report_row_"+rowIndex+"_"+column_index}>{text}</td>
+                            </td>
+                            <td style={{width:'100%',paddingLeft:10}}>
+                                {value}
+                            </td></tr></tbody></table>
+                        return <td style={columnStyle}
+                                   key={"report_row_"+rowIndex+"_"+column_index}
+                                   onClick={() => onclick(row,rowIndex,column_index,this)}>
+                            {text}
+                        </td>
                     })
                 }
             </tr>

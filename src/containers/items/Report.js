@@ -100,7 +100,18 @@ export default class ReportItemContainer extends DocumentContainer {
     addQuery() {
         let item = this.getProps().item;
         let query = Models.getInstanceOf("reportQuery");
-        item.queries.push(query.initItem({report:item["uid"],order:item.queries.length}));
+        item.queries.push(query.initItem({
+            report:item["uid"],
+            enabled:true,
+            order:item.queries.length,
+            outputFormat:'{}',
+            params:'[]',
+            eventHandlers: '() => { ' +
+            '   return {' +
+                    'onclick: (row,index,context) => {};'+
+            '   }' +
+            '}'
+        }));
         let stateItem = Store.getState().item;
         stateItem[this.model.itemName] = item;
         Store.changeProperty("item",stateItem);
@@ -205,14 +216,21 @@ export default class ReportItemContainer extends DocumentContainer {
                         let func = eval(postScript);
                         report = func(report);
                     }
-                } catch (e) { };
+                } catch (e) { console.log(e);};
+                let eventHandlers = item.queries.filter(query=>query.enabled)[index].eventHandlers;
+                if (eventHandlers && eventHandlers.length) {
+                    try {
+                        let func = eval(eventHandlers)();
+                        report.eventHandlers = func;
+                    } catch (e) { console.log(e);}
+                }
                 reportData.push(report);
             });
             if (item.postScript && item.postScript.length) {
                 try {
                     let func = eval(item.postScript);
                     reportData = func(reportData);
-                } catch (e) {};
+                } catch (e) { console.log(e);};
             }
             Store.changeProperty("reportData",reportData);
             if (callback) callback();
@@ -234,7 +252,11 @@ export default class ReportItemContainer extends DocumentContainer {
         let reports = this.getProps().reportData;
         if (reports && reports.length) {
             reports.forEach((report) => {
-                exportCsv(this.getProps().item.name+"-"+report.format.title+".csv",report.data)
+                let data = _.cloneDeep(report.data);
+                if (report.format && report.format.columns && report.format.columns.length) {
+                    data.unshift(report.format.columns.map(column => column.title));
+                }
+                exportCsv(this.getProps().item.name+"-"+report.format.title+".csv",data)
             })
         }
     }
