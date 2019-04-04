@@ -5,6 +5,8 @@ import {Button,Input,Checkbox} from '../../components/ui/Form';
 import {QueryTab} from "../../models/ReportQuery";
 import Models from '../../models/Models';
 import _ from 'lodash';
+import JsxParser from 'react-jsx-parser';
+import ChartEngine from '../charts/ChartEngine';
 
 /**
  * Component used to manage "Report" item page
@@ -195,6 +197,8 @@ export default class Report extends Document {
                        onClick={()=>this.props.switchTab(index,QueryTab.Query)}>{t("Query")}</a>&nbsp;
                     <a style={{fontWeight: query.visibleTab===QueryTab.Params ? 'bold' : 'normal'}}
                        onClick={()=>this.props.switchTab(index,QueryTab.Params)}>{t("Parameters")}</a>&nbsp;
+                    <a style={{fontWeight: query.visibleTab===QueryTab.Layout ? 'bold' : 'normal'}}
+                       onClick={()=>this.props.switchTab(index,QueryTab.Layout)}>{t("Layout")}</a>&nbsp;
                     <a style={{fontWeight: query.visibleTab===QueryTab.Format ? 'bold' : 'normal'}}
                        onClick={()=>this.props.switchTab(index,QueryTab.Format)}>{t("Format")}</a>&nbsp;
                     <a style={{fontWeight: query.visibleTab===QueryTab.PostScript ? 'bold' : 'normal'}}
@@ -219,6 +223,18 @@ export default class Report extends Document {
                                ownerProps={{errors:props.errors[index]}}
                                codeMirror={{
                                    mode:'text/javascript',
+                                   lineNumbers:true
+                               }}
+                               inputClass="tableInput"
+                               multiline={true}
+                               onChange={(name,text)=>this.props.changeTableField("reportQuery","queries",index,name,text)}/>
+                        : null
+                    }
+                    {query.visibleTab === QueryTab.Layout ?
+                        <Input name="layout" value={query.layout} containerClass="tableInputContainer"
+                               ownerProps={{errors:props.errors[index]}}
+                               codeMirror={{
+                                   mode:'text/html',
                                    lineNumbers:true
                                }}
                                inputClass="tableInput"
@@ -291,6 +307,27 @@ export default class Report extends Document {
     }
 
     renderReport(query,rowIndex,item) {
+        let table = this.renderReportTable(query,rowIndex,item);
+        if (query.layout) {
+            let bindings = {};
+            if (query.format.displayTable !== false) bindings['table'] = table;
+            if (query.format.charts && query.format.charts.length) {
+                query.format.charts.forEach((chart) => {
+                    if (chart.display !== false) {
+                        bindings["chart_"+chart.id] = ChartEngine.getChartEngine(chart.engine,chart.id,chart.options[chart.engine])
+                    }
+                })
+            }
+            return <JsxParser key={"report_"+rowIndex}
+               bindings={bindings}
+               jsx={query.layout}
+            />
+        } else {
+            return table;
+        }
+    }
+
+    renderReportTable(query,rowIndex,item) {
         return [
             <h3 key={"report_result_title_"+rowIndex}>{query.format.title}</h3>,
             <table key={"report_result_table_"+rowIndex} className="table table-bordered table-condensed">

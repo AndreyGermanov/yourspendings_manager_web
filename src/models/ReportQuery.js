@@ -31,11 +31,16 @@ export default class ReportQuery extends Entity {
         if (!item.visible) item.visible = 0;
         if (!item.order) item.order = 0;
         if (!item.query) item.query = "";
-        if (!item.params) item.params = "";
-        if (!item.outputFormat) item.outputFormat = "";
+        if (!item.params) item.params = "[]";
+        if (!item.outputFormat) item.outputFormat = "{}";
         if (!item.report) item.report = 0;
-        if (!item.postScript) item.postScript = "";
-        if (!item.eventHandlers) item.eventHandlers = "";
+        if (!item.postScript) item.postScript = "(report) => { return report;}";
+        if (!item.eventHandlers) item.eventHandlers =  '() => { ' +
+            '   return {' +
+            '       onCellClick: (row,row_index,column_index,context) => {};'+
+            '   }' +
+            '}';
+        if (!item.layout) item.layout = "<div>{table}</div>";
         if (!item.visibleTab) item.visibleTab = QueryTab.Query;
         return item;
     }
@@ -55,6 +60,7 @@ export default class ReportQuery extends Entity {
             "outputFormat":t("Output Format"),
             "postScript":t("Post Script"),
             "eventHandlers":t("Event Handlers"),
+            "layout": t("Layout"),
             "report":t("Report"),
             "visibleTab":t("Visible Tab")
         }
@@ -114,6 +120,9 @@ export default class ReportQuery extends Entity {
         return this.cleanStringField(value)
     }
 
+    cleanField_layout(value) {
+        return this.cleanStringField(value)
+    }
 
     /******************************************************************************
      * Methods which transforms values of item fields from form fields to values, *
@@ -130,5 +139,6 @@ export const QueryTab = {
     Params: 'QueryTab_Params',
     Format: 'QueryTab_Format',
     PostScript: 'QueryTab_PostScript',
-    EventHanders: "QueryTab_EventHandlers"
-}
+    EventHanders: "QueryTab_EventHandlers",
+    Layout: "QueryTab_Layout"
+};

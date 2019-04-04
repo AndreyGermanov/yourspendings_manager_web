@@ -100,18 +100,7 @@ export default class ReportItemContainer extends DocumentContainer {
     addQuery() {
         let item = this.getProps().item;
         let query = Models.getInstanceOf("reportQuery");
-        item.queries.push(query.initItem({
-            report:item["uid"],
-            enabled:true,
-            order:item.queries.length,
-            outputFormat:'{}',
-            params:'[]',
-            eventHandlers: '() => { ' +
-            '   return {' +
-                    'onclick: (row,index,context) => {};'+
-            '   }' +
-            '}'
-        }));
+        item.queries.push(query.initItem({report:item["uid"], enabled:true, order:item.queries.length}));
         let stateItem = Store.getState().item;
         stateItem[this.model.itemName] = item;
         Store.changeProperty("item",stateItem);
@@ -224,6 +213,8 @@ export default class ReportItemContainer extends DocumentContainer {
                         report.eventHandlers = func;
                     } catch (e) { console.log(e);}
                 }
+                let layout = item.queries.filter(query=>query.enabled)[index].layout;
+                if (layout && layout.length) report.layout = layout;
                 reportData.push(report);
             });
             if (item.postScript && item.postScript.length) {

@@ -6,6 +6,7 @@ import CodeMirror from 'codemirror/lib/codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/sql/sql'
 import 'codemirror/mode/javascript/javascript'
+import 'codemirror/mode/htmlmixed/htmlmixed'
 
 /**
  * Component used to display Input field in the form
