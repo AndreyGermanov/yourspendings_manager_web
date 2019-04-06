@@ -32,6 +32,12 @@ export default class ChartEngine extends Component {
             parser = field["ys_config"]["parser"];
         if (typeof(this["parseOptionsField_"+parser]) === "function") {
             return this["parseOptionsField_"+parser](field["ys_config"])
+        }  else if (typeof(field["ys_config"]["function"] !== "undefined")) {
+            let func = eval(this.props.report.eventHandlers[field["ys_config"]["function"]["name"]]);
+            let args = [this.props.report,this.props.options,this];
+            if (typeof(field["ys_config"]["function"]["arguments"])!=="undefined")
+                args.push(field["ys_config"]["function"]["arguments"]);
+            return func.apply(this,args)
         }
         return field;
     }
@@ -54,8 +60,6 @@ export default class ChartEngine extends Component {
                 };
                 if (pass) result.push(row[columnId]);
             })
-        } else if (typeof(config["function"] !== "undefined")) {
-            console.log(this.report);
         }
         return result;
     }
