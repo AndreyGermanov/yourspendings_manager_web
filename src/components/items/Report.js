@@ -314,7 +314,8 @@ export default class Report extends Document {
             if (query.format.charts && query.format.charts.length) {
                 query.format.charts.forEach((chart) => {
                     if (chart.display !== false) {
-                        bindings["chart_"+chart.id] = ChartEngine.getChartEngine(chart.engine,chart.id,chart.options[chart.engine])
+                        bindings["chart_"+chart.id] =
+                            ChartEngine.getChartEngine(chart.engine,chart.id,chart.options[chart.engine],query)
                     }
                 })
             }
