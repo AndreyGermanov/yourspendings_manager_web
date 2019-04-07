@@ -249,7 +249,7 @@ export default class Report extends Document {
                                    mode:'text/javascript',
                                    lineNumbers:true
                                }}
-                               inputClass="tableInput"
+                               inputClass="codeMirror"
                                multiline={true}
                                onChange={(name,text)=>this.props.changeTableField("reportQuery","queries",index,name,text)}/>
                         : null
@@ -319,6 +319,7 @@ export default class Report extends Document {
                     }
                 })
             }
+            console.log(bindings);
             return <JsxParser key={"report_"+rowIndex}
                bindings={bindings}
                jsx={query.layout}

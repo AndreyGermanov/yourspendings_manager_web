@@ -27,13 +27,14 @@ export default class ChartEngine extends Component {
 
     parseOptionsField(field_id,field) {
         if (typeof(field["ys_config"]) === "undefined") return field;
-        let parser = field_id;
-        if (typeof(field["ys_config"]["parser"]) !== "undefined" && field["ys_config"]["parser"].length)
-            parser = field["ys_config"]["parser"];
-        if (typeof(this["parseOptionsField_"+parser]) === "function") {
-            return this["parseOptionsField_"+parser](field["ys_config"])
-        }  else if (typeof(field["ys_config"]["function"] !== "undefined")) {
-            let func = eval(this.props.report.eventHandlers[field["ys_config"]["function"]["name"]]);
+        if (typeof(field["ys_config"]["function"]) !== "undefined") {
+            let func = null;
+            if (typeof(this.props.report.eventHandlers[field["ys_config"]["function"]["name"]]) === "function") {
+                func = eval(this.props.report.eventHandlers[field["ys_config"]["function"]["name"]]);
+            } else if (typeof(this[field["ys_config"]["function"]["name"]]) === "function") {
+                func = this[field["ys_config"]["function"]["name"]]
+            }
+            if (!func) return field;
             let args = [this.props.report,this.props.options,this];
             if (typeof(field["ys_config"]["function"]["arguments"])!=="undefined")
                 args.push(field["ys_config"]["function"]["arguments"]);
@@ -42,7 +43,7 @@ export default class ChartEngine extends Component {
         return field;
     }
 
-    parseOptionsField_data(config) {
+    getDataColumn(report,options,context,config) {
         let result = [];
         if (typeof(config["column"]) !== "undefined") {
             let columnId = this.getDataColumnId(config["column"]);
@@ -50,25 +51,14 @@ export default class ChartEngine extends Component {
             this.props.report.data.forEach(row => {
                 if (typeof(config["condition"]) === "undefined") {result.push(row[columnId]);return};
                 let metadata = row[row.length-1];
-                let pass = true;
-                for (var condition in config["condition"]) {
-                    if (typeof(metadata[condition]) === "undefined" ||
-                        metadata[condition] !== config["condition"][condition]) {
-                        pass = false;
-                        break;
-                    }
-                };
+                let pass = this.calculateRowExpression(row,config["condition"]);
                 if (pass) result.push(row[columnId]);
             })
         }
         return result;
     }
 
-    parseOptionsField_labels(config) {
-        return this.parseOptionsField_data(config);
-    }
-
-    parseOptionsField_label(config) {
+    getConfigFieldValue(report,options,context,config) {
         if (typeof(config["report_field"]) !== "undefined") {
             return this.getExpressionValue("this.props.report",Store.getPropertyNameExpression(config["report_field"]));
         }
@@ -85,6 +75,15 @@ export default class ChartEngine extends Component {
 
     getExpressionValue(collection,expression) {
         return eval(collection+expression)
+    }
+
+    calculateRowExpression(row,expression) {
+        let metadata = row[row.length-1];
+        this.props.report.format.columns.forEach((column,index) => {
+            expression = expression.replace(new RegExp(column.id,'g'),"row["+index+"]");
+        });
+        console.log(expression);
+        return eval(expression);
     }
 
     static getChartEngine(type,id,options,report) {

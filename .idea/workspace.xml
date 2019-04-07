@@ -4,8 +4,8 @@
     <list default="true" id="a036bba3-3abb-4cc3-83d7-ee8c42346cc4" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/charts/ChartEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/charts/ChartEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/charts/ChartJSChartEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/charts/ChartJSChartEngine.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/items/Report.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/items/Report.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/styles/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/styles/App.css" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -22,20 +22,44 @@
       <file leaf-file-name="Report.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/items/Report.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="317" column="110" selection-start-line="317" selection-start-column="110" selection-end-line="317" selection-end-column="110" />
-              <folding>
-                <element signature="e#0#33#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="405">
+              <caret line="321" column="34" selection-start-line="321" selection-start-column="34" selection-end-line="321" selection-end-column="34" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ChartEngine.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Report.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/containers/items/Report.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="160">
+              <caret line="189" column="32" lean-forward="true" selection-start-line="189" selection-start-column="32" selection-end-line="189" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FormInputField.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/ui/FormInputField.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="885">
+              <caret line="67" column="76" lean-forward="true" selection-start-line="67" selection-start-column="76" selection-end-line="67" selection-end-column="76" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="App.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/styles/App.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="702">
+              <caret line="86" column="13" lean-forward="true" selection-start-line="86" selection-start-column="13" selection-end-line="86" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ChartEngine.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/components/charts/ChartEngine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="556">
-              <caret line="70" column="18" lean-forward="true" selection-start-line="70" selection-start-column="18" selection-end-line="70" selection-end-column="18" />
+            <state relative-caret-position="595">
+              <caret line="81" column="68" lean-forward="true" selection-start-line="81" selection-start-column="68" selection-end-line="81" selection-end-column="68" />
               <folding>
                 <element signature="e#0#38#0" expanded="true" />
               </folding>
@@ -46,8 +70,8 @@
       <file leaf-file-name="Store.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/store/Store.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="567">
-              <caret line="88" column="5" lean-forward="true" selection-start-line="86" selection-start-column="4" selection-end-line="88" selection-end-column="5" />
+            <state relative-caret-position="1260">
+              <caret line="88" column="5" selection-start-line="86" selection-start-column="4" selection-end-line="88" selection-end-column="5" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -55,11 +79,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ChartJSChartEngine.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ChartJSChartEngine.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/charts/ChartJSChartEngine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
+            <state relative-caret-position="75">
+              <caret line="8" column="73" selection-start-line="8" selection-start-column="73" selection-end-line="8" selection-end-column="73" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -167,7 +191,6 @@
         <option value="$PROJECT_DIR$/src/components/App.js" />
         <option value="$PROJECT_DIR$/src/containers/Entity.js" />
         <option value="$PROJECT_DIR$/node_modules/convert-array-to-csv/lib/modules/convert-array-of-arrays-to-csv.js" />
-        <option value="$PROJECT_DIR$/src/styles/App.css" />
         <option value="$PROJECT_DIR$/src/models/Report.js" />
         <option value="$PROJECT_DIR$/src/containers/items/Entity.js" />
         <option value="$PROJECT_DIR$/src/components/items/Purchase.js" />
@@ -175,16 +198,17 @@
         <option value="$PROJECT_DIR$/src/utils/csv.js" />
         <option value="$PROJECT_DIR$/src/models/ReportQuery.js" />
         <option value="$PROJECT_DIR$/src/components/ui/FormInputField.js" />
-        <option value="$PROJECT_DIR$/src/containers/items/Report.js" />
         <option value="$PROJECT_DIR$/src/components/items/Entity.js" />
         <option value="$PROJECT_DIR$/src/components/charts/file.json" />
         <option value="$PROJECT_DIR$/src/components/charts/MorrisJSChartEngine.js" />
         <option value="$PROJECT_DIR$/src/components/charts/FlotChartEngine.js" />
         <option value="$PROJECT_DIR$/public/index.html" />
         <option value="$PROJECT_DIR$/node_modules/react-flot/lib/ReactFlot.js" />
+        <option value="$PROJECT_DIR$/src/components/charts/ChartJSChartEngine.js" />
+        <option value="$PROJECT_DIR$/src/styles/App.css" />
+        <option value="$PROJECT_DIR$/src/containers/items/Report.js" />
         <option value="$PROJECT_DIR$/src/components/items/Report.js" />
         <option value="$PROJECT_DIR$/src/components/charts/ChartEngine.js" />
-        <option value="$PROJECT_DIR$/src/components/charts/ChartJSChartEngine.js" />
       </list>
     </option>
   </component>
@@ -255,7 +279,33 @@
               <item name="yourspendings_manager_web" type="b2602c69:ProjectViewProjectNode" />
               <item name="yourspendings_manager_web" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+              <item name="ui" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="yourspendings_manager_web" type="b2602c69:ProjectViewProjectNode" />
+              <item name="yourspendings_manager_web" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="containers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="yourspendings_manager_web" type="b2602c69:ProjectViewProjectNode" />
+              <item name="yourspendings_manager_web" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="containers" type="462c0819:PsiDirectoryNode" />
+              <item name="items" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="yourspendings_manager_web" type="b2602c69:ProjectViewProjectNode" />
+              <item name="yourspendings_manager_web" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="store" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="yourspendings_manager_web" type="b2602c69:ProjectViewProjectNode" />
+              <item name="yourspendings_manager_web" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="styles" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -418,7 +468,9 @@
       <workItem from="1554374398530" duration="15017000" />
       <workItem from="1554395875180" duration="9000" />
       <workItem from="1554449196554" duration="2445000" />
-      <workItem from="1554528761127" duration="5930000" />
+      <workItem from="1554528761127" duration="7695000" />
+      <workItem from="1554614788410" duration="599000" />
+      <workItem from="1554628318169" duration="4531000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1549480665839</created>
@@ -637,11 +689,25 @@
       <option name="project" value="LOCAL" />
       <updated>1554406539594</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Implemented hierarchical chart options and data binding from reports to charts.">
+      <created>1554579687058</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1554579687059</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Updated chart option parser to accept functions with parameters as values for options.">
+      <created>1554580784452</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1554580784452</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="364781000" />
+    <option name="totallyTimeSpent" value="371676000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="45" y="0" width="1878" height="1058" extended-state="6" />
@@ -650,13 +716,13 @@
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16711736" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5002704" side_tool="true" visible="true" weight="0.12688172" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5002704" side_tool="true" weight="0.12688172" />
       <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49972957" weight="0.32903227" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" id="Palette" order="4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -685,8 +751,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added Role model, container and component." />
-    <MESSAGE value="Modified CRUD operations to be compatible with Spring Framework backend. Added multiple value feature to Select control. Added Checkbox control. Added User model" />
     <MESSAGE value="Implemented relationships management for data models. Implemented transient field management for data models. Implemented correct CRUD for User model. Implemented model and UI for Product Categories." />
     <MESSAGE value="Added access control rules to models. Modified UI of entity lists and controllers, based on access rules. Implemented Discount, PurchaseUser and Shop models. Fixed form UI component and list of model types." />
     <MESSAGE value="Added Document type entity, list and item. Added Purchase, PurchaseProduct and DimensionUnit models, components and containers." />
@@ -710,7 +774,9 @@
     <MESSAGE value="Implemented table row copy function for Purchases and Reports. Implement individual cell styling in reports. Fixed csv generation function." />
     <MESSAGE value="Implemented event handlers for rows and columns of reports and onClick event handler in particular. Fixed CSV generator to include header row" />
     <MESSAGE value="Added support for custom report layouts. Added graph engines support and ChartJS graph drawing library." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added support for custom report layouts. Added graph engines support and ChartJS graph drawing library." />
+    <MESSAGE value="Implemented hierarchical chart options and data binding from reports to charts." />
+    <MESSAGE value="Updated chart option parser to accept functions with parameters as values for options." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated chart option parser to accept functions with parameters as values for options." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -832,13 +898,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/convert-array-to-csv/lib/modules/convert-array-of-arrays-to-csv.js" />
     <entry file="file://$PROJECT_DIR$/node_modules/convert-array-to-csv/lib/index.js" />
-    <entry file="file://$PROJECT_DIR$/src/styles/App.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1215">
-          <caret line="81" column="2" selection-start-line="81" selection-start-column="2" selection-end-line="81" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/App.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="870">
@@ -876,25 +935,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/ui/FormInputField.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="44" selection-start-line="8" selection-start-column="44" selection-end-line="8" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/models/ReportQuery.js" />
-    <entry file="file://$PROJECT_DIR$/src/containers/items/Report.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="635">
-          <caret line="216" column="68" selection-start-line="216" selection-start-column="68" selection-end-line="216" selection-end-column="68" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="e#117#160#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/ui/Form.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="555">
@@ -946,30 +987,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/items/Report.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="317" column="110" selection-start-line="317" selection-start-column="110" selection-end-line="317" selection-end-column="110" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/charts/ChartEngine.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="556">
-          <caret line="70" column="18" lean-forward="true" selection-start-line="70" selection-start-column="18" selection-end-line="70" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/store/Store.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="567">
-          <caret line="88" column="5" lean-forward="true" selection-start-line="86" selection-start-column="4" selection-end-line="88" selection-end-column="5" />
+        <state relative-caret-position="1260">
+          <caret line="88" column="5" selection-start-line="86" selection-start-column="4" selection-end-line="88" selection-end-column="5" />
           <folding>
             <element signature="e#0#33#0" expanded="true" />
           </folding>
@@ -978,10 +999,48 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/charts/ChartJSChartEngine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        <state relative-caret-position="75">
+          <caret line="8" column="73" selection-start-line="8" selection-start-column="73" selection-end-line="8" selection-end-column="73" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/ui/FormInputField.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="885">
+          <caret line="67" column="76" lean-forward="true" selection-start-line="67" selection-start-column="76" selection-end-line="67" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/styles/App.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="702">
+          <caret line="86" column="13" lean-forward="true" selection-start-line="86" selection-start-column="13" selection-end-line="86" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/containers/items/Report.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="189" column="32" lean-forward="true" selection-start-line="189" selection-start-column="32" selection-end-line="189" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/items/Report.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="321" column="34" selection-start-line="321" selection-start-column="34" selection-end-line="321" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/charts/ChartEngine.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="81" column="68" lean-forward="true" selection-start-line="81" selection-start-column="68" selection-end-line="81" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -84,3 +84,7 @@ a {
   outline: 1px solid dimgrey;
   outline-offset: -1px;
 }
+.codeMirror {
+  resize: vertical;
+  overflow: auto !important
+}
