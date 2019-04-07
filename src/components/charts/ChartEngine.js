@@ -1,5 +1,7 @@
 import React,{Component} from 'react';
 import Store from '../../store/Store';
+import _ from 'lodash';
+
 export default class ChartEngine extends Component {
 
     constructor() {
@@ -28,12 +30,7 @@ export default class ChartEngine extends Component {
     parseOptionsField(field_id,field) {
         if (typeof(field["ys_config"]) === "undefined") return field;
         if (typeof(field["ys_config"]["function"]) !== "undefined") {
-            let func = null;
-            if (typeof(this.props.report.eventHandlers[field["ys_config"]["function"]["name"]]) === "function") {
-                func = eval(this.props.report.eventHandlers[field["ys_config"]["function"]["name"]]);
-            } else if (typeof(this[field["ys_config"]["function"]["name"]]) === "function") {
-                func = this[field["ys_config"]["function"]["name"]]
-            }
+            let func = this.getFunction(field["ys_config"]["function"]["name"]);
             if (!func) return field;
             let args = [this.props.report,this.props.options,this];
             if (typeof(field["ys_config"]["function"]["arguments"])!=="undefined")
@@ -43,19 +40,34 @@ export default class ChartEngine extends Component {
         return field;
     }
 
-    getDataColumn(report,options,context,config) {
-        let result = [];
-        if (typeof(config["column"]) !== "undefined") {
-            let columnId = this.getDataColumnId(config["column"]);
-            if (columnId === -1) return [];
-            this.props.report.data.forEach(row => {
-                if (typeof(config["condition"]) === "undefined") {result.push(row[columnId]);return};
-                let metadata = row[row.length-1];
-                let pass = this.calculateRowExpression(row,config["condition"]);
-                if (pass) result.push(row[columnId]);
-            })
+    getFunction(name) {
+        if (typeof(this.props.report.eventHandlers[name]) === "function") {
+            return eval(this.props.report.eventHandlers[name]);
+        } else if (typeof(this[name]) === "function") {
+            return this[name]
         }
-        return result;
+    }
+
+    getDataColumn(report,options,context,config) {
+        if (typeof(config["column"]) === "undefined") return [];
+        let columnId = this.getDataColumnId(config["column"]);
+        if (columnId === -1) return [];
+        let data = _.cloneDeep(this.props.report.data).filter(row => {
+            return typeof(config["condition"]) === "undefined" ||
+                this.calculateRowExpression(row,config["condition"]);
+        });
+        if (typeof(config["sort"]) !== "undefined") {
+            let func = null;
+            if (typeof(config["sort"]["function"]) === "undefined") {
+                func = ((row1,row2) => eval(config["sort"])).bind(this);
+            } else {
+                func = this.getFunction(config["sort"]["function"]["name"]);
+                func = ((row1,row2) => func.call(context,row1,row2,config["sort"]["function"]["arguments"]))
+                console.log(func);
+            }
+            data.sort(func);
+        }
+        return data.map(row => row[columnId]);
     }
 
     getConfigFieldValue(report,options,context,config) {
@@ -82,7 +94,6 @@ export default class ChartEngine extends Component {
         this.props.report.format.columns.forEach((column,index) => {
             expression = expression.replace(new RegExp(column.id,'g'),"row["+index+"]");
         });
-        console.log(expression);
         return eval(expression);
     }
 

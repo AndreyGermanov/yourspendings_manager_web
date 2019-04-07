@@ -290,8 +290,11 @@ export default class Report extends Document {
                 <Button className="btn btn-success" iconClass="glyphicon glyphicon-refresh" text={t("Generate")}
                         onPress={()=>this.props.generateReport()} style={{marginRight:5}}/>
                 { this.props.reportData && this.props.reportData.length ?
-                <Button className="btn btn-primary" iconClass="glyphicon glyphicon-save" text={t("Export CSV")}
-                        onPress={()=>this.props.exportCsv()} style={{marginRight:5}}/>
+                [<Button className="btn btn-primary" iconClass="glyphicon glyphicon-save" text={t("Export CSV")}
+                        onPress={()=>this.props.exportCsv()} style={{marginRight:5}} key="b1"/>,
+                    <Button className="btn btn-primary" iconClass="glyphicon glyphicon-share" text={t("Full Screen")}
+                    onPress={()=>window.open("#/report/"+this.props.uid+"/full")} style={{paddingRight:5,marginRight:5}} key="b2"/>
+                    ]
                 : null }
                 <Button className="btn btn-info" iconClass="glyphicon glyphicon-remove" text={t("Clear")}
                         onPress={()=>this.props.clearReport()} style={{paddingRight:5}}/>
@@ -319,7 +322,6 @@ export default class Report extends Document {
                     }
                 })
             }
-            console.log(bindings);
             return <JsxParser key={"report_"+rowIndex}
                bindings={bindings}
                jsx={query.layout}
