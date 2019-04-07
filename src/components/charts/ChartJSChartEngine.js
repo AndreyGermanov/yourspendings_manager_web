@@ -7,7 +7,8 @@ export default class ChartJSChartEngine extends ChartEngine {
 
     componentDidMount() {
         let options = _.cloneDeep(this.parseOptions(this.props.options));
-        this.chart = new Chart(document.getElementById("chart_"+this.props.id).getContext('2d'),options)
+        this.elem = document.getElementById("chart_"+this.props.id)
+        this.chart = new Chart(this.elem.getContext('2d'),options)
     }
 
     render() {

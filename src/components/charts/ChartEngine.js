@@ -35,7 +35,10 @@ export default class ChartEngine extends Component {
             let args = [this.props.report,this.props.options,this];
             if (typeof(field["ys_config"]["function"]["arguments"])!=="undefined")
                 args.push(field["ys_config"]["function"]["arguments"]);
-            return func.apply(this,args)
+            if (typeof(field["ys_config"]["function"]["execute"])==="undefined" || field["ys_config"]["function"]["execute"])
+                return func.apply(this,args);
+            else
+                return func.bind(this,args);
         }
         return field;
     }
@@ -96,7 +99,7 @@ export default class ChartEngine extends Component {
         });
         return eval(expression);
     }
-
+    
     static getChartEngine(type,id,options,report) {
         let ChartJSChartEngine = require('./ChartJSChartEngine').default;
 
