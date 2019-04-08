@@ -10,6 +10,7 @@ import async from 'async';
 import t from '../../utils/translate/translate';
 import exportCsv from '../../utils/csv';
 import _ from 'lodash';
+const queryString = require("query-string");
 
 export default class ReportItemContainer extends DocumentContainer {
 
@@ -183,6 +184,11 @@ export default class ReportItemContainer extends DocumentContainer {
         if (typeof(callback) != "function") callback = () => {};
         if (!this.validateItem()) return;
         let item = this.getProps().item;
+        let urlParams = {};
+        if (window.location.hash.split("?").length === 2) {
+            urlParams = queryString.parse(window.location.hash.split("?").pop());
+            item = this.applyUrlParams(item,urlParams)
+        }
         this.model.generateReport(item,(error,reports) => {
             if (error) {
                 Store.changeProperty("errors",{general:t("Internal error")});return;
@@ -226,6 +232,10 @@ export default class ReportItemContainer extends DocumentContainer {
             Store.changeProperty("reportData",reportData);
             if (callback) callback();
         });
+    }
+
+    applyUrlParams(item,urlParams) {
+        return item;
     }
 
     clearReport() {

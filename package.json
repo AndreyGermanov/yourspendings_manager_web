@@ -16,6 +16,7 @@
     "moment-timezone": "^0.5.23",
     "popper.js": "^1.14.7",
     "prop-types": "^15.7.2",
+    "query-string": "^6.4.2",
     "react": "^16.8.0",
     "react-bootstrap": "^0.32.1",
     "react-datetime": "^2.16.3",

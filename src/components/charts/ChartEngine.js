@@ -99,7 +99,7 @@ export default class ChartEngine extends Component {
         });
         return eval(expression);
     }
-    
+
     static getChartEngine(type,id,options,report) {
         let ChartJSChartEngine = require('./ChartJSChartEngine').default;
 
