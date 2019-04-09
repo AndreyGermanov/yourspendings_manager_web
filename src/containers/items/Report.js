@@ -27,7 +27,6 @@ export default class ReportItemContainer extends DocumentContainer {
         return connect(item.mapStateToProps.bind(item),item.mapDispatchToProps.bind(item))(Item.Report);
     }
 
-
     /**
      * Method defines set of properties, which are available inside controlled component inside "this.props"
      * @param state: Link to application state
@@ -84,7 +83,7 @@ export default class ReportItemContainer extends DocumentContainer {
     getQueriesTableLabels() { return Models.getInstanceOf("reportQuery").getFieldLabels();}
 
     /**
-     * Method used to remove row from Products table
+     * Method used to remove row from Queries table
      * @param index - Index of row to remove
      */
     removeQuery(index) {
@@ -186,39 +185,22 @@ export default class ReportItemContainer extends DocumentContainer {
         let item = this.getProps().item;
         let urlParams = {};
         if (window.location.hash.split("?").length === 2) {
-            urlParams = queryString.parse(window.location.hash.split("?").pop());
-            item = this.applyUrlParams(item,urlParams)
+            this.applyUrlParams(item,queryString.parse(window.location.hash.split("?").pop()));
         }
         this.model.generateReport(item,(error,reports) => {
-            if (error) {
-                Store.changeProperty("errors",{general:t("Internal error")});return;
-            }
+            if (error) { Store.changeProperty("errors",{general:t("Internal error")});return;}
             let reportData = [];
             reports.forEach((rows,index) => {
-                let format = {
-                    title: t('Report')+" # "+index,
-                    columns: []
-                }
-                try {
-                    format = JSON.parse(item.queries.filter(query=>query.enabled)[index].outputFormat)
-                } catch (e) {
-                }
+                let format = {title: t('Report')+" # "+index, columns: []};
+                try { format = JSON.parse(item.queries.filter(query=>query.enabled)[index].outputFormat)} catch (e) {}
                 if (!format.title) format.title = item.queries.filter(query=>query.enabled)[index].name;
                 let report = {format:format,data:rows};
                 try {
                     let postScript = item.queries.filter(query=>query.enabled)[index].postScript;
-                    if (postScript && postScript.length) {
-                        let func = eval(postScript);
-                        report = func(report);
-                    }
+                    if (postScript && postScript.length) report = eval(postScript)(report);
                 } catch (e) { console.log(e);};
                 let eventHandlers = item.queries.filter(query=>query.enabled)[index].eventHandlers;
-                if (eventHandlers && eventHandlers.length) {
-                    try {
-                        let func = eval(eventHandlers)();
-                        report.eventHandlers = func;
-                    } catch (e) { console.log(e);}
-                }
+                try { report.eventHandlers = eval(eventHandlers)();} catch (e) { console.log(e);}
                 let layout = item.queries.filter(query=>query.enabled)[index].layout;
                 if (layout && layout.length) report.layout = layout;
                 reportData.push(report);
@@ -235,7 +217,49 @@ export default class ReportItemContainer extends DocumentContainer {
     }
 
     applyUrlParams(item,urlParams) {
-        return item;
+        item.queries.forEach(query => this.applyUrlParamsToQuery(query,urlParams))
+    }
+
+    applyUrlParamsToQuery(query,urlParams) {
+        let params = {};
+        if (!query.params) return;
+        try { params = JSON.parse(query.params);} catch (e) { console.log(e)};
+        if (!params.url_params) return;
+        params.url_params.forEach(config => {
+            if (typeof(urlParams[config["name"]]) === "undefined") return;
+            if (typeof(config["parseFunction"]) !== "object") return;
+            let value = urlParams[config["name"]];
+            let func = this.getParamParseFunction(config["parseFunction"]["name"],query);
+            if (func) func.apply(this,[query,this,value,config["parseFunction"]["arguments"]]);
+        })
+    }
+
+    getParamParseFunction(name,query) {
+        let eventHandlers = {};
+        try { eventHandlers = eval(query.eventHandlers)();} catch (e) {console.log(e);};
+        if (typeof(eventHandlers[name]) === "function") {
+            return eval(eventHandlers[name]);
+        } else if (typeof(this[name]) === "function") {
+            return this[name]
+        }
+    }
+
+    setQueryParam(query,context,value,config) {
+        let params = {};
+        try { params = JSON.parse(query.params);} catch (e) { console.log(e)};
+        if (!params.sql_query_params) return;
+        params.sql_query_params.forEach(param => {
+            if (param.name === config["paramName"]) param.value = value;
+        });
+        query.params = JSON.stringify(params);
+    }
+
+    setFormatParam(query,context,value,config) {
+        let format = {};
+        try { format = JSON.parse(query.outputFormat);} catch (e) { console.log(e)};
+        if (typeof(value) == "string" && value !== "true" && value!=="false") value = "'"+value+"'";
+        eval("format"+Store.getPropertyNameExpression(config["paramName"])+"="+value+";");
+        query.outputFormat = JSON.stringify(format);
     }
 
     clearReport() {
