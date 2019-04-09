@@ -31,13 +31,13 @@ export default class ReportQuery extends Entity {
         if (!item.visible) item.visible = 0;
         if (!item.order) item.order = 0;
         if (!item.query) item.query = "";
-        if (!item.params) item.params = "[]";
+        if (!item.params) item.params = "{}";
         if (!item.outputFormat) item.outputFormat = "{}";
         if (!item.report) item.report = 0;
         if (!item.postScript) item.postScript = "(report) => { return report;}";
         if (!item.eventHandlers) item.eventHandlers =  '() => { ' +
             '   return {' +
-            '       onCellClick: (row,row_index,column_index,context) => {};'+
+            '       onCellClick: (row,row_index,column_index,context) => {}'+
             '   }' +
             '}';
         if (!item.layout) item.layout = "<div>{table}</div>";

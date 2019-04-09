@@ -183,13 +183,12 @@ export default class ReportItemContainer extends DocumentContainer {
         if (typeof(callback) != "function") callback = () => {};
         if (!this.validateItem()) return;
         let item = this.getProps().item;
-        let urlParams = {};
         if (window.location.hash.split("?").length === 2) {
             this.applyUrlParams(item,queryString.parse(window.location.hash.split("?").pop()));
         }
         this.model.generateReport(item,(error,reports) => {
             if (error) { Store.changeProperty("errors",{general:t("Internal error")});return;}
-            let reportData = [];
+            this.reportData = [];
             reports.forEach((rows,index) => {
                 let format = {title: t('Report')+" # "+index, columns: []};
                 try { format = JSON.parse(item.queries.filter(query=>query.enabled)[index].outputFormat)} catch (e) {}
@@ -197,21 +196,21 @@ export default class ReportItemContainer extends DocumentContainer {
                 let report = {format:format,data:rows};
                 try {
                     let postScript = item.queries.filter(query=>query.enabled)[index].postScript;
-                    if (postScript && postScript.length) report = eval(postScript)(report);
+                    if (postScript && postScript.length) report = eval(postScript)(report,this);
                 } catch (e) { console.log(e);};
                 let eventHandlers = item.queries.filter(query=>query.enabled)[index].eventHandlers;
-                try { report.eventHandlers = eval(eventHandlers)();} catch (e) { console.log(e);}
+                try { report.eventHandlers = eval(eventHandlers)()} catch (e) { console.log(e);}
                 let layout = item.queries.filter(query=>query.enabled)[index].layout;
                 if (layout && layout.length) report.layout = layout;
-                reportData.push(report);
+                this.reportData.push(report);
             });
             if (item.postScript && item.postScript.length) {
                 try {
                     let func = eval(item.postScript);
-                    reportData = func(reportData);
+                    this.reportData = func(this.reportData,this);
                 } catch (e) { console.log(e);};
             }
-            Store.changeProperty("reportData",reportData);
+            Store.changeProperty("reportData",this.reportData);
             if (callback) callback();
         });
     }

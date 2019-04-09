@@ -398,7 +398,7 @@ export default class Report extends Document {
             if (groupFormat.collapsed) style.paddingLeft = hierarchyLevel*10;
         }
         let styles = row[columnsFormat.length].styles;
-        let onclick = query.eventHandlers && query.eventHandlers['onclick'] ? query.eventHandlers['onclick'] : () => {};
+        let onclick = query.eventHandlers && query.eventHandlers['onCellClick'] ? query.eventHandlers['onCellClick'] : () => {};
         return (
             <tr key={"report_row_"+row+"_"+rowIndex}>
                 {
