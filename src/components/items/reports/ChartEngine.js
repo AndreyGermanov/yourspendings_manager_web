@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import Store from '../../store/Store';
+import Store from '../../../store/Store';
 import _ from 'lodash';
 
 /**
