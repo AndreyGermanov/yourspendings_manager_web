@@ -62,6 +62,9 @@ class FormInputField extends FormField {
         return result;
     }
 
+    /**
+     * Method runs after component appeared on the screen
+     */
     componentDidMount() {
         const props = this.getProps();
         if (this.ref && props.codeMirror) {
@@ -72,6 +75,9 @@ class FormInputField extends FormField {
         }
     }
 
+    /**
+     * Method runs each time when state data updated
+     */
     componentDidUpdate() {
         const props = this.getProps();
         if (this.editor && !this.editor.getValue()) this.editor.setValue(props.value);

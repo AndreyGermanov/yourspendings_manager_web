@@ -102,7 +102,7 @@ export default class Report extends Document {
     }
 
     /**
-     * Method used to render rows with products in products table
+     * Method used to render rows with queries in queries table
      * @param item - Item to get data from
      * @returns Rendered component
      */
@@ -131,6 +131,13 @@ export default class Report extends Document {
         ]
     }
 
+    /**
+     * Method renders first line of query row
+     *
+     * @param query - Query data
+     * @param index - Index of query in queries list
+     * @returns Rendered component
+     */
     renderRowHeader(query,index) {
         let props = {errors: this.props.errors["queries"] ? this.props.errors["queries"]: {}};
         if (!props.errors[index]) props.errors[index] = {};
@@ -162,6 +169,13 @@ export default class Report extends Document {
         )
     }
 
+    /**
+     * Method used to render content of "Actions" column of query row.
+     * @param query - Query data
+     * @param index - Index of query in a list
+     * @param item - Link to whole report data
+     * @returns Rendered component
+     */
     renderRowActions(query,index,item) {
         return (
             <td>
@@ -187,103 +201,91 @@ export default class Report extends Document {
         )
     }
 
+    /**
+     * Method render details row for query
+     * @param query - Query data
+     * @param index - Index of query in a list
+     * @returns Rendered component
+     */
     renderRowDetails(query,index) {
-        let props = {errors: this.props.errors["queries"] ? this.props.errors["queries"]: {}};
-        if (!props.errors[index]) props.errors[index] = {};
         return [
             <tr key={"query_details_header_"+index}>
                 <td colSpan={3}>
-                    <a style={{fontWeight: query.visibleTab===QueryTab.Query ? 'bold' : 'normal'}}
-                       onClick={()=>this.props.switchTab(index,QueryTab.Query)}>{t("Query")}</a>&nbsp;
-                    <a style={{fontWeight: query.visibleTab===QueryTab.Params ? 'bold' : 'normal'}}
-                       onClick={()=>this.props.switchTab(index,QueryTab.Params)}>{t("Parameters")}</a>&nbsp;
-                    <a style={{fontWeight: query.visibleTab===QueryTab.Layout ? 'bold' : 'normal'}}
-                       onClick={()=>this.props.switchTab(index,QueryTab.Layout)}>{t("Layout")}</a>&nbsp;
-                    <a style={{fontWeight: query.visibleTab===QueryTab.Format ? 'bold' : 'normal'}}
-                       onClick={()=>this.props.switchTab(index,QueryTab.Format)}>{t("Format")}</a>&nbsp;
-                    <a style={{fontWeight: query.visibleTab===QueryTab.PostScript ? 'bold' : 'normal'}}
-                       onClick={()=>this.props.switchTab(index,QueryTab.PostScript)}>{t("Post Script")}</a>&nbsp;
-                    <a style={{fontWeight: query.visibleTab===QueryTab.EventHanders ? 'bold' : 'normal'}}
-                       onClick={()=>this.props.switchTab(index,QueryTab.EventHanders)}>{t("Event Handlers")}</a>&nbsp;
+                    {this.renderDetailsTab(query,index,t("Query"),QueryTab.Query)}
+                    {this.renderDetailsTab(query,index,t("Parameters"),QueryTab.Params)}
+                    {this.renderDetailsTab(query,index,t("Layout"),QueryTab.Layout)}
+                    {this.renderDetailsTab(query,index,t("Format"),QueryTab.Format)}
+                    {this.renderDetailsTab(query,index,t("Post Script"),QueryTab.PostScript)}
+                    {this.renderDetailsTab(query,index,t("Module"),QueryTab.EventHanders)}
                     <br/><br/>
-                    {query.visibleTab === QueryTab.Query ?
-                        <Input name="query" value={query.query} containerClass="tableInputContainer"
-                               ownerProps={{errors:props.errors[index]}}
-                               codeMirror={{
-                                   mode:'text/x-sql',
-                                   lineNumbers:true
-                               }}
-                               inputClass="tableInput"
-                               multiline={true}
-                               onChange={(name,text)=>this.props.changeTableField("reportQuery","queries",index,name,text)}/>
-                        : null
-                    }
-                    {query.visibleTab === QueryTab.Params ?
-                        <Input name="params" value={query.params} containerClass="tableInputContainer"
-                               ownerProps={{errors:props.errors[index]}}
-                               codeMirror={{
-                                   mode:'text/javascript',
-                                   lineNumbers:true
-                               }}
-                               inputClass="tableInput"
-                               multiline={true}
-                               onChange={(name,text)=>this.props.changeTableField("reportQuery","queries",index,name,text)}/>
-                        : null
-                    }
-                    {query.visibleTab === QueryTab.Layout ?
-                        <Input name="layout" value={query.layout} containerClass="tableInputContainer"
-                               ownerProps={{errors:props.errors[index]}}
-                               codeMirror={{
-                                   mode:'text/html',
-                                   lineNumbers:true
-                               }}
-                               inputClass="tableInput"
-                               multiline={true}
-                               onChange={(name,text)=>this.props.changeTableField("reportQuery","queries",index,name,text)}/>
-                        : null
-                    }
-                    {query.visibleTab === QueryTab.Format ?
-                        <Input name="outputFormat" value={query.outputFormat} containerClass="tableInputContainer"
-                               ownerProps={{errors:props.errors[index]}}
-                               codeMirror={{
-                                   mode:'text/javascript',
-                                   lineNumbers:true
-                               }}
-                               inputClass="codeMirror"
-                               multiline={true}
-                               onChange={(name,text)=>this.props.changeTableField("reportQuery","queries",index,name,text)}/>
-                        : null
-                    }
-                    {query.visibleTab === QueryTab.PostScript ?
-                        <Input name="postScript" value={query.postScript} containerClass="tableInputContainer"
-                               ownerProps={{errors:props.errors[index]}}
-                               codeMirror={{
-                                   mode:'text/javascript',
-                                   lineNumbers:true
-                               }}
-                               inputClass="tableInput"
-                               multiline={true}
-                               onChange={(name,text)=>this.props.changeTableField("reportQuery","queries",index,name,text)}/>
-                        : null
-                    }
-                    {query.visibleTab === QueryTab.EventHanders ?
-                        <Input name="eventHandlers" value={query.eventHandlers} containerClass="tableInputContainer"
-                               ownerProps={{errors:props.errors[index]}}
-                               codeMirror={{
-                                   mode:'text/javascript',
-                                   lineNumbers:true
-                               }}
-                               inputClass="tableInput"
-                               multiline={true}
-                               onChange={(name,text)=>this.props.changeTableField("reportQuery","queries",index,name,text)}/>
-                        : null
-                    }
-
+                    {this.renderDetailsContent(query,index)}
                 </td>
             </tr>
         ]
     }
 
+    /**
+     * Renders tab title for query details row
+     * @param query - Query data
+     * @param index - Index of query in a list
+     * @param name - Text name of tab
+     * @param tab - Tab Id
+     * @returns Rendered component
+     */
+    renderDetailsTab(query,index,name,tab) {
+        return (
+            <a style={{marginRight:5,fontWeight: query.visibleTab===tab ? 'bold' : 'normal'}}
+               onClick={()=>this.props.switchTab(index,tab)}>{name}</a>
+        )
+    }
+
+    /**
+     * Method renders single tab of query row details, depending on selected tab
+     * @param query - Query data
+     * @param index - Index of query in a list
+     * @returns Rendered component
+     */
+    renderDetailsContent(query,index) {
+        switch (query.visibleTab) {
+            case QueryTab.Query:return this.renderEditor(query, index, "query", "text/x-sql");
+            case QueryTab.Params:return this.renderEditor(query, index, "params", "text/javascript");
+            case QueryTab.Layout:return this.renderEditor(query, index, "layout", "text/html");
+            case QueryTab.Format:return this.renderEditor(query, index, "outputFormat", "text/javascript");
+            case QueryTab.PostScript:return this.renderEditor(query, index, "postScript", "text/javascript");
+            case QueryTab.EventHanders:return this.renderEditor(query, index, "eventHandlers", "text/javascript");
+            default: return null;
+        }
+    }
+
+    /**
+     * Renders tab content for query details row
+     * @param query - Query data
+     * @param index - Index of query in a list
+     * @param fieldName - Name of data field, for which this tab is intended
+     * @param mode - Mode of code editor
+     * @returns Rendered component
+     */
+    renderEditor(query,index,fieldName,mode) {
+        let props = {errors: this.props.errors["queries"] ? this.props.errors["queries"]: {}};
+        if (!props.errors[index]) props.errors[index] = {};
+        return (
+            <Input name={fieldName} value={query[fieldName]} containerClass="tableInputContainer"
+                   ownerProps={{errors:props.errors[index]}}
+                   codeMirror={{
+                       mode:mode,
+                       lineNumbers:true
+                   }}
+                   inputClass="codeMirror"
+                   multiline={true}
+                   onChange={(name,text)=>this.props.changeTableField("reportQuery","queries",index,name,text)}/>
+        )
+    }
+
+    /**
+     * Method used to render Report generation block
+     * @param item - Link to report data
+     * @returns Rendered component
+     */
     renderResultBlock(item) {
         return (
             <div className="col-sm-12" key={"resultBlock"}>
@@ -305,32 +307,48 @@ export default class Report extends Document {
         )
     }
 
+    /**
+     * Method used to render generated report (all queries one by one)
+     * @param item - Link to report data
+     * @returns Rendered component
+     */
     renderReports(item) {
         return this.props.reportData.map((query,index) => this.renderReport(query,index,item));
     }
 
+    /**
+     * Method used to render single query result of report
+     * @param query - Query result data from server
+     * @param rowIndex - Index of query
+     * @param item - Link to report data
+     * @returns Rendered component
+     */
     renderReport(query,rowIndex,item) {
         let table = this.renderReportTable(query,rowIndex,item);
-        if (query.layout) {
-            let bindings = {};
-            if (query.format.displayTable !== false) bindings['table'] = table;
-            if (query.format.charts && query.format.charts.length) {
-                query.format.charts.forEach((chart) => {
-                    if (chart.display !== false) {
-                        bindings["chart_"+chart.id] =
-                            ChartEngine.getChartEngine(chart.engine,chart.id,chart.options[chart.engine],query)
-                    }
-                })
-            }
-            return <JsxParser key={"report_"+rowIndex}
-               bindings={bindings}
-               jsx={query.layout}
-            />
-        } else {
-            return table;
+        if (!query.layout) return table;
+        let bindings = {};
+        if (query.format.displayTable !== false) bindings['table'] = table;
+        if (query.format.charts && query.format.charts.length) {
+            query.format.charts.forEach((chart) => {
+                if (chart.display !== false) {
+                    bindings["chart_"+chart.id] =
+                        ChartEngine.getChartEngine(chart.engine,chart.id,chart.options[chart.engine],query)
+                }
+            })
         }
+        return <JsxParser key={"report_"+rowIndex}
+           bindings={bindings}
+           jsx={query.layout}
+        />
     }
 
+    /**
+     * Renders query results table of single query
+     * @param query - Query data
+     * @param rowIndex - Index of query
+     * @param item - Link to report data
+     * @returns Rendered component
+     */
     renderReportTable(query,rowIndex,item) {
         return [
             <h3 key={"report_result_title_"+rowIndex}>{query.format.title}</h3>,
@@ -343,6 +361,11 @@ export default class Report extends Document {
         ]
     }
 
+    /**
+     * Renders table header row for single query result
+     * @param query - Query data
+     * @returns Rendered component
+     */
     renderReportHeader(query) {
         if (!query.data || !query.data.length) return null;
         let firstRow = query.data[0];
@@ -362,6 +385,11 @@ export default class Report extends Document {
         )
     }
 
+    /**
+     * Method used to render query results data rows
+     * @param query - Query data
+     * @returns Rendered component
+     */
     renderReportRows(query) {
         if (!query.data || !query.data.length) return null;
         return query.data.map((row,rowIndex) => {
@@ -369,34 +397,17 @@ export default class Report extends Document {
         })
     }
 
+    /**
+     * Method used to render single row in query result table
+     * @param query - Query data
+     * @param row - Row data
+     * @param rowIndex - Index of row
+     * @returns Rendered component
+     */
     renderReportRow(query,row,rowIndex) {
         if (!this.isRowVisible(query,rowIndex)) return null;
-        let format = query.format;
-        let columnsFormat = format.columns ? format.columns : [];
-        let groupsFormat = format.groups;
-        let style = {};
         let openedRows = this.props.openedRows;
-        let groupFormat = null;
-        let hierarchyLevel = row[columnsFormat.length].hierarchyLevel ? row[columnsFormat.length].hierarchyLevel : 0;
-        if (groupsFormat && groupsFormat[row[columnsFormat.length].groupColumn])
-            groupFormat = groupsFormat[row[columnsFormat.length].groupColumn];
-        if (row[columnsFormat.length].totalsRow) {
-            if (format.totals && format.totals.style)
-                style = format.totals.style;
-            else
-                style = {fontWeight:'bold',backgroundColor:"#CCCCCC"}
-        } else if (groupFormat) {
-            style = {fontWeight:'bold',backgroundColor:'#CCCCCC'};
-            if (groupFormat.style) {
-                style = _.cloneDeep(groupFormat.style);
-            }
-
-            if (groupFormat["hierarchy"] && groupFormat["hierarchy"]["styles"] &&
-                groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel).length) {
-                style = _.cloneDeep(groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel)[0].style);
-            }
-            if (groupFormat.collapsed) style.paddingLeft = hierarchyLevel*10;
-        }
+        let {columnsFormat,groupFormat,style} = this.getRowFormat(query,row);
         let styles = row[columnsFormat.length].styles;
         let onclick = query.eventHandlers && query.eventHandlers['onCellClick'] ? query.eventHandlers['onCellClick'] : () => {};
         return (
@@ -432,12 +443,59 @@ export default class Report extends Document {
         )
     }
 
+    /**
+     * Utility method which returns formatting information about specified row
+     * @param query - Query result data
+     * @param row - Row data
+     * @returns object of data: columnsFormat,groupFormat,style
+     */
+    getRowFormat(query,row) {
+        let format = query.format;
+        let columnsFormat = format.columns ? format.columns : [];
+        let groupsFormat = format.groups;
+        let style = {};
+        let groupFormat = null;
+        let hierarchyLevel = row[columnsFormat.length].hierarchyLevel ? row[columnsFormat.length].hierarchyLevel : 0;
+        if (groupsFormat && groupsFormat[row[columnsFormat.length].groupColumn])
+            groupFormat = groupsFormat[row[columnsFormat.length].groupColumn];
+        if (row[columnsFormat.length].totalsRow) {
+            if (format.totals && format.totals.style)
+                style = format.totals.style;
+            else
+                style = {fontWeight:'bold',backgroundColor:"#CCCCCC"}
+        } else if (groupFormat) {
+            style = {fontWeight:'bold',backgroundColor:'#CCCCCC'};
+            if (groupFormat.style) {
+                style = _.cloneDeep(groupFormat.style);
+            }
+
+            if (groupFormat["hierarchy"] && groupFormat["hierarchy"]["styles"] &&
+                groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel).length) {
+                style = _.cloneDeep(groupFormat["hierarchy"]["styles"].filter(item => item.level == row[columnsFormat.length].hierarchyLevel)[0].style);
+            }
+            if (groupFormat.collapsed) style.paddingLeft = hierarchyLevel*10;
+        }
+        return {groupFormat:groupFormat,columnsFormat:columnsFormat,style:style}
+    }
+
+    /**
+     * Method returns index of column by field ID
+     * @param fieldId - ID of field
+     * @param columns - list of columns metadata
+     * @returns Id of column
+     */
     getColumnIndex(fieldId,columns) {
         if (!isNaN(parseInt(fieldId))) return fieldId;
         let column = columns.filter((item) => item.id == fieldId)[0];
         if (column && typeof(column) != undefined) return columns.indexOf(column);
     }
 
+    /**
+     * Method used to determine is specified row visible or inside collapsed group
+     * @param query - Query result data
+     * @param rowIndex - Index of row to check
+     * @returns Boolean - True if row visible or false otherwise
+     */
     isRowVisible(query,rowIndex) {
         let openRows = this.props.openedRows;
         let row = query.data[rowIndex];
@@ -454,10 +512,7 @@ export default class Report extends Document {
                 if (groupFormat.collapsed) return false;
             }
             if (groupFormat.collapsed && !openRows[metadata.parent]) return false;
-            if (parentRow)
-                metadata = parentRow[parentRow.length-1];
-            else
-                metadata = null;
+            if (parentRow) metadata = parentRow[parentRow.length-1]; else metadata = null;
         }
         return true;
     }

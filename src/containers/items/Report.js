@@ -141,8 +141,16 @@ export default class ReportItemContainer extends DocumentContainer {
         this.changeTableField("reportQuery","queries",rowIndex2,"order",sortOrder1);
     }
 
+    /**
+     * Method used to select specified tab in Query details row
+     * @param rowIndex - Index of query in a table
+     * @param tab - Tab ID to switch to
+     */
     switchTab(rowIndex,tab) {
+        this.setQueryVisible(rowIndex,false);
         this.changeTableField("reportQuery","queries",rowIndex,"visibleTab",tab);
+        setTimeout(() => this.setQueryVisible(rowIndex,true),1);
+
     }
 
     /**
@@ -215,10 +223,20 @@ export default class ReportItemContainer extends DocumentContainer {
         });
     }
 
+    /**
+     * Method used to apply URL request params to report queries
+     * @param item - Report item data
+     * @param urlParams - Hashmap of URL params
+     */
     applyUrlParams(item,urlParams) {
         item.queries.forEach(query => this.applyUrlParamsToQuery(query,urlParams))
     }
 
+    /**
+     * Method used to apply URL request params to specified report query
+     * @param query - Query metadata
+     * @param urlParams - Hashmap of URL params
+     */
     applyUrlParamsToQuery(query,urlParams) {
         let params = {};
         if (!query.params) return;
@@ -233,6 +251,12 @@ export default class ReportItemContainer extends DocumentContainer {
         })
     }
 
+    /**
+     * Method returns function, assigned as a "parseFunction" in configuration of URL parameter
+     * @param name - name of function to search
+     * @param query - Query metadata
+     * @returns Function or null
+     */
     getParamParseFunction(name,query) {
         let eventHandlers = {};
         try { eventHandlers = eval(query.eventHandlers)();} catch (e) {console.log(e);};
@@ -243,6 +267,13 @@ export default class ReportItemContainer extends DocumentContainer {
         }
     }
 
+    /**
+     * General URL param parse function used to set URL param value to specified query parameter
+     * @param query - Query data
+     * @param context - Link to context of current module
+     * @param value - Value of URL parameter
+     * @param config - Configuration of URL parameter
+     */
     setQueryParam(query,context,value,config) {
         let params = {};
         try { params = JSON.parse(query.params);} catch (e) { console.log(e)};
@@ -253,6 +284,13 @@ export default class ReportItemContainer extends DocumentContainer {
         query.params = JSON.stringify(params);
     }
 
+    /**
+     * General URL param parse function usedto set URL param value to specified query format parameter
+     * @param query - Query data
+     * @param context - Link to context of current module
+     * @param value - Value of URL parameter
+     * @param config - Configuration of URL parameter
+     */
     setFormatParam(query,context,value,config) {
         let format = {};
         try { format = JSON.parse(query.outputFormat);} catch (e) { console.log(e)};
@@ -261,10 +299,17 @@ export default class ReportItemContainer extends DocumentContainer {
         query.outputFormat = JSON.stringify(format);
     }
 
+    /**
+     * "Clear" button onClick handler used to clear current query
+     */
     clearReport() {
         Store.changeProperty("reportData",[]);
     }
 
+    /**
+     * Method runs when user expands or collapses row in report
+     * @param rowNumber - Number of row
+     */
     switchRow(rowNumber) {
         let openedRows = this.getProps().openedRows
         if (typeof(openedRows[rowNumber]) === "undefined") openedRows[rowNumber] = false;
@@ -272,6 +317,9 @@ export default class ReportItemContainer extends DocumentContainer {
         Store.changeProperty("openedRows",openedRows)
     }
 
+    /**
+     * "Export to CSV" button onClick handler which used to generate CSV file for all generated reports
+     */
     exportCsv() {
         let reports = this.getProps().reportData;
         if (reports && reports.length) {
