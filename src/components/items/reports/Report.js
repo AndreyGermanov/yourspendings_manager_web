@@ -78,10 +78,10 @@ export default class Report extends Component {
                 {firstRow.map((value,column_index) => {
                     if (format.columns && column_index >= format.columns.length && format.columns.length) return null;
                     if (column_index === firstRow.length-1) return null;
+                    if (format.columns && format.columns.length && format.columns[column_index].hidden) return null;
                     let title = column_index;
                     if (format.columns && format.columns[column_index] && format.columns[column_index].title)
                         title = format.columns[column_index].title;
-                    if (format.columns && format.columns.length && format.columns[column_index].hidden) return null;
                     return <th key={"report_"+firstRow+"_"+column_index}>{title}</th>
                 })}
             </tr>

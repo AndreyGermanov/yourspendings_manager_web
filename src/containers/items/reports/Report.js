@@ -33,7 +33,7 @@ export default class ReportContainer extends EntityContainer {
      */
     mapDispatchToProps(dispatch) {
         return Object.assign(super.mapDispatchToProps(dispatch), {
-            switchRow: (rowNumber) => this.switchRow(rowNumber),
+            switchRow: (rowNumber) => this.switchRow(rowNumber)
         });
     }
 
